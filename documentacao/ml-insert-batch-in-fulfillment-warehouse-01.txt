@@ -1,0 +1,60 @@
+﻿ml-insert-batch-in-fulfillment-warehouse-01
+
+
+
+
+representante: inserir lote de produtos no armazém de distribuição para registrar estoque
+
+
+registrar produto: 
+* armazém válido
+* representante pertence armazém
+* setor válido
+* setor corresponde ao tipo de produto
+* setor tenha espaço disponível
+
+
+registro lote:
+* lote é atribuído a um setor
+* representante associado ao registro de estoque
+
+
+validações:
+* autentique-se como representante e acesse os terminais
+* registre o lote no setor correspondente
+* verifique se o setor de warehouse está sendo registrado corretamente
+
+
+OBS: ter informações necessárias para entender em que setor deve ser armazenada as mercadorias para que fique em bom estado enquanto estiver no almoxarifado e para que se possa mostrar ao colaborador que vai procurar o produto
+
+
+Classes
+InboundOrder
+int orderNumber 
+LocalDate orderDate 
+Section section
+List<BatchStock> batchStock
+
+
+Section
+String sectionCode
+String warehouseCode
+
+
+BatchStock
+int batchNumber
+String productId
+Float currentTemperature
+Float minimumTemperature
+int initialQuantity
+int currentQuantity
+--LocalDate manufacturingDate
+--LocalDateTime manufacturingTime
+LocalDateTime manufacturingDateTime
+LocalDate dueDate
+
+Contratos:
+* post: 
+   * /api/v1/fresh-products/inboundorder/ - Cadastre um lote com o estoque de produtos que o compõe. Devolva o lote criado com o código de status "201 CREATED".
+* put
+   * /api/v1/fresh-products/inboundorder/ - Caso o lote já exista e deva ser atualizado. Devolva o estoque atualizado com o código de status "201 CREATED".
