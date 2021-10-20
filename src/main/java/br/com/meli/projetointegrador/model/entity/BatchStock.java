@@ -29,6 +29,11 @@ public class BatchStock {
     private LocalDate dueDate;
     private Agent agent;
 
+    public BatchStock id(String id) {
+        this.id = id;
+        return this;
+    }
+
     public BatchStock batchNumber(Integer batchNumber) {
         this.batchNumber = batchNumber;
         return this;
@@ -74,12 +79,12 @@ public class BatchStock {
         return this;
     }
 
-    public BatchStock build() {
+    public BatchStock agent(Agent agent) {
+        this.agent = agent;
         return this;
     }
 
-    public BatchStock agent(Agent agent) {
-        this.agent = agent;
+    public BatchStock build() {
         return this;
     }
 }

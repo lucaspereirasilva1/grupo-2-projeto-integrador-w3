@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface InboundOrderRepository extends MongoRepository<InboudOrder, String> {
+
+    void deleteByOrderNumber(Integer orderNumber);
+
 }

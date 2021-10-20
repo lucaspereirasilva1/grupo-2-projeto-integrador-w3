@@ -20,6 +20,11 @@ public class Section {
     private Integer maxLength;
     private Warehouse warehouse;
 
+    public Section id(String id) {
+        this.id = id;
+        return this;
+    }
+
     public Section sectionCode(String sectionCode) {
         this.sectionCode = sectionCode;
         return this;

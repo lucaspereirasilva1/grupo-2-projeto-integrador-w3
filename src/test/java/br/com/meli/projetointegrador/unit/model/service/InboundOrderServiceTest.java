@@ -1,4 +1,4 @@
-package br.com.meli.projetointegrador.model.service;
+package br.com.meli.projetointegrador.unit.model.service;
 
 import br.com.meli.projetointegrador.exception.AgentException;
 import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
@@ -9,6 +9,7 @@ import br.com.meli.projetointegrador.model.entity.BatchStock;
 import br.com.meli.projetointegrador.model.entity.InboudOrder;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import br.com.meli.projetointegrador.model.repository.InboundOrderRepository;
+import br.com.meli.projetointegrador.model.service.InboundOrderService;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 
@@ -80,8 +81,8 @@ public class InboundOrderServiceTest {
 
         listInboudOrders.add(modelMapper.map(inboundOrderDTO, InboudOrder.class));
 
-        when((mockInboundOrderRepository).saveAll(any()))
-                .thenReturn(listInboudOrders);
+        when((mockInboundOrderRepository).save(any()))
+                .thenReturn(null);
 
         InboundOrderDTO inboundOrderDTOReturn = inboundOrderService.put(inboundOrderDTO);
 
@@ -139,7 +140,6 @@ public class InboundOrderServiceTest {
 
         assertTrue(exist);
     }
-
 
     void makeData() {
         Agent agent = new Agent()

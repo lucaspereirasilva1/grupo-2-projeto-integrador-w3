@@ -19,7 +19,7 @@
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
         <sonar.language>java</sonar.language>
-        <sonar.coverage.exclusions>**/util/**/*, **/dto/**/*, **/controller/**/*, **/exception/**/*, **/entity/**/*, **/advisor/**/*, **/dao/**/*</sonar.coverage.exclusions>
+        <!-- <sonar.coverage.exclusions>**/util/**/*, **/dto/**/*, **/controller/**/*, **/exception/**/*, **/entity/**/*, **/advisor/**/*, **/dao/**/*</sonar.coverage.exclusions> -->
     </properties>
     <dependencies>
         <dependency>
@@ -56,6 +56,11 @@
             <groupId>org.modelmapper</groupId>
             <artifactId>modelmapper</artifactId>
             <version>2.4.4</version>
+        </dependency>
+        <dependency>
+            <groupId>de.flapdoodle.embed</groupId>
+            <artifactId>de.flapdoodle.embed.mongo</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

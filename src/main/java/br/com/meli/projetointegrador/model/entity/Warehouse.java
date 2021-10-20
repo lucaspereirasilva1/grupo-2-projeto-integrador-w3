@@ -21,4 +21,23 @@ public class Warehouse {
     private String werehouseName;
     private List<Section> listSections;
 
+    public Warehouse id(String id) {
+        this.id = id;
+        return this;
+    }
+
+    public Warehouse warehouseCode(String warehouseCode) {
+        this.werehouseCode = warehouseCode;
+        return this;
+    }
+
+    public Warehouse warehouseName(String warehouseName) {
+        this.werehouseName = warehouseName;
+        return this;
+    }
+
+    public Warehouse build() {
+        return this;
+    }
+
 }
