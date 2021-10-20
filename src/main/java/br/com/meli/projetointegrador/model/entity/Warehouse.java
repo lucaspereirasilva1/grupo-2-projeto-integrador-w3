@@ -23,7 +23,7 @@ public class Warehouse {
 
     public Warehouse warehouseCode(String warehouseCode) {
         this.warehouseCode = warehouseCode;
-        return this ;
+        return this;
     }
 
     public Warehouse warehouseName(String warehouseName) {
