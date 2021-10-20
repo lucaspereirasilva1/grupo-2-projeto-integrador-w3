@@ -7,6 +7,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/**
+ * @author Jhony Zuim
+ * @version 1.0.0
+ * @since 15/10/2021
+ */
+
 @Service
 public class ProductService {
 
@@ -15,6 +21,13 @@ public class ProductService {
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
     }
+
+    /**
+     * @author Jhony Zuim
+     * @version 1.0.0
+     * @param product, recebe um produto para validar se esta na section correta
+     * @return true ou exception personalizada
+     */
 
     public boolean validProductSection(Product product){
         Optional<Product> productOptional = productRepository.findBySection(product.getSection());

@@ -7,6 +7,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+/**
+ * @author Jhony Zuim
+ * @version 1.0.0
+ * @since 15/10/2021
+ */
+
 @Data
 @Document(collection = "section")
 public class Section {
@@ -19,6 +25,12 @@ public class Section {
     private String sectionName;
     private Integer maxLength;
     private Warehouse warehouse;
+
+    /**
+     * @author Jhony Zuim
+     * @version 1.0.0
+     * Construcao de construtores fluentes para a classe Section
+     */
 
     public Section id(String id) {
         this.id = id;
