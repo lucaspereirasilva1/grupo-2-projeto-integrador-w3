@@ -10,7 +10,4 @@ import java.util.Optional;
 public interface WarehouseRepository  extends MongoRepository <Warehouse, String> {
 
     Optional<Warehouse> findByWarehouse(Warehouse warehouse);
-
-
-
 }

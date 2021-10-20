@@ -17,8 +17,6 @@ public class WarehouseServiceTest {
     private WarehouseRepository mockWarehouseRepository = mock(WarehouseRepository.class);
     private WarehouseService warehouseService = new WarehouseService(mockWarehouseRepository);
 
-
-
     /**
      * Teste unitarios
      * validWarehouseExist - metodo para validar se Warehouse é valido
@@ -43,7 +41,6 @@ public class WarehouseServiceTest {
 
     }
 
-
     @Test
     void notValidWarehouseExist() {
 
@@ -63,6 +60,5 @@ public class WarehouseServiceTest {
 
         assertFalse(expectedMessage.contains(receivedMessage));
     }
-
 
 }

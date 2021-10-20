@@ -186,7 +186,6 @@ public class InboundOrderServiceTest {
     @Test
      void notValidWarehouse() {
         Warehouse warehouse = new Warehouse();
-
-            }
+    }
 
 }
