@@ -1,11 +1,10 @@
-package br.com.meli.projetointegrador.integration.model.service;
+package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
 import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;
 import br.com.meli.projetointegrador.model.dto.SectionDTO;
-import br.com.meli.projetointegrador.model.entity.InboudOrder;
-import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import br.com.meli.projetointegrador.model.repository.InboundOrderRepository;
+import br.com.meli.projetointegrador.model.service.BatchStockService;
 import br.com.meli.projetointegrador.model.service.InboundOrderService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,28 +12,25 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
-public class InboundOrderServiceIntegrationTest {
+public class BatchStocketServiceIntegrationTest {
 
     @Autowired
-    InboundOrderRepository inboundOrderRepository;
+    private InboundOrderRepository inboundOrderRepository;
 
     @Autowired
-    BatchStockRepository batchStockRepository;
+    private BatchStockService batchStockService;
 
-    InboundOrderService inboundOrderService = new InboundOrderService(inboundOrderRepository, batchStockRepository);
+    private final InboundOrderService inboundOrderService = new InboundOrderService(inboundOrderRepository,
+            batchStockService);
 
     @Test
     void validAgentNotExistTest() {
         boolean resultTest = false;
-
-        List<InboudOrder> listInboudOrders = new ArrayList<>();
 
         SectionDTO sectionDTO = new SectionDTO()
                 .sectionCode("LA")
