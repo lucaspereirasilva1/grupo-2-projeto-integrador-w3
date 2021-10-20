@@ -3,6 +3,7 @@ package br.com.meli.projetointegrador.model.repository;
 import br.com.meli.projetointegrador.model.entity.Agent;
 import br.com.meli.projetointegrador.model.entity.BatchStock;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
@@ -21,19 +22,14 @@ public class BatchStockRepositoryTest {
     @Autowired
     private BatchStockRepository batchStockRepository;
 
-    @AfterEach
-    void cleanUpDatabase() {
-        batchStockRepository.deleteAll();
-    }
-
-    @Test
-    void findByAgentTest() {
+    @BeforeEach
+    void setUp() {
         Agent agent = new Agent()
                 .name("lucas")
                 .build();
 
         BatchStock batchStock = new BatchStock()
-                .batchNumber(2)
+                .batchNumber(1)
                 .productId("LE")
                 .currentTemperature(20.0F)
                 .minimumTemperature(15.0F)
@@ -46,6 +42,18 @@ public class BatchStockRepositoryTest {
                 .build();
 
         batchStockRepository.save(batchStock);
+    }
+
+    @AfterEach
+    void cleanUpDatabase() {
+        batchStockRepository.deleteAll();
+    }
+
+    @Test
+    void findByAgentTest() {
+        Agent agent = new Agent()
+                .name("lucas")
+                .build();
         Optional<BatchStock> batchStockOptional = batchStockRepository.findByAgent(agent);
         assertTrue(batchStockOptional.isPresent());
         assertEquals(agent, batchStockOptional.get().getAgent());
