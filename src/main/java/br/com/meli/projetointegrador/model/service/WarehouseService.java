@@ -1,19 +1,14 @@
-package br.com.meli.projetointegrador.model.service;
-
+package br.com.meli.projetointegrador.model.service
 
 import br.com.meli.projetointegrador.exception.WarehouseException;
-
 import br.com.meli.projetointegrador.model.entity.Warehouse;
 import br.com.meli.projetointegrador.model.repository.WarehouseRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 
 @Service
 public class WarehouseService {
     private final WarehouseRepository warehouseRepository;
-
-
     public WarehouseService(WarehouseRepository warehouseRepository) {
         this.warehouseRepository = warehouseRepository;
     }
