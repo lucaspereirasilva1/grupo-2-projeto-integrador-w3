@@ -20,7 +20,7 @@ public class SectionServiceTest {
     void validSectionExistTest(){
 
         Warehouse warehouse = new Warehouse()
-                .warehouseCode("MG")
+                .warehouseCode("SP")
                 .warehouseName("Sao Paulo")
                 .build();
 
@@ -48,7 +48,7 @@ public class SectionServiceTest {
     void validSectionNotExistTest(){
 
         Warehouse warehouse = new Warehouse()
-                .warehouseCode("MG")
+                .warehouseCode("SP")
                 .warehouseName("Sao Paulo")
                 .build();
 
