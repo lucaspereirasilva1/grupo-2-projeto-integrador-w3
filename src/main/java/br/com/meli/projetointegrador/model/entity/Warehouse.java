@@ -21,12 +21,6 @@ public class Warehouse {
     private String warehouseName;
     private List<Section> listSections;
 
-
-    public Warehouse() {
-        this.warehouseCode = warehouseCode;
-        this.warehouseName = warehouseName;
-    }
-
     // Metodo Construtor
 
     public Warehouse warehouseCode(String warehouseCode) {
@@ -42,6 +36,5 @@ public class Warehouse {
     public Warehouse build() {
         return this;
     }
-
 
 }
