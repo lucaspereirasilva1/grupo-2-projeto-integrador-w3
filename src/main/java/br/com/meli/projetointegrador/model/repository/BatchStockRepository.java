@@ -12,6 +12,4 @@ public interface BatchStockRepository extends MongoRepository<BatchStock, String
 
     Optional<BatchStock> findByAgent(Agent agent);
 
-
-
 }

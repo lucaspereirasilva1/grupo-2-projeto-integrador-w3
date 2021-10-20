@@ -1,7 +1,5 @@
 package br.com.meli.projetointegrador.model.service;
 
-
-
 import br.com.meli.projetointegrador.exception.WarehouseException;
 import br.com.meli.projetointegrador.model.entity.Warehouse;
 import br.com.meli.projetointegrador.model.repository.WarehouseRepository;
