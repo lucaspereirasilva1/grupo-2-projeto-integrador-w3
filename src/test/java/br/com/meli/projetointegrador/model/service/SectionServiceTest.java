@@ -11,10 +11,22 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * @author Jhony Zuim
+ * @version 1.0.0
+ * @since 15/10/2021
+ */
+
 public class SectionServiceTest {
 
     private SectionRepository mockSectionRepository = mock(SectionRepository.class);
     private SectionService sectionService = new SectionService(mockSectionRepository);
+
+    /**
+     * @author Jhony Zuim
+     * @version 1.0.0
+     *  Teste para validar se uma section existe
+     */
 
     @Test
     void validSectionExistTest(){
@@ -43,6 +55,12 @@ public class SectionServiceTest {
 
         assertTrue(sectionService.validSection(section));
     }
+
+    /**
+     * @author Jhony Zuim
+     * @version 1.0.0
+     *  Teste para validar se uma section nao existe
+     */
 
     @Test
     void validSectionNotExistTest(){

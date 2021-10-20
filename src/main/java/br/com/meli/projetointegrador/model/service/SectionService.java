@@ -7,6 +7,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
+/**
+ * @author Jhony Zuim
+ * @version 1.0.0
+ * @since 15/10/2021
+ */
+
 @Service
 public class SectionService {
 
@@ -15,6 +21,13 @@ public class SectionService {
     public SectionService(SectionRepository sectionRepository) {
         this.sectionRepository = sectionRepository;
     }
+
+    /**
+     * @author Jhony Zuim
+     * @version 1.0.0
+     * @param section, recebe um section para validar se ele existe
+     * @return true ou exception personalizada
+     */
 
     public boolean validSection(Section section) {
         Optional<Section> sectionOptional = sectionRepository.findById(section.getId());

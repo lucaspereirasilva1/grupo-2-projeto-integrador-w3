@@ -12,11 +12,22 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * @author Jhony Zuim
+ * @version 1.0.0
+ * @since 15/10/2021
+ */
+
 public class ProductServiceTest {
 
     private ProductRepository mockProductRepository = mock(ProductRepository.class);
     private ProductService productService = new ProductService(mockProductRepository);
 
+    /**
+     * @author Jhony Zuim
+     * @version 1.0.0
+     *  Teste unitario para validar se um produto corresponde a section
+     */
     @Test
     void validProductSectionExistTest(){
 
@@ -50,6 +61,12 @@ public class ProductServiceTest {
 
         assertTrue(productService.validProductSection(product));
     }
+
+    /**
+     * @author Jhony Zuim
+     * @version 1.0.0
+     *  Teste para validar se uma produto nao corresponde a section
+     */
 
     @Test
     void validProductSectionNotExistTest() {

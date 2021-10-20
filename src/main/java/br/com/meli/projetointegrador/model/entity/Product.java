@@ -7,6 +7,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+/**
+ * @author Jhony Zuim
+ * @version 1.0.0
+ * @since 15/10/2021
+ */
+
 @Data
 @Document(collection = "product")
 public class Product {
@@ -18,6 +24,12 @@ public class Product {
     private String productCode;
     private String productName;
     private Section section;
+
+    /**
+     * @author Jhony Zuim
+     * @version 1.0.0
+     * Construcao de construtores fluentes para a classe produto
+     */
 
     public Product id(String id) {
         this.id = id;
