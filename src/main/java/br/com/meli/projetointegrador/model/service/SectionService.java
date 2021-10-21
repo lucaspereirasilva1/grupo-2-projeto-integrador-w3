@@ -5,7 +5,6 @@ import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import br.com.meli.projetointegrador.model.repository.SectionRepository;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
 
 /**
@@ -17,14 +16,12 @@ import java.util.Optional;
 @Service
 public class SectionService {
 
-    private SectionRepository sectionRepository;
-    private BatchStockRepository batchStockRepository;
+    private final SectionRepository sectionRepository;
+    private final BatchStockRepository batchStockRepository;
 
-    public SectionService(BatchStockRepository batchStockRepository) {
+    public SectionService(BatchStockRepository batchStockRepository,
+                          SectionRepository sectionRepository) {
         this.batchStockRepository = batchStockRepository;
-    }
-
-    public SectionService(SectionRepository sectionRepository) {
         this.sectionRepository = sectionRepository;
     }
 

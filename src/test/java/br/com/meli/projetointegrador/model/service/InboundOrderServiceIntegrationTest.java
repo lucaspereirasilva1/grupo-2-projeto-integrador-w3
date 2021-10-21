@@ -12,7 +12,6 @@ import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import br.com.meli.projetointegrador.model.repository.InboundOrderRepository;
 import br.com.meli.projetointegrador.model.repository.SectionRepository;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class InboundOrderServiceIntegrationTest {
@@ -109,7 +110,7 @@ public class InboundOrderServiceIntegrationTest {
 
         inboundOrderService.put(inboundOrderDTO, agentDTO);
         Optional<InboudOrder> inboudOrder = inboundOrderRepository.findByOrderNumber(inboundOrderDTO.getOrderNumber());
-        Assertions.assertTrue(inboudOrder.isPresent());
+        assertTrue(inboudOrder.isPresent());
     }
 
     void clearBase() {
