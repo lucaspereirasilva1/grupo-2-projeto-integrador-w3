@@ -1,6 +1,5 @@
 package br.com.meli.projetointegrador.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -9,7 +8,6 @@ import java.util.List;
 @Data
 public class InboundOrderDTO {
 
-    //orientacoes de como usar a anotation jsonproperties
     private Integer orderNumber;
     private LocalDate orderDate;
     private SectionDTO sectionDTO;
