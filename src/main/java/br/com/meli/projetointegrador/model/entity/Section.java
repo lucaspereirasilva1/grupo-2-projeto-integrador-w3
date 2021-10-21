@@ -25,11 +25,6 @@ public class Section {
     private String sectionName;
     private Integer maxLength;
 
-    public Section id(String id) {
-        this.id = id;
-        return this;
-    }
-
     /**
      * @author Jhony Zuim
      * @version 1.0.0

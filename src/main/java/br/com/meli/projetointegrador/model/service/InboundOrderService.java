@@ -15,29 +15,20 @@ public class InboundOrderService {
     private final ModelMapper modelMapper = new ModelMapper();
     private final InboundOrderRepository inboundOrderRepository;
     private final BatchStockService batchStockService;
-    private final SectionService sectionService;
-    private final AgentService agentService;
 
     public InboundOrderService(InboundOrderRepository inboudOrderRepository,
-                               BatchStockService batchStockService,
-                               SectionService sectionService,
-                               AgentService agentService) {
+                               BatchStockService batchStockService) {
         this.inboundOrderRepository = inboudOrderRepository;
         this.batchStockService = batchStockService;
-        this.sectionService = sectionService;
-        this.agentService = agentService;
     }
 
     public InboundOrderDTO put(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
         InboudOrder inboudOrder = modelMapper.map(inboundOrderDTO, InboudOrder.class);
+        Section section = modelMapper.map(inboundOrderDTO.getSectionDTO(), Section.class);
+        Agent agent = modelMapper.map(agentDTO, Agent.class);
 
-        Section section = sectionService.find(inboundOrderDTO.getSectionDTO().getSectionCode());
-        inboudOrder.section(section);
-
-        Agent agent = agentService.find(agentDTO.getCpf());
         inboudOrder.getListBatchStock().forEach(b -> {
-            b.agent(agent);
-            batchStockService.put(b);
+            batchStockService.put(b, section, agent);
         });
 
         inboundOrderRepository.save(inboudOrder);

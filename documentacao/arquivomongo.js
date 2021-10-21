@@ -1,11 +1,11 @@
-show dbs
+db.adminCommand("listDatabases")
 
-use frescos
+db = db.getSiblingDB('frescos')
 
 db.createCollection("section");
 db.createCollection("warehouse");
 
-show collections
+db.getUsers()
 
 db.warehouse.insertMany([
     {

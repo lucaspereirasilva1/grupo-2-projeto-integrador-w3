@@ -19,8 +19,8 @@ import static org.mockito.Mockito.*;
 
 public class SectionServiceTest {
 
-    private SectionRepository mockSectionRepository = mock(SectionRepository.class);
-    private SectionService sectionService = new SectionService(mockSectionRepository);
+    private final SectionRepository mockSectionRepository = mock(SectionRepository.class);
+    private final SectionService sectionService = new SectionService(mockSectionRepository);
 
     /**
      * @author Jhony Zuim
@@ -41,7 +41,6 @@ public class SectionServiceTest {
                 .sectionCode("LA")
                 .sectionName("Laticionios")
                 .maxLength(10)
-                .warehouse(warehouse)
                 .build();
 
         when(mockSectionRepository.findById(any()))
@@ -50,7 +49,6 @@ public class SectionServiceTest {
                         .sectionCode("LA")
                         .sectionName("Laticionios")
                         .maxLength(10)
-                        .warehouse(warehouse)
                         .build()));
 
         assertTrue(sectionService.validSection(section));
@@ -75,7 +73,6 @@ public class SectionServiceTest {
                 .sectionCode("LA")
                 .sectionName("Laticionios")
                 .maxLength(10)
-                .warehouse(warehouse)
                 .build();
 
         when(mockSectionRepository.findById(any()))
@@ -85,6 +82,42 @@ public class SectionServiceTest {
                 sectionService.validSection(section));
 
         String expectedMessage = "Nao existe esse setor, por gentileza verificar o setor!";
+
+        assertTrue(expectedMessage.contains(sectionException.getMessage()));
+    }
+
+    @Test
+    void findTest() {
+        Section section = new Section()
+                .id("1")
+                .sectionCode("LA")
+                .sectionName("Laticionios")
+                .maxLength(10)
+                .build();
+
+        when(mockSectionRepository.findBySectionCode(anyString()))
+                .thenReturn(Optional.of(section));
+
+        Section sectionReturn = sectionService.find(section.getSectionCode());
+        assertEquals(sectionReturn, section);
+    }
+
+    @Test
+    void findNotExistTest() {
+        Section section = new Section()
+                .id("1")
+                .sectionCode("LA")
+                .sectionName("Laticionios")
+                .maxLength(10)
+                .build();
+
+        when(mockSectionRepository.findBySectionCode(anyString()))
+                .thenReturn(Optional.empty());
+
+        SectionException sectionException = assertThrows(SectionException.class, () ->
+                sectionService.find(section.getSectionCode()));
+
+        String expectedMessage = "Sessao nao existe!!! Reenviar com uma sessao valida";
 
         assertTrue(expectedMessage.contains(sectionException.getMessage()));
     }
