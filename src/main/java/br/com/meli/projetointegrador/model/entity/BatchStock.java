@@ -39,6 +39,11 @@ public class BatchStock {
         return this;
     }
 
+    public BatchStock id(String id) {
+        this.id = id;
+        return this;
+    }
+
     public BatchStock productId(String productId) {
         this.productId = productId;
         return this;
