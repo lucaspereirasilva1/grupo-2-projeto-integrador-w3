@@ -1,5 +1,6 @@
 package br.com.meli.projetointegrador.model.service;
 
+import br.com.meli.projetointegrador.exception.SectionExecption;
 import br.com.meli.projetointegrador.exception.SectionException;
 import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
@@ -28,6 +29,13 @@ public class SectionService {
         this.sectionRepository = sectionRepository;
     }
 
+    public Section find(String sectionCode) {
+        Optional<Section> section = sectionRepository.findBySectionCode(sectionCode);
+        if (section.isEmpty()) {
+            throw new SectionExecption("Sessao nao existe!!! Reenviar com uma sessao valida");
+        }
+        return section.get();
+     }
 
     /**
      * @author Jhony Zuim

@@ -27,7 +27,11 @@ public class Section {
     private String sectionCode;
     private String sectionName;
     private Integer maxLength;
-    private Warehouse warehouse;
+
+    public Section id(String id) {
+        this.id = id;
+        return this;
+    }
 
 
     @DBRef(lazy = true)
@@ -56,11 +60,6 @@ public class Section {
 
     public Section maxLength(Integer maxLength) {
         this.maxLength = maxLength;
-        return this;
-    }
-
-    public Section warehouse(Warehouse warehouse) {
-        this.warehouse = warehouse;
         return this;
     }
 

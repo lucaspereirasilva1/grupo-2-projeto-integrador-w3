@@ -1,16 +1,9 @@
 package br.com.meli.projetointegrador.model.entity;
 
-import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
-import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;
-import br.com.meli.projetointegrador.model.dto.SectionDTO;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.FieldType;
-import org.springframework.data.mongodb.core.mapping.MongoId;
+import org.springframework.data.mongodb.core.mapping.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -27,8 +20,14 @@ public class InboudOrder {
     private LocalDate orderDate;
     private Section section;
 
-    @DBRef(lazy = true)
+    @DBRef
+    @Field(name = "batchstock")
     private List<BatchStock> listBatchStock;
+
+    public InboudOrder id(String id) {
+        this.id = id;
+        return this;
+    }
 
     public InboudOrder orderNumber(Integer orderNumber) {
         this.orderNumber = orderNumber;

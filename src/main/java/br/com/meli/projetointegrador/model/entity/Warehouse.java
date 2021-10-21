@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 import java.util.List;
 
 @Data
-@Document(collection = "werehouse")
+@Document(collection = "warehouse")
 public class Warehouse {
 
     @MongoId(FieldType.OBJECT_ID)
@@ -21,17 +21,23 @@ public class Warehouse {
     private String warehouseName;
     private List<Section> listSections;
 
+    public Warehouse id(String id) {
+        this.id = id;
+        return this;
+    }
+
     public Warehouse warehouseCode(String warehouseCode) {
-        this.warehouseCode = warehouseCode;
+        this.werehouseCode = warehouseCode;
         return this;
     }
 
     public Warehouse warehouseName(String warehouseName) {
-        this.warehouseName = warehouseName;
+        this.werehouseName = warehouseName;
         return this;
     }
 
     public Warehouse build() {
         return this;
     }
+
 }
