@@ -18,7 +18,6 @@ public class Section {
     private String sectionCode;
     private String sectionName;
     private Integer maxLength;
-    private Warehouse warehouse;
 
     public Section id(String id) {
         this.id = id;
@@ -30,13 +29,13 @@ public class Section {
         return this;
     }
 
-    public Section maxLength(Integer maxLength) {
-        this.maxLength = maxLength;
+    public Section sectionName(String sectionName) {
+        this.sectionName = sectionName;
         return this;
     }
 
-    public Section warehouse(Warehouse warehouse) {
-        this.warehouse = warehouse;
+    public Section maxLength(Integer maxLength) {
+        this.maxLength = maxLength;
         return this;
     }
 

@@ -2,6 +2,7 @@ package br.com.meli.projetointegrador.model.repository;
 
 import br.com.meli.projetointegrador.model.entity.*;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
@@ -10,40 +11,57 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
 public class InboundOrderRepositoryTest {
 
     @Autowired
-    InboundOrderRepository inboundOrderRepository;
+    private InboundOrderRepository inboundOrderRepository;
+
+    @Autowired
+    private SectionRepository sectionRepository;
+
+    @Autowired
+    private BatchStockRepository batchStockRepository;
+
+    @Autowired
+    private AgentRepository agentRepository;
+
+    @BeforeEach
+    void setUp() {
+        clearBase();
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("laticinios")
+                .maxLength(10)
+                .build();
+        sectionRepository.save(section);
+
+        Agent agent = new Agent().
+                cpf("11122233344").
+                name("lucas").
+                build();
+
+        agentRepository.save(agent);
+    }
 
     @AfterEach
     void cleanUpDatabase() {
-        inboundOrderRepository.deleteByOrderNumber(1);
+        clearBase();
     }
-
-//    @Before
-//    public void setUp() throws Exception {
-//        inboundOrderRepository.save(new Foo());
-//    }
 
     @Test
     void saveTest() {
-        Section section = new Section()
-                .id("1")
-                .sectionCode("LA")
-                .warehouse(new Warehouse().
-                        id("1").
-                        warehouseCode("SP").
-                        warehouseName("sao paulo").
-                        build())
-                .build();
+
+        Optional<Section> section = sectionRepository.findBySectionCode("LA");
+        Optional<Agent> agent = agentRepository.findByCpf("11122233344");
+
 
         BatchStock batchStock = new BatchStock()
-                .id("1")
                 .batchNumber(1)
                 .productId("QJ")
                 .currentTemperature(10.0F)
@@ -53,14 +71,11 @@ public class InboundOrderRepositoryTest {
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now())
-                .agent(new Agent().
-                        id("1").
-                        name("lucas").
-                        build())
+                .agent(agent.orElse(new Agent()))
                 .build();
+        batchStockRepository.save(batchStock);
 
         BatchStock batchStockUm = new BatchStock()
-                .id("2")
                 .batchNumber(2)
                 .productId("LE")
                 .currentTemperature(20.0F)
@@ -70,16 +85,14 @@ public class InboundOrderRepositoryTest {
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now())
-                .agent(new Agent().
-                        id("2").
-                        name("ed").
-                        build())
+                .agent(agent.orElse(new Agent()))
                 .build();
+        batchStockRepository.save(batchStockUm);
 
         InboudOrder inboudOrder = new InboudOrder()
                 .orderNumber(1)
                 .orderDate(LocalDate.now())
-                .section(section)
+                .section(section.orElse(new Section()))
                 .listBatchStock(Arrays.asList(batchStock, batchStockUm))
                 .build();
         inboundOrderRepository.save(inboudOrder);
@@ -91,11 +104,6 @@ public class InboundOrderRepositoryTest {
         Section section = new Section()
                 .id("1")
                 .sectionCode("LA")
-                .warehouse(new Warehouse().
-                        id("1").
-                        warehouseCode("SP").
-                        warehouseName("sao paulo").
-                        build())
                 .build();
 
         BatchStock batchStock = new BatchStock()
@@ -143,6 +151,13 @@ public class InboundOrderRepositoryTest {
         inboundOrderRepository.deleteByOrderNumber(inboudOrder.getOrderNumber());
 
         assertTrue(inboundOrderRepository.findById(inboudOrder.getId()).isEmpty());
+    }
+
+    void clearBase() {
+        sectionRepository.deleteAll();
+        inboundOrderRepository.deleteAll();
+        agentRepository.deleteAll();
+        batchStockRepository.deleteAll();
     }
 
 }

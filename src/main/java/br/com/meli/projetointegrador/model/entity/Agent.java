@@ -3,12 +3,9 @@ package br.com.meli.projetointegrador.model.entity;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
-
-import java.util.List;
 
 @Data
 @Document(collection = "agent")
@@ -19,9 +16,7 @@ public class Agent {
     private String id;
 
     private String name;
-
-    @DBRef(lazy = true)
-    private List<BatchStock> listBatchStock;
+    private String cpf;
 
     public Agent id(String id) {
         this.id = id;
@@ -30,6 +25,11 @@ public class Agent {
 
     public Agent name(String name) {
         this.name = name;
+        return this;
+    }
+
+    public Agent cpf(String cpf) {
+        this.cpf = cpf;
         return this;
     }
 

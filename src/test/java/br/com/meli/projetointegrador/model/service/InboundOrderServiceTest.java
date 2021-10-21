@@ -1,5 +1,6 @@
 package br.com.meli.projetointegrador.model.service;
 
+import br.com.meli.projetointegrador.model.dto.AgentDTO;
 import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
 import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;
 import br.com.meli.projetointegrador.model.dto.SectionDTO;
@@ -23,8 +24,10 @@ public class InboundOrderServiceTest {
 
     private final InboundOrderRepository mockInboundOrderRepository = mock(InboundOrderRepository.class);
     private final BatchStockService mockBatchStockService = mock(BatchStockService.class);
+    private final SectionService sectionService = mock(SectionService.class);
+    private final AgentService agentService = mock(AgentService.class);
     private final InboundOrderService inboundOrderService = new InboundOrderService(mockInboundOrderRepository,
-            mockBatchStockService);
+            mockBatchStockService, sectionService, agentService);
     private final List<BatchStock> listBatchStock = new ArrayList<>();
     private final ModelMapper modelMapper = new ModelMapper();
 
@@ -74,12 +77,16 @@ public class InboundOrderServiceTest {
                 .batchStockDTO(Arrays.asList(batchStockDTO, batchStockDTO1))
                 .build();
 
+        AgentDTO agentDTO = new AgentDTO().
+                name("lucas").
+                cpf("11122233344");
+
         listInboudOrders.add(modelMapper.map(inboundOrderDTO, InboudOrder.class));
 
         when((mockInboundOrderRepository).save(any()))
                 .thenReturn(null);
 
-        InboundOrderDTO inboundOrderDTOReturn = inboundOrderService.put(inboundOrderDTO);
+        InboundOrderDTO inboundOrderDTOReturn = inboundOrderService.put(inboundOrderDTO, agentDTO);
 
         for (InboudOrder i: listInboudOrders) {
             if (i.getOrderNumber().equals(inboundOrderDTOReturn.getOrderNumber())) {
