@@ -14,50 +14,44 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
  */
 
 @Data
-@Document(collection = "section")
-public class Section {
+@Document(collection = "product")
+public class Product {
 
     @MongoId(FieldType.OBJECT_ID)
     @Setter(AccessLevel.NONE)
     private String id;
 
-    private String sectionCode;
-    private String sectionName;
-    private Integer maxLength;
-
-    public Section id(String id) {
-        this.id = id;
-        return this;
-    }
+    private String productCode;
+    private String productName;
+    private Section section;
 
     /**
      * @author Jhony Zuim
      * @version 1.0.0
-     * Construcao de construtores fluentes para a classe Section
+     * Construcao de construtores fluentes para a classe produto
      */
 
-    public Section id(String id) {
+    public Product id(String id) {
         this.id = id;
         return this;
     }
 
-    public Section sectionCode(String sectionCode) {
-        this.sectionCode = sectionCode;
+    public Product productCode(String productCode) {
+        this.productCode = productCode;
         return this;
     }
 
-    public Section sectionName(String sectionName) {
-        this.sectionName = sectionName;
+    public Product productName(String productName) {
+        this.productName = productName;
         return this;
     }
 
-    public Section maxLength(Integer maxLength) {
-        this.maxLength = maxLength;
+    public Product section(Section section) {
+        this.section = section;
         return this;
     }
 
-    public Section build() {
+    public Product build(){
         return this;
     }
-
 }

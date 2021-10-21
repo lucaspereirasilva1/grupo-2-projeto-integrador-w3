@@ -7,6 +7,8 @@ import br.com.meli.projetointegrador.model.dto.SectionDTO;
 import br.com.meli.projetointegrador.model.entity.Agent;
 import br.com.meli.projetointegrador.model.entity.BatchStock;
 import br.com.meli.projetointegrador.model.entity.InboudOrder;
+import br.com.meli.projetointegrador.model.entity.Warehouse;
+import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import br.com.meli.projetointegrador.model.repository.InboundOrderRepository;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;

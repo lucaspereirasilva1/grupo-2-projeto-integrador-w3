@@ -8,7 +8,6 @@ import org.springframework.data.mongodb.core.mapping.*;
 import java.time.LocalDate;
 import java.util.List;
 
-
 @Data
 @Document(collection = "inboundorder")
 public class InboudOrder {

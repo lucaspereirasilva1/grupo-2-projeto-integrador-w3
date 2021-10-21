@@ -10,15 +10,15 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 import java.util.List;
 
 @Data
-@Document(collection = "werehouse")
+@Document(collection = "warehouse")
 public class Warehouse {
 
     @MongoId(FieldType.OBJECT_ID)
     @Setter(AccessLevel.NONE)
     private String id;
 
-    private String werehouseCode;
-    private String werehouseName;
+    private String warehouseCode;
+    private String warehouseName;
     private List<Section> listSections;
 
     public Warehouse id(String id) {
