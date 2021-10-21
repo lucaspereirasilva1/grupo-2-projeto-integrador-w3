@@ -107,7 +107,6 @@ public class SectionServiceTest {
                 .sectionCode("LA")
                 .sectionName("Laticionios")
                 .maxLength(3)
-                .warehouse(warehouse)
                 .build();
       
         BatchStock batchStock1 = new BatchStock()
@@ -186,7 +185,6 @@ public class SectionServiceTest {
                 .sectionCode("LA")
                 .sectionName("Laticionios")
                 .maxLength(3)
-                .warehouse(warehouse)
                 .build();
       
         BatchStock batchStock1 = new BatchStock()
