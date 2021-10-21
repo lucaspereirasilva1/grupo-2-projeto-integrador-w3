@@ -24,7 +24,6 @@ public class ProductService {
 
     /**
      * @author Jhony Zuim
-     * @version 1.0.0
      * @param product, recebe um produto para validar se esta na section correta
      * @return true ou exception personalizada
      */
