@@ -15,7 +15,6 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 import java.time.LocalDate;
 import java.util.List;
 
-
 @Data
 @Document(collection = "inboundorder")
 public class InboudOrder {

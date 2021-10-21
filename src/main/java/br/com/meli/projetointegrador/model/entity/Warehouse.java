@@ -17,8 +17,21 @@ public class Warehouse {
     @Setter(AccessLevel.NONE)
     private String id;
 
-    private String werehouseCode;
-    private String werehouseName;
+    private String warehouseCode;
+    private String warehouseName;
     private List<Section> listSections;
 
+    public Warehouse warehouseCode(String warehouseCode) {
+        this.warehouseCode = warehouseCode;
+        return this;
+    }
+
+    public Warehouse warehouseName(String warehouseName) {
+        this.warehouseName = warehouseName;
+        return this;
+    }
+
+    public Warehouse build() {
+        return this;
+    }
 }
