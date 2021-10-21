@@ -2,6 +2,7 @@ package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.SectionException;
 import br.com.meli.projetointegrador.model.entity.Section;
+import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import br.com.meli.projetointegrador.model.repository.SectionRepository;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,12 @@ import java.util.Optional;
 @Service
 public class SectionService {
 
-    private final SectionRepository sectionRepository;
+    private SectionRepository sectionRepository;
+    private BatchStockRepository batchStockRepository;
+
+    public SectionService(BatchStockRepository batchStockRepository) {
+        this.batchStockRepository = batchStockRepository;
+    }
 
     public SectionService(SectionRepository sectionRepository) {
         this.sectionRepository = sectionRepository;
@@ -44,5 +50,12 @@ public class SectionService {
         } else {
             throw new SectionException("Nao existe esse setor, por gentileza verificar o setor!");
         }
+    }
+
+    public Boolean validSectionLength(Section section) {
+        if (batchStockRepository.countBySection(section) < section.getMaxLength())
+            return true;
+        else
+            throw new SectionException("Nao tem espaco.");
     }
 }

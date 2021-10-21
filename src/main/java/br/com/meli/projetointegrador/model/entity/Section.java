@@ -3,9 +3,12 @@ package br.com.meli.projetointegrador.model.entity;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
+
+import java.util.List;
 
 /**
  * @author Jhony Zuim
@@ -24,6 +27,9 @@ public class Section {
     private String sectionCode;
     private String sectionName;
     private Integer maxLength;
+
+    @DBRef(lazy = true)
+    private List<BatchStock> batchStockList;
 
     /**
      * @author Jhony Zuim
