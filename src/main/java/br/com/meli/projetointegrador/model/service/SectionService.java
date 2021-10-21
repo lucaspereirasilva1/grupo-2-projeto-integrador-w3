@@ -35,7 +35,6 @@ public class SectionService {
 
     /**
      * @author Jhony Zuim
-     * @version 1.0.0
      * @param section, recebe um section para validar se ele existe
      * @return true ou exception personalizada
      */
