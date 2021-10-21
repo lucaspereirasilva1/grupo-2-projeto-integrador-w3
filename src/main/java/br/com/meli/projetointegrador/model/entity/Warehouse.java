@@ -27,12 +27,12 @@ public class Warehouse {
     }
 
     public Warehouse warehouseCode(String warehouseCode) {
-        this.werehouseCode = warehouseCode;
+        this.warehouseCode = warehouseCode;
         return this;
     }
 
     public Warehouse warehouseName(String warehouseName) {
-        this.werehouseName = warehouseName;
+        this.warehouseName = warehouseName;
         return this;
     }
 

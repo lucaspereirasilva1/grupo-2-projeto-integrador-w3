@@ -41,7 +41,6 @@ public class ProductServiceTest {
                 .sectionCode("LA")
                 .sectionName("Laticionios")
                 .maxLength(10)
-                .warehouse(warehouse)
                 .build();
 
         Product product = new Product()
@@ -81,7 +80,6 @@ public class ProductServiceTest {
                 .sectionCode("LA")
                 .sectionName("Laticionios")
                 .maxLength(10)
-                .warehouse(warehouse)
                 .build();
 
         Product product = new Product()

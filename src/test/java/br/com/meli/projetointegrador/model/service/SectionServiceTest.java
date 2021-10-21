@@ -27,7 +27,6 @@ public class SectionServiceTest {
 
     private final SectionRepository mockSectionRepository = mock(SectionRepository.class);
     private final SectionService sectionService = new SectionService(mockSectionRepository);
-
     private final BatchStockRepository mockBatchStockRepository=  mock(BatchStockRepository.class);
     private final SectionService sectionService2 = new SectionService(mockBatchStockRepository);
 
@@ -50,7 +49,6 @@ public class SectionServiceTest {
                 .sectionCode("LA")
                 .sectionName("Laticionios")
                 .maxLength(10)
-                .warehouse(warehouse)
                 .build();
 
         when(mockSectionRepository.findById(any()))
@@ -59,7 +57,6 @@ public class SectionServiceTest {
                         .sectionCode("LA")
                         .sectionName("Laticionios")
                         .maxLength(10)
-                        .warehouse(warehouse)
                         .build()));
 
         assertTrue(sectionService.validSection(section));
@@ -70,7 +67,6 @@ public class SectionServiceTest {
      * @version 1.0.0
      *  Teste para validar se uma section nao existe
      */
-
     @Test
     void validSectionNotExistTest(){
 
@@ -84,7 +80,6 @@ public class SectionServiceTest {
                 .sectionCode("LA")
                 .sectionName("Laticionios")
                 .maxLength(10)
-                .warehouse(warehouse)
                 .build();
 
         when(mockSectionRepository.findById(any()))
@@ -98,16 +93,15 @@ public class SectionServiceTest {
         assertTrue(expectedMessage.contains(sectionException.getMessage()));
     }
 
-
     @Test
     void validSectionFullTest() {
         List<BatchStock> listBatchStock = new ArrayList<>();
-
+      
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("RS")
                 .warehouseName("POA")
                 .build();
-
+      
         Section section = new Section()
                 .id("1")
                 .sectionCode("LA")
@@ -115,7 +109,7 @@ public class SectionServiceTest {
                 .maxLength(3)
                 .warehouse(warehouse)
                 .build();
-
+      
         BatchStock batchStock1 = new BatchStock()
                 .id("1")
                 .batchNumber(1)
@@ -129,7 +123,7 @@ public class SectionServiceTest {
                 .dueDate(LocalDate.now())
                 .section(section)
                 .build();
-
+      
         BatchStock batchStock2 = new BatchStock()
                 .id("2")
                 .batchNumber(2)
@@ -143,7 +137,6 @@ public class SectionServiceTest {
                 .dueDate(LocalDate.now())
                 .section(section)
                 .build();
-
         BatchStock batchStock3 = new BatchStock()
                 .id("3")
                 .batchNumber(3)
@@ -157,32 +150,37 @@ public class SectionServiceTest {
                 .dueDate(LocalDate.now())
                 .section(section)
                 .build();
-
+      
         listBatchStock.add(batchStock1);
         listBatchStock.add(batchStock2);
         listBatchStock.add(batchStock3);
-
+      
         when(mockBatchStockRepository.countBySection(any()))
                 .thenReturn((long) listBatchStock.size());
-
+      
         SectionException sectionException = assertThrows
                 (SectionException.class,() -> sectionService2.validSectionLength(section));
-
+      
         String mensagemEsperada = "Nao tem espaco.";
         String mensagemRecebida = sectionException.getMessage();
-
+      
         assertTrue(mensagemEsperada.contains(mensagemRecebida));
     }
-
+  
+    /**
+     * @author Edemilson Nobre
+     * @version 1.0.0
+     * Teste para validar se uma section tem espaco livre
+     */
     @Test
     void validSectionNoFullTest() {
         List<BatchStock> listBatchStock = new ArrayList<>();
-
+      
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("RS")
                 .warehouseName("POA")
                 .build();
-
+      
         Section section = new Section()
                 .id("1")
                 .sectionCode("LA")
@@ -190,7 +188,7 @@ public class SectionServiceTest {
                 .maxLength(3)
                 .warehouse(warehouse)
                 .build();
-
+      
         BatchStock batchStock1 = new BatchStock()
                 .id("1")
                 .batchNumber(1)
@@ -204,7 +202,7 @@ public class SectionServiceTest {
                 .dueDate(LocalDate.now())
                 .section(section)
                 .build();
-
+      
         BatchStock batchStock2 = new BatchStock()
                 .id("2")
                 .batchNumber(2)
@@ -218,13 +216,49 @@ public class SectionServiceTest {
                 .dueDate(LocalDate.now())
                 .section(section)
                 .build();
-
+      
         listBatchStock.add(batchStock1);
         listBatchStock.add(batchStock2);
-
+      
         when(mockBatchStockRepository.countBySection(any()))
                 .thenReturn((long) listBatchStock.size());
-
+      
         assertTrue(sectionService2.validSectionLength(section));
+    }
+  
+    @Test
+    void findTest() {
+        Section section = new Section()
+                .id("1")
+                .sectionCode("LA")
+                .sectionName("Laticionios")
+                .maxLength(10)
+                .build();
+
+        when(mockSectionRepository.findBySectionCode(anyString()))
+                .thenReturn(Optional.of(section));
+
+        Section sectionReturn = sectionService.find(section.getSectionCode());
+        assertEquals(sectionReturn, section);
+    }
+
+    @Test
+    void findNotExistTest() {
+        Section section = new Section()
+                .id("1")
+                .sectionCode("LA")
+                .sectionName("Laticionios")
+                .maxLength(10)
+                .build();
+
+        when(mockSectionRepository.findBySectionCode(anyString()))
+                .thenReturn(Optional.empty());
+
+        SectionException sectionException = assertThrows(SectionException.class, () ->
+                sectionService.find(section.getSectionCode()));
+
+        String expectedMessage = "Sessao nao existe!!! Reenviar com uma sessao valida";
+
+        assertTrue(expectedMessage.contains(sectionException.getMessage()));
     }
 }

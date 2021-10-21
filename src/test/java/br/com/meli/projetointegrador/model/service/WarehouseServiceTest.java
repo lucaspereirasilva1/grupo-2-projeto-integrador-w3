@@ -47,8 +47,8 @@ public class WarehouseServiceTest {
                 .warehouseName("Minas")
                 .build();
 
-        when((mockWarehouseRepository).findByWarehouse(any()))
-                .thenReturn(Optional.empty());
+//        when((mockWarehouseRepository).findByWarehouse(any()))
+//                .thenReturn(Optional.empty());
 
         WarehouseException warehouseException = assertThrows(WarehouseException.class, () ->
                 warehouseService.validWarehouse(warehouse));

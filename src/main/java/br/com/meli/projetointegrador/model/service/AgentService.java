@@ -19,7 +19,7 @@ public class AgentService {
     public Agent find(String cpf) {
         Optional<Agent> agent = agentRepository.findByCpf(cpf);
         if (agent.isEmpty()) {
-            throw new AgentException("Agent nao cadastrado na base!!! Por gentileza realizar o cadastro");
+            throw new AgentException("Representante nao cadastrado na base!!! Por gentileza realizar o cadastro");
         }
         return agent.get();
     }

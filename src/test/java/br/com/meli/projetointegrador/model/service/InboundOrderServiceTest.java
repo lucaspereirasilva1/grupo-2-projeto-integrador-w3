@@ -7,8 +7,6 @@ import br.com.meli.projetointegrador.model.dto.SectionDTO;
 import br.com.meli.projetointegrador.model.entity.Agent;
 import br.com.meli.projetointegrador.model.entity.BatchStock;
 import br.com.meli.projetointegrador.model.entity.InboudOrder;
-import br.com.meli.projetointegrador.model.entity.Warehouse;
-import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import br.com.meli.projetointegrador.model.repository.InboundOrderRepository;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -26,10 +24,8 @@ public class InboundOrderServiceTest {
 
     private final InboundOrderRepository mockInboundOrderRepository = mock(InboundOrderRepository.class);
     private final BatchStockService mockBatchStockService = mock(BatchStockService.class);
-    private final SectionService sectionService = mock(SectionService.class);
-    private final AgentService agentService = mock(AgentService.class);
     private final InboundOrderService inboundOrderService = new InboundOrderService(mockInboundOrderRepository,
-            mockBatchStockService, sectionService, agentService);
+            mockBatchStockService);
     private final List<BatchStock> listBatchStock = new ArrayList<>();
     private final ModelMapper modelMapper = new ModelMapper();
 

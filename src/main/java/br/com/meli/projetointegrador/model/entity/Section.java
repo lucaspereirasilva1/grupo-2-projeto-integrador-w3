@@ -28,12 +28,6 @@ public class Section {
     private String sectionName;
     private Integer maxLength;
 
-    public Section id(String id) {
-        this.id = id;
-        return this;
-    }
-
-
     @DBRef(lazy = true)
     private List<BatchStock> batchStockList;
 
