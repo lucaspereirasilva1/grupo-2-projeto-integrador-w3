@@ -5,9 +5,10 @@ import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
 import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;
 import br.com.meli.projetointegrador.model.dto.SectionDTO;
 import br.com.meli.projetointegrador.model.entity.Agent;
+import br.com.meli.projetointegrador.model.entity.InboudOrder;
 import br.com.meli.projetointegrador.model.entity.Section;
-import br.com.meli.projetointegrador.model.entity.Warehouse;
 import br.com.meli.projetointegrador.model.repository.AgentRepository;
+import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import br.com.meli.projetointegrador.model.repository.InboundOrderRepository;
 import br.com.meli.projetointegrador.model.repository.SectionRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -20,12 +21,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Optional;
 
 @SpringBootTest
 public class InboundOrderServiceIntegrationTest {
-
-    @Autowired
-    private InboundOrderRepository inboudOrderRepository;
 
     @Autowired
     private InboundOrderService inboundOrderService;
@@ -36,31 +35,40 @@ public class InboundOrderServiceIntegrationTest {
     @Autowired
     private AgentRepository agentRepository;
 
+    @Autowired
+    private InboundOrderRepository inboundOrderRepository;
+
+    @Autowired
+    private BatchStockRepository batchStockRepository;
+
     @BeforeEach
     void setUp() {
+        clearBase();
+
         Section section = new Section()
-                .sectionCode("FR")
-                .sectionName("frios")
+                .sectionCode("LA")
+                .sectionName("laticinios")
                 .maxLength(10)
                 .build();
         sectionRepository.save(section);
 
         Agent agent = new Agent().
+                cpf("11122233344").
                 name("lucas").
-                cpf("11122233344");
+                build();
+
         agentRepository.save(agent);
     }
 
     @AfterEach
     void cleanUpDatabase() {
-        sectionRepository.deleteAll();
-        agentRepository.deleteAll();
+        clearBase();
     }
 
     @Test
     void putIntegrationTest() {
         SectionDTO sectionDTO = new SectionDTO()
-                .sectionCode("FR")
+                .sectionCode("LA")
                 .warehouseCode("SP")
                 .build();
 
@@ -100,6 +108,15 @@ public class InboundOrderServiceIntegrationTest {
                 cpf("11122233344");
 
         inboundOrderService.put(inboundOrderDTO, agentDTO);
+        Optional<InboudOrder> inboudOrder = inboundOrderRepository.findByOrderNumber(inboundOrderDTO.getOrderNumber());
+        Assertions.assertTrue(inboudOrder.isPresent());
+    }
+
+    void clearBase() {
+        sectionRepository.deleteAll();
+        inboundOrderRepository.deleteAll();
+        agentRepository.deleteAll();
+        batchStockRepository.deleteAll();
     }
 
 }

@@ -26,4 +26,7 @@ public class BatchStockService {
         }
     }
 
+    public void put(BatchStock batchStock) {
+        batchStockRepository.save(batchStock);
+    }
 }

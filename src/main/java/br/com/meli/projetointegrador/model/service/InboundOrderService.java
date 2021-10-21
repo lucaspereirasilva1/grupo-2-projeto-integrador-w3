@@ -1,7 +1,5 @@
 package br.com.meli.projetointegrador.model.service;
 
-import br.com.meli.projetointegrador.exception.AgentException;
-import br.com.meli.projetointegrador.exception.SectionExecption;
 import br.com.meli.projetointegrador.model.dto.AgentDTO;
 import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;
 import br.com.meli.projetointegrador.model.entity.Agent;
@@ -10,8 +8,6 @@ import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.repository.InboundOrderRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class InboundOrderService {
@@ -41,6 +37,7 @@ public class InboundOrderService {
         Agent agent = agentService.find(agentDTO.getCpf());
         inboudOrder.getListBatchStock().forEach(b -> {
             b.agent(agent);
+            batchStockService.put(b);
         });
 
         inboundOrderRepository.save(inboudOrder);
