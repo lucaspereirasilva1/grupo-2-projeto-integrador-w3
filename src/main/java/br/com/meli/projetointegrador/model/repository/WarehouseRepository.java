@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface WarehouseRepository  extends MongoRepository <Warehouse, String> {
 
-//    Optional<Warehouse> findByWarehouse(Warehouse warehouse);
+    Optional<Warehouse> findByWarehouseCode(String warehouseCode);
 }

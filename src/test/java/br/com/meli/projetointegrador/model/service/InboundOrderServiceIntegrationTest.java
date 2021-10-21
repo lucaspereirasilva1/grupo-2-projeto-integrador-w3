@@ -1,16 +1,11 @@
 package br.com.meli.projetointegrador.model.service;
 
-import br.com.meli.projetointegrador.model.dto.AgentDTO;
-import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
-import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;
-import br.com.meli.projetointegrador.model.dto.SectionDTO;
+import br.com.meli.projetointegrador.model.dto.*;
 import br.com.meli.projetointegrador.model.entity.Agent;
 import br.com.meli.projetointegrador.model.entity.InboudOrder;
 import br.com.meli.projetointegrador.model.entity.Section;
-import br.com.meli.projetointegrador.model.repository.AgentRepository;
-import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
-import br.com.meli.projetointegrador.model.repository.InboundOrderRepository;
-import br.com.meli.projetointegrador.model.repository.SectionRepository;
+import br.com.meli.projetointegrador.model.entity.Warehouse;
+import br.com.meli.projetointegrador.model.repository.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,14 +38,24 @@ public class InboundOrderServiceIntegrationTest {
     @Autowired
     private BatchStockRepository batchStockRepository;
 
+    @Autowired
+    private WarehouseRepository warehouseRepository;
+
     @BeforeEach
     void setUp() {
         clearBase();
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+        warehouseRepository.save(warehouse);
 
         Section section = new Section()
                 .sectionCode("LA")
                 .sectionName("laticinios")
                 .maxLength(10)
+                .warehouse(warehouse)
                 .build();
         sectionRepository.save(section);
 
@@ -68,6 +74,7 @@ public class InboundOrderServiceIntegrationTest {
 
     @Test
     void putIntegrationTest() {
+
         SectionDTO sectionDTO = new SectionDTO()
                 .sectionCode("LA")
                 .warehouseCode("SP")
@@ -118,6 +125,7 @@ public class InboundOrderServiceIntegrationTest {
         inboundOrderRepository.deleteAll();
         agentRepository.deleteAll();
         batchStockRepository.deleteAll();
+        warehouseRepository.deleteAll();
     }
 
 }

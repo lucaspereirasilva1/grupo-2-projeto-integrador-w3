@@ -18,4 +18,8 @@ import lombok.Data;
             return this;
         }
 
+        public WarehouseDTO build() {
+            return this;
+        }
+
 }

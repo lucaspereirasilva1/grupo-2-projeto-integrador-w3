@@ -1,10 +1,14 @@
 package br.com.meli.projetointegrador.model.service;
 
+import br.com.meli.projetointegrador.model.dto.AgentDTO;
+import br.com.meli.projetointegrador.model.dto.SectionDTO;
 import br.com.meli.projetointegrador.model.entity.Agent;
 import br.com.meli.projetointegrador.model.entity.BatchStock;
 import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class BatchStockService {
@@ -27,5 +31,13 @@ public class BatchStockService {
         batchStock.agent(a);
         batchStock.section(s);
         batchStockRepository.save(batchStock);
+    }
+
+    public void putAll(List<BatchStock> listBatchStock, AgentDTO agentDTO, SectionDTO sectionDTO) {
+        listBatchStock.forEach(b -> {
+            b.agent(agentService.find(agentDTO.getCpf()));
+            b.section(sectionService.find(sectionDTO.getSectionCode()));
+        });
+        batchStockRepository.saveAll(listBatchStock);
     }
 }

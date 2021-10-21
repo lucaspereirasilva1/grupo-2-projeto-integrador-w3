@@ -28,4 +28,12 @@ public class WarehouseService {
             throw new WarehouseException("NAOOOOOOOO");
         }
     }
+
+    public Warehouse find(String warehouseCode) {
+        Optional<Warehouse> warehouseOptional = warehouseRepository.findByWarehouseCode(warehouseCode);
+        if (warehouseOptional.isEmpty()) {
+            throw new WarehouseException("Armazem nao cadastrado!!! Por gentileza reenviar com um armazem valido");
+        }
+        return warehouseOptional.get();
+    }
 }
