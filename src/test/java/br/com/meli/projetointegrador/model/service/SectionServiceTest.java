@@ -26,9 +26,8 @@ import static org.mockito.Mockito.*;
 public class SectionServiceTest {
 
     private final SectionRepository mockSectionRepository = mock(SectionRepository.class);
-    private final SectionService sectionService = new SectionService(mockSectionRepository);
     private final BatchStockRepository mockBatchStockRepository=  mock(BatchStockRepository.class);
-    private final SectionService sectionService2 = new SectionService(mockBatchStockRepository);
+    private final SectionService sectionService = new SectionService(mockBatchStockRepository,mockSectionRepository);
 
     /**
      * @author Jhony Zuim
@@ -158,7 +157,7 @@ public class SectionServiceTest {
                 .thenReturn((long) listBatchStock.size());
       
         SectionException sectionException = assertThrows
-                (SectionException.class,() -> sectionService2.validSectionLength(section));
+                (SectionException.class,() -> sectionService.validSectionLength(section));
       
         String mensagemEsperada = "Nao tem espaco.";
         String mensagemRecebida = sectionException.getMessage();
@@ -221,7 +220,7 @@ public class SectionServiceTest {
         when(mockBatchStockRepository.countBySection(any()))
                 .thenReturn((long) listBatchStock.size());
       
-        assertTrue(sectionService2.validSectionLength(section));
+        assertTrue(sectionService.validSectionLength(section));
     }
   
     @Test

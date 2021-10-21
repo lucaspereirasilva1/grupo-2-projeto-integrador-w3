@@ -27,9 +27,7 @@ public class Section {
     private String sectionCode;
     private String sectionName;
     private Integer maxLength;
-
-    @DBRef(lazy = true)
-    private List<BatchStock> batchStockList;
+    private Warehouse warehouse;
 
     /**
      * @author Jhony Zuim
@@ -54,6 +52,11 @@ public class Section {
 
     public Section maxLength(Integer maxLength) {
         this.maxLength = maxLength;
+        return this;
+    }
+
+    public Section warehouse(Warehouse warehouse) {
+        this.warehouse = warehouse;
         return this;
     }
 

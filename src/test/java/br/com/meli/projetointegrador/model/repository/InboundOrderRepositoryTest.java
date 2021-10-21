@@ -72,6 +72,7 @@ public class InboundOrderRepositoryTest {
                 .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now())
                 .agent(agent.orElse(new Agent()))
+                .section(section.get())
                 .build();
         batchStockRepository.save(batchStock);
 
@@ -86,6 +87,7 @@ public class InboundOrderRepositoryTest {
                 .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now())
                 .agent(agent.orElse(new Agent()))
+                .section(section.get())
                 .build();
         batchStockRepository.save(batchStockUm);
 
@@ -121,6 +123,7 @@ public class InboundOrderRepositoryTest {
                         id("1").
                         name("lucas").
                         build())
+                .section(section)
                 .build();
 
         BatchStock batchStockUm = new BatchStock()
@@ -138,6 +141,7 @@ public class InboundOrderRepositoryTest {
                         id("2").
                         name("ed").
                         build())
+                .section(section)
                 .build();
 
         InboudOrder inboudOrder = new InboudOrder()
