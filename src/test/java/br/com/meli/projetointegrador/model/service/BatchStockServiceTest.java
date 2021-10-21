@@ -3,6 +3,7 @@ package br.com.meli.projetointegrador.model.service;
 import br.com.meli.projetointegrador.model.entity.Agent;
 import br.com.meli.projetointegrador.model.entity.BatchStock;
 import br.com.meli.projetointegrador.model.entity.Section;
+import br.com.meli.projetointegrador.model.entity.Warehouse;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,10 +13,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 public class BatchStockServiceTest {
 
@@ -28,13 +28,22 @@ public class BatchStockServiceTest {
 
     @BeforeEach
     void setUp() {
+        Warehouse warehouse = new Warehouse()
+                .id("1")
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+
         Section section = new Section()
+                .id("1")
                 .sectionCode("LA")
                 .sectionName("laticinios")
                 .maxLength(10)
+                .warehouse(warehouse)
                 .build();
 
         Agent agent = new Agent().
+                id("1").
                 cpf("11122233344").
                 name("lucas").
                 build();
@@ -59,13 +68,22 @@ public class BatchStockServiceTest {
 
     @Test
     void putTest() {
+        Warehouse warehouse = new Warehouse()
+                .id("1")
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+
         Section section = new Section()
+                .id("1")
                 .sectionCode("LA")
                 .sectionName("laticinios")
                 .maxLength(10)
+                .warehouse(warehouse)
                 .build();
 
         Agent agent = new Agent().
+                id("1").
                 cpf("11122233344").
                 name("lucas").
                 build();

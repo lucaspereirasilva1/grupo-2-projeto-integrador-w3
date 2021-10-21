@@ -13,7 +13,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
 public class InboundOrderRepositoryTest {
@@ -30,14 +31,24 @@ public class InboundOrderRepositoryTest {
     @Autowired
     private AgentRepository agentRepository;
 
+    @Autowired
+    private WarehouseRepository warehouseRepository;
+
     @BeforeEach
     void setUp() {
         clearBase();
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+        warehouseRepository.save(warehouse);
 
         Section section = new Section()
                 .sectionCode("LA")
                 .sectionName("laticinios")
                 .maxLength(10)
+                .warehouse(warehouse)
                 .build();
         sectionRepository.save(section);
 
@@ -60,7 +71,6 @@ public class InboundOrderRepositoryTest {
         Optional<Section> section = sectionRepository.findBySectionCode("LA");
         Optional<Agent> agent = agentRepository.findByCpf("11122233344");
 
-
         BatchStock batchStock = new BatchStock()
                 .batchNumber(1)
                 .productId("QJ")
@@ -72,7 +82,7 @@ public class InboundOrderRepositoryTest {
                 .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now())
                 .agent(agent.orElse(new Agent()))
-                .section(section.get())
+                .section(section.orElse(new Section()))
                 .build();
         batchStockRepository.save(batchStock);
 
@@ -87,7 +97,7 @@ public class InboundOrderRepositoryTest {
                 .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now())
                 .agent(agent.orElse(new Agent()))
-                .section(section.get())
+                .section(section.orElse(new Section()))
                 .build();
         batchStockRepository.save(batchStockUm);
 
@@ -158,6 +168,7 @@ public class InboundOrderRepositoryTest {
     }
 
     void clearBase() {
+        warehouseRepository.deleteAll();
         sectionRepository.deleteAll();
         inboundOrderRepository.deleteAll();
         agentRepository.deleteAll();

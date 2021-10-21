@@ -7,8 +7,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import java.util.List;
-
 @Data
 @Document(collection = "warehouse")
 public class Warehouse {
@@ -19,7 +17,6 @@ public class Warehouse {
 
     private String warehouseCode;
     private String warehouseName;
-    private List<Section> listSections;
 
     public Warehouse id(String id) {
         this.id = id;

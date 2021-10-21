@@ -1,5 +1,6 @@
 package br.com.meli.projetointegrador.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -9,7 +10,10 @@ import java.util.List;
 public class InboundOrderDTO {
 
     private Integer orderNumber;
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern="dd/MM/yyyy")
     private LocalDate orderDate;
+
     private SectionDTO sectionDTO;
     private List<BatchStockDTO> listBatchStockDTO;
 

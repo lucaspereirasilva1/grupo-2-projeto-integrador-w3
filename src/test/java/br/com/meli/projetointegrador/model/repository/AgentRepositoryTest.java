@@ -38,4 +38,13 @@ public class AgentRepositoryTest {
         Optional<Agent> agent = agentRepository.findByCpf("11122233344");
         assertTrue(agent.isPresent());
     }
+
+    @Test
+    void saveTest() {
+        Agent agent = new Agent().
+                cpf("11122233344").
+                name("lucas").
+                build();
+        agentRepository.save(agent);
+    }
 }

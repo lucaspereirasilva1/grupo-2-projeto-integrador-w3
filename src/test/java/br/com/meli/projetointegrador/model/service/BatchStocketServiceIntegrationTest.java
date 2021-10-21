@@ -17,9 +17,6 @@ public class BatchStocketServiceIntegrationTest {
     @Autowired
     private BatchStockRepository batchStockRepository;
 
-    @Autowired
-    private BatchStockService batchStockService;
-
     @BeforeEach
     void setUp() {
         Agent agent = new Agent()
