@@ -39,8 +39,8 @@ public class SectionService {
      * @return true ou exception personalizada
      */
 
-    public boolean validSection(Section section) {
-        Optional<Section> sectionOptional = sectionRepository.findById(section.getId());
+    public boolean validSection(String sectionCode) {
+        Optional<Section> sectionOptional = sectionRepository.findBySectionCode(sectionCode);
         if (sectionOptional.isPresent()){
             return true;
         } else {

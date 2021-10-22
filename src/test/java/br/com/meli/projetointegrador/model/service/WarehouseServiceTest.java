@@ -35,7 +35,7 @@ public class WarehouseServiceTest {
                         .warehouseName("Minas")
                         .build()));
 
-        assertTrue(warehouseService.validWarehouse(warehouse));
+        assertTrue(warehouseService.validWarehouse("teste"));
 
     }
 
@@ -51,7 +51,7 @@ public class WarehouseServiceTest {
 //                .thenReturn(Optional.empty());
 
         WarehouseException warehouseException = assertThrows(WarehouseException.class, () ->
-                warehouseService.validWarehouse(warehouse));
+                warehouseService.validWarehouse("teste"));
 
         String expectedMessage = "Representante nao foi vinculado ao estoque, por gentileza reenviar a request!!!";
         String receivedMessage = warehouseException.getMessage();
