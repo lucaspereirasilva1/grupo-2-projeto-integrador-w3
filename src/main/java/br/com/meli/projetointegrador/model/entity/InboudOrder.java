@@ -18,6 +18,8 @@ public class InboudOrder {
 
     private Integer orderNumber;
     private LocalDate orderDate;
+
+    @DBRef
     private Section section;
 
     @DBRef

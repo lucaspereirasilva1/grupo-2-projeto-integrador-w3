@@ -33,11 +33,15 @@ public class BatchStockService {
         batchStockRepository.save(batchStock);
     }
 
-    public void putAll(List<BatchStock> listBatchStock, AgentDTO agentDTO, SectionDTO sectionDTO) {
+    public void postAll(List<BatchStock> listBatchStock, AgentDTO agentDTO, SectionDTO sectionDTO) {
         listBatchStock.forEach(b -> {
             b.agent(agentService.find(agentDTO.getCpf()));
             b.section(sectionService.find(sectionDTO.getSectionCode()));
         });
+        batchStockRepository.saveAll(listBatchStock);
+    }
+
+    public void putAll(List<BatchStock> listBatchStock) {
         batchStockRepository.saveAll(listBatchStock);
     }
 }

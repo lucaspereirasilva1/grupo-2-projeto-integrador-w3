@@ -5,16 +5,14 @@ import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
 import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;
 import br.com.meli.projetointegrador.model.service.InboundOrderService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/v1/fresh-products")
 public class InboundOrderController {
 
     private final InboundOrderService inboundOrderService;
@@ -30,7 +28,7 @@ public class InboundOrderController {
                 .name("lucas")
                 .cpf("11122233344")
                 .build();
-        List<BatchStockDTO> listBatchStockDTO = inboundOrderService.put(inboundOrderDTO, agentDTO);
+        List<BatchStockDTO> listBatchStockDTO = inboundOrderService.post(inboundOrderDTO, agentDTO);
         URI uri = uriComponentsBuilder.path("/inboundorder/1").buildAndExpand(1).toUri();
         return ResponseEntity.created(uri).body(listBatchStockDTO);
     }
