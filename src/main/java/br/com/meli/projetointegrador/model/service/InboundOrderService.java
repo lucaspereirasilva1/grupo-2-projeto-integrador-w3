@@ -9,6 +9,7 @@ import br.com.meli.projetointegrador.model.entity.BatchStock;
 import br.com.meli.projetointegrador.model.entity.InboundOrder;
 import br.com.meli.projetointegrador.model.repository.InboundOrderRepository;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,14 +22,20 @@ public class InboundOrderService {
     private final InboundOrderRepository inboundOrderRepository;
     private final BatchStockService batchStockService;
     private final SectionService sectionService;
+    private final WarehouseService warehouseService;
+
+    private final AgentService agentService;
 
     public InboundOrderService(InboundOrderRepository inboudOrderRepository,
                                BatchStockService batchStockService,
-                               SectionService sectionService) {
+                               SectionService sectionService,
+                               WarehouseService warehouseService,
+                               AgentService agentService) {
         this.inboundOrderRepository = inboudOrderRepository;
         this.batchStockService = batchStockService;
         this.sectionService = sectionService;
-
+        this.warehouseService = warehouseService;
+        this.agentService = agentService;
     }
 
     public List<BatchStockDTO> post(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
@@ -40,20 +47,22 @@ public class InboundOrderService {
     }
 
     public List<BatchStockDTO> put(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
-        Optional<InboundOrder> inboundOrderCheck = inboundOrderRepository.findByOrderNumber(inboundOrderDTO.getOrderNumber());
-        if (inboundOrderCheck.isPresent()) {
-            InboundOrder inboundOrder = inboundOrderCheck.get();
-            inboundOrder.orderNumber(inboundOrderDTO.getOrderNumber());
-            inboundOrder.orderDate(inboundOrderDTO.getOrderDate());
-            inboundOrder.listBatchStock(fillInboundOrder(inboundOrder.getListBatchStock(),
-                    inboundOrderDTO.getListBatchStockDTO(),
-                    agentDTO));
-            batchStockService.putAll(inboundOrder.getListBatchStock());
-            inboundOrderRepository.save(inboundOrder);
-        } else {
-            throw new InboundOrderException("Ordem de entrada nao existe!!! Por gentileza realizar o cadastro antes de atualizar");
+        if(inputValid(inboundOrderDTO, agentDTO)) {
+            Optional<InboundOrder> inboundOrderCheck = inboundOrderRepository.findByOrderNumber(inboundOrderDTO.getOrderNumber());
+            if (inboundOrderCheck.isPresent()) {
+                InboundOrder inboundOrder = inboundOrderCheck.get();
+                inboundOrder.orderNumber(inboundOrderDTO.getOrderNumber());
+                inboundOrder.orderDate(inboundOrderDTO.getOrderDate());
+                inboundOrder.listBatchStock(fillInboundOrder(inboundOrder.getListBatchStock(),
+                        inboundOrderDTO.getListBatchStockDTO(),
+                        agentDTO));
+                batchStockService.putAll(inboundOrder.getListBatchStock());
+                inboundOrderRepository.save(inboundOrder);
+            } else {
+                throw new InboundOrderException("Ordem de entrada nao existe!!! Por gentileza realizar o cadastro antes de atualizar");
+            }
+            return inboundOrderDTO.getListBatchStockDTO();
         }
-        return inboundOrderDTO.getListBatchStockDTO();
     }
 
     private List<BatchStock> fillInboundOrder(List<BatchStock> listBatchStock,
@@ -77,6 +86,14 @@ public class InboundOrderService {
             }
         }
         return listBatchStock;
+    }
+
+    private Boolean inputValid(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
+//        if (warehouseService.validWarehouse(inboundOrderDTO.getSectionDTO().getWarehouseCode()) &&
+//            inboundOrderDTO.getSectionDTO().getWarehouseCode().equals(agentDTO.getWarehouseCode()) &&
+//            sectionService.validSection(inboundOrderDTO.getSectionDTO().getSectionCode()) &&
+//            sectionService.) {
+//        }
     }
 
 }

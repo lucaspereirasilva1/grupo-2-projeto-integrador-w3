@@ -17,6 +17,7 @@ public class Agent {
 
     private String name;
     private String cpf;
+    private Warehouse warehouse;
 
     public Agent id(String id) {
         this.id = id;
@@ -30,6 +31,11 @@ public class Agent {
 
     public Agent cpf(String cpf) {
         this.cpf = cpf;
+        return this;
+    }
+
+    public Agent warehouse(Warehouse warehouse) {
+        this.warehouse = warehouse;
         return this;
     }
 

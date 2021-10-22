@@ -1,4 +1,4 @@
-package br.com.meli.projetointegrador.model.controller;
+package br.com.meli.projetointegrador.controller;
 
 import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
 import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;

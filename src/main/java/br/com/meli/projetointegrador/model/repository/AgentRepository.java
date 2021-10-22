@@ -10,5 +10,5 @@ import java.util.Optional;
 public interface AgentRepository extends MongoRepository<Agent, String> {
 
     Optional<Agent> findByCpf(String cpf);
-
+    Optional<Agent> findByWarehouse_WarehouseCode(String warehouseCode);
 }

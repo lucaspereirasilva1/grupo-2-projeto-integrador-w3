@@ -20,12 +20,11 @@ public class WarehouseService {
      * @return
      */
 
-    public boolean validWarehouse(Warehouse warehouse) {
-        Optional<Warehouse> warehouseOptional = warehouseRepository.findById(warehouse.getWarehouseCode());
-        if (warehouseOptional.isPresent()) {
+    public Boolean validWarehouse(String warehouseCode) {
+        if (warehouseRepository.findByWarehouseCode(warehouseCode).isPresent()) {
             return true;
         } else {
-            throw new WarehouseException("NAOOOOOOOO");
+            throw new WarehouseException("Armazem nao cadastrado!!! Por gentileza cadastrar!!!");
         }
     }
 

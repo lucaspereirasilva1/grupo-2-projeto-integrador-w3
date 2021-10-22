@@ -25,8 +25,10 @@ public class InboundOrderServiceTest {
     private final InboundOrderRepository mockInboundOrderRepository = mock(InboundOrderRepository.class);
     private final BatchStockService mockBatchStockService = mock(BatchStockService.class);
     private final SectionService mockSectionService = mock(SectionService.class);
+    private final WarehouseService mockWarehouseService = mock(WarehouseService.class);
+    private final AgentService mockAgentService = mock(AgentService.class);
     private final InboundOrderService inboundOrderService = new InboundOrderService(mockInboundOrderRepository,
-            mockBatchStockService, mockSectionService);
+            mockBatchStockService, mockSectionService, mockWarehouseService, mockAgentService);
     private final List<BatchStock> listBatchStock = new ArrayList<>();
     private final ModelMapper modelMapper = new ModelMapper();
 

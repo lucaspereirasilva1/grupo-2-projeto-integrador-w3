@@ -23,4 +23,12 @@ public class AgentService {
         }
         return agent.get();
     }
+
+    public Boolean findAgentWarehouse(String warehouseCode) {
+        if (agentRepository.findByWarehouse_WarehouseCode(warehouseCode).isPresent()) {
+            return true;
+        }else {
+            throw new AgentException("Representante nao e do armazem!!! Por gentileza verificar o cadastro");
+        }
+    }
 }
