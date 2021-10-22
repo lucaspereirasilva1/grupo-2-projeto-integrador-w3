@@ -6,7 +6,7 @@ import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;
 import br.com.meli.projetointegrador.model.dto.SectionDTO;
 import br.com.meli.projetointegrador.model.entity.Agent;
 import br.com.meli.projetointegrador.model.entity.BatchStock;
-import br.com.meli.projetointegrador.model.entity.InboudOrder;
+import br.com.meli.projetointegrador.model.entity.InboundOrder;
 import br.com.meli.projetointegrador.model.repository.InboundOrderRepository;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -38,7 +38,7 @@ public class InboundOrderServiceTest {
     void putTest() {
         boolean resultTest = false;
 
-        List<InboudOrder> listInboudOrders = new ArrayList<>();
+        List<InboundOrder> listInboundOrders = new ArrayList<>();
 
         SectionDTO sectionDTO = new SectionDTO()
                 .sectionCode("LA")
@@ -80,7 +80,7 @@ public class InboundOrderServiceTest {
                 name("lucas").
                 cpf("11122233344");
 
-        listInboudOrders.add(modelMapper.map(inboundOrderDTO, InboudOrder.class));
+        listInboundOrders.add(modelMapper.map(inboundOrderDTO, InboundOrder.class));
 
         when((mockInboundOrderRepository).save(any()))
                 .thenReturn(null);

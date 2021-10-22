@@ -10,7 +10,7 @@ import java.util.List;
 
 @Data
 @Document(collection = "inboundorder")
-public class InboudOrder {
+public class InboundOrder {
 
     @MongoId(FieldType.OBJECT_ID)
     @Setter(AccessLevel.NONE)
@@ -26,32 +26,32 @@ public class InboudOrder {
     @Field(name = "batchstock")
     private List<BatchStock> listBatchStock;
 
-    public InboudOrder id(String id) {
+    public InboundOrder id(String id) {
         this.id = id;
         return this;
     }
 
-    public InboudOrder orderNumber(Integer orderNumber) {
+    public InboundOrder orderNumber(Integer orderNumber) {
         this.orderNumber = orderNumber;
         return this;
     }
 
-    public InboudOrder orderDate(LocalDate orderDate) {
+    public InboundOrder orderDate(LocalDate orderDate) {
         this.orderDate = orderDate;
         return this;
     }
 
-    public InboudOrder section(Section section) {
+    public InboundOrder section(Section section) {
         this.section = section;
         return this;
     }
 
-    public InboudOrder listBatchStock(List<BatchStock> listBatchStock) {
+    public InboundOrder listBatchStock(List<BatchStock> listBatchStock) {
         this.listBatchStock = listBatchStock;
         return this;
     }
 
-    public InboudOrder build() {
+    public InboundOrder build() {
         return this;
     }
 

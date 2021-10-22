@@ -101,14 +101,14 @@ public class InboundOrderRepositoryTest {
                 .build();
         batchStockRepository.save(batchStockUm);
 
-        InboudOrder inboudOrder = new InboudOrder()
+        InboundOrder inboundOrder = new InboundOrder()
                 .orderNumber(1)
                 .orderDate(LocalDate.now())
                 .section(section.orElse(new Section()))
                 .listBatchStock(Arrays.asList(batchStock, batchStockUm))
                 .build();
-        inboundOrderRepository.save(inboudOrder);
-        assertFalse(inboundOrderRepository.findById(inboudOrder.getId()).isEmpty());
+        inboundOrderRepository.save(inboundOrder);
+        assertFalse(inboundOrderRepository.findById(inboundOrder.getId()).isEmpty());
     }
 
     @Test
@@ -154,17 +154,17 @@ public class InboundOrderRepositoryTest {
                 .section(section)
                 .build();
 
-        InboudOrder inboudOrder = new InboudOrder()
+        InboundOrder inboundOrder = new InboundOrder()
                 .orderNumber(2)
                 .orderDate(LocalDate.now())
                 .section(section)
                 .listBatchStock(Arrays.asList(batchStock, batchStockUm))
                 .build();
 
-        inboundOrderRepository.save(inboudOrder);
-        inboundOrderRepository.deleteByOrderNumber(inboudOrder.getOrderNumber());
+        inboundOrderRepository.save(inboundOrder);
+        inboundOrderRepository.deleteByOrderNumber(inboundOrder.getOrderNumber());
 
-        assertTrue(inboundOrderRepository.findById(inboudOrder.getId()).isEmpty());
+        assertTrue(inboundOrderRepository.findById(inboundOrder.getId()).isEmpty());
     }
 
     void clearBase() {
