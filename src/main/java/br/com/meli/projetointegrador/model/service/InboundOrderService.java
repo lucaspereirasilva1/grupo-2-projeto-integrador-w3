@@ -4,16 +4,15 @@ import br.com.meli.projetointegrador.exception.InboundOrderException;
 import br.com.meli.projetointegrador.model.dto.AgentDTO;
 import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
 import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;
+import br.com.meli.projetointegrador.model.entity.Agent;
 import br.com.meli.projetointegrador.model.entity.BatchStock;
-import br.com.meli.projetointegrador.model.entity.InboudOrder;
-import br.com.meli.projetointegrador.model.entity.Section;
+import br.com.meli.projetointegrador.model.entity.InboundOrder;
 import br.com.meli.projetointegrador.model.repository.InboundOrderRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class InboundOrderService {
@@ -33,40 +32,51 @@ public class InboundOrderService {
     }
 
     public List<BatchStockDTO> post(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
-        InboudOrder inboudOrder = modelMapper.map(inboundOrderDTO, InboudOrder.class);
-        inboudOrder.section(sectionService.find(inboundOrderDTO.getSectionDTO().getSectionCode()));
-        batchStockService.postAll(inboudOrder.getListBatchStock(), agentDTO, inboundOrderDTO.getSectionDTO());
-        inboundOrderRepository.save(inboudOrder);
+        InboundOrder inboundOrder = modelMapper.map(inboundOrderDTO, InboundOrder.class);
+        inboundOrder.section(sectionService.find(inboundOrderDTO.getSectionDTO().getSectionCode()));
+        batchStockService.postAll(inboundOrder.getListBatchStock(), agentDTO, inboundOrderDTO.getSectionDTO());
+        inboundOrderRepository.save(inboundOrder);
         return inboundOrderDTO.getListBatchStockDTO();
     }
 
     public List<BatchStockDTO> put(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
-        Optional<InboudOrder> inboundOrderCheck = inboundOrderRepository.findByOrderNumber(inboundOrderDTO.getOrderNumber());
+        Optional<InboundOrder> inboundOrderCheck = inboundOrderRepository.findByOrderNumber(inboundOrderDTO.getOrderNumber());
         if (inboundOrderCheck.isPresent()) {
-            InboudOrder inboudOrder = inboundOrderCheck.get();
-            inboudOrder.orderNumber(inboundOrderDTO.getOrderNumber());
-            inboudOrder.orderDate(inboundOrderDTO.getOrderDate());
-
-            for (int i = 0; i < inboudOrder.getListBatchStock().size(); i++) {
-                for (int x = i; x < inboundOrderDTO.getListBatchStockDTO().size(); x++) {
-                    inboudOrder.getListBatchStock().get(i).batchNumber(inboundOrderDTO.getListBatchStockDTO().get(x).getBatchNumber());
-                    inboudOrder.getListBatchStock().get(i).productId(inboundOrderDTO.getListBatchStockDTO().get(x).getProductId());
-                    inboudOrder.getListBatchStock().get(i).currentTemperature(inboundOrderDTO.getListBatchStockDTO().get(x).getCurrentTemperature());
-                    inboudOrder.getListBatchStock().get(i).minimumTemperature(inboundOrderDTO.getListBatchStockDTO().get(x).getMinimumTemperature());
-                    inboudOrder.getListBatchStock().get(i).initialQuantity(inboundOrderDTO.getListBatchStockDTO().get(x).getInitialQuantity());
-                    inboudOrder.getListBatchStock().get(i).manufacturingDate(inboundOrderDTO.getListBatchStockDTO().get(x).getManufacturingDate());
-                    inboudOrder.getListBatchStock().get(i).manufacturingTime(inboundOrderDTO.getListBatchStockDTO().get(x).getManufacturingTime());
-                    inboudOrder.getListBatchStock().get(i).dueDate(inboundOrderDTO.getListBatchStockDTO().get(x).getDueDate());
-                    x++;
-                }
-            }
-
-            batchStockService.putAll(inboudOrder.getListBatchStock());
-            inboundOrderRepository.save(inboudOrder);
+            InboundOrder inboundOrder = inboundOrderCheck.get();
+            inboundOrder.orderNumber(inboundOrderDTO.getOrderNumber());
+            inboundOrder.orderDate(inboundOrderDTO.getOrderDate());
+            inboundOrder.listBatchStock(fillInboundOrder(inboundOrder.getListBatchStock(),
+                    inboundOrderDTO.getListBatchStockDTO(),
+                    agentDTO));
+            batchStockService.putAll(inboundOrder.getListBatchStock());
+            inboundOrderRepository.save(inboundOrder);
         } else {
             throw new InboundOrderException("Ordem de entrada nao existe!!! Por gentileza realizar o cadastro antes de atualizar");
         }
         return inboundOrderDTO.getListBatchStockDTO();
+    }
+
+    private List<BatchStock> fillInboundOrder(List<BatchStock> listBatchStock,
+                                               List<BatchStockDTO> listBatchStockDTO,
+                                               AgentDTO agentDTO) {
+        for (int i = 0; i < listBatchStock.size(); i++) {
+            for (int x = i; x < listBatchStockDTO.size(); x++) {
+                listBatchStock.get(i).batchNumber(listBatchStockDTO.get(x).getBatchNumber());
+                listBatchStock.get(i).productId(listBatchStockDTO.get(x).getProductId());
+                listBatchStock.get(i).currentTemperature(listBatchStockDTO.get(x).getCurrentTemperature());
+                listBatchStock.get(i).minimumTemperature(listBatchStockDTO.get(x).getMinimumTemperature());
+                listBatchStock.get(i).initialQuantity(listBatchStockDTO.get(x).getInitialQuantity());
+                listBatchStock.get(i).manufacturingDate(listBatchStockDTO.get(x).getManufacturingDate());
+                listBatchStock.get(i).manufacturingTime(listBatchStockDTO.get(x).getManufacturingTime());
+                listBatchStock.get(i).dueDate(listBatchStockDTO.get(x).getDueDate());
+                Agent agent = listBatchStock.get(i).getAgent();
+                agent.cpf(agentDTO.getCpf());
+                agent.name(agentDTO.getName());
+                listBatchStock.get(i).agent(agent);
+                x++;
+            }
+        }
+        return listBatchStock;
     }
 
 }

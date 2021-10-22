@@ -203,7 +203,7 @@ public class InboundOrderControllerTest {
                 .agent(agent)
                 .build();
 
-        InboudOrder inboundOrder = new InboudOrder()
+        InboundOrder inboundOrder = new InboundOrder()
                 .id("6172d46f40032058ac5e6bf4")
                 .orderNumber(1)
                 .orderDate(LocalDate.now())

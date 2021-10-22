@@ -2,7 +2,7 @@ package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.model.dto.*;
 import br.com.meli.projetointegrador.model.entity.Agent;
-import br.com.meli.projetointegrador.model.entity.InboudOrder;
+import br.com.meli.projetointegrador.model.entity.InboundOrder;
 import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.entity.Warehouse;
 import br.com.meli.projetointegrador.model.repository.*;
@@ -115,7 +115,7 @@ public class InboundOrderServiceIntegrationTest {
                 cpf("11122233344");
 
         inboundOrderService.put(inboundOrderDTO, agentDTO);
-        Optional<InboudOrder> inboudOrder = inboundOrderRepository.findByOrderNumber(inboundOrderDTO.getOrderNumber());
+        Optional<InboundOrder> inboudOrder = inboundOrderRepository.findByOrderNumber(inboundOrderDTO.getOrderNumber());
         assertTrue(inboudOrder.isPresent());
     }
 
