@@ -28,7 +28,7 @@ public class InboundOrderController {
                 .name("lucas")
                 .cpf("11122233344")
                 .build();
-        List<BatchStockDTO> listBatchStockDTO = inboundOrderService.put(inboundOrderDTO, agentDTO);
+        List<BatchStockDTO> listBatchStockDTO = inboundOrderService.post(inboundOrderDTO, agentDTO);
         URI uri = uriComponentsBuilder.path("/inboundorder/1").buildAndExpand(1).toUri();
         return ResponseEntity.created(uri).body(listBatchStockDTO);
     }
