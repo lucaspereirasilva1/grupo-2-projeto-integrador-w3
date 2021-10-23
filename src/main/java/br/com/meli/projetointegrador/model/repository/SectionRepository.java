@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 /**
- * @author Jhony Zuim
+ * @author Jhony Zuim - Edemilson Nobre
  * @version 1.0.0
  * @since 15/10/2021
  * Repositorio para collection section
@@ -15,7 +15,7 @@ import java.util.Optional;
 
 @Repository
 public interface SectionRepository extends MongoRepository<Section, String> {
-  
+
   Optional<Section> findBySectionCode(String sectionCode);
 
 }

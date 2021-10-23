@@ -26,17 +26,17 @@ public class BatchStockService {
     }
 
     public void put(BatchStock batchStock, Section section, Agent agent) {
-        Section s = sectionService.find(section.getSectionCode());
+        //Section s = sectionService.find(section.getSectionCode());
         Agent a = agentService.find(agent.getCpf());
         batchStock.agent(a);
-        batchStock.section(s);
+        //batchStock.section(s);
         batchStockRepository.save(batchStock);
     }
 
     public void postAll(List<BatchStock> listBatchStock, AgentDTO agentDTO, SectionDTO sectionDTO) {
         listBatchStock.forEach(b -> {
             b.agent(agentService.find(agentDTO.getCpf()));
-            b.section(sectionService.find(sectionDTO.getSectionCode()));
+          //  b.section(sectionService.find(sectionDTO.getSectionCode()));
         });
         batchStockRepository.saveAll(listBatchStock);
     }
