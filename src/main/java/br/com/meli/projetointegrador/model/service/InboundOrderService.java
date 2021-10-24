@@ -40,7 +40,7 @@ public class InboundOrderService {
 
     public List<BatchStockDTO> post(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
         InboundOrder inboundOrder = modelMapper.map(inboundOrderDTO, InboundOrder.class);
-        inboundOrder.section(sectionService.find(inboundOrderDTO.getSectionDTO().getSectionCode()));
+       // inboundOrder.section(sectionService.find(inboundOrderDTO.getSectionDTO().getSectionCode()));
         batchStockService.postAll(inboundOrder.getListBatchStock(), agentDTO, inboundOrderDTO.getSectionDTO());
         inboundOrderRepository.save(inboundOrder);
         return inboundOrderDTO.getListBatchStockDTO();
@@ -61,8 +61,7 @@ public class InboundOrderService {
             } else {
                 throw new InboundOrderException("Ordem de entrada nao existe!!! Por gentileza realizar o cadastro antes de atualizar");
             }
-            return inboundOrderDTO.getListBatchStockDTO();
-        }
+        }return inboundOrderDTO.getListBatchStockDTO();
     }
 
     private List<BatchStock> fillInboundOrder(List<BatchStock> listBatchStock,
@@ -94,6 +93,7 @@ public class InboundOrderService {
 //            sectionService.validSection(inboundOrderDTO.getSectionDTO().getSectionCode()) &&
 //            sectionService.) {
 //        }
+        return true;
     }
 
 }

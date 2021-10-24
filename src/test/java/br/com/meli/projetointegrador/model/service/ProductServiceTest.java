@@ -76,14 +76,12 @@ public class ProductServiceTest {
                 .build();
 
         Section section = new Section()
-                .id("1")
                 .sectionCode("LA")
                 .sectionName("Laticionios")
                 .maxLength(10)
                 .build();
 
         Product product = new Product()
-                .id("1")
                 .productCode("LEI")
                 .productName("Leite")
                 .section(section)

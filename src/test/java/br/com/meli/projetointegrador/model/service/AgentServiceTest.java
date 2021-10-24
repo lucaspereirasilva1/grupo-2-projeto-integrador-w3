@@ -20,7 +20,6 @@ public class AgentServiceTest {
     @Test
     void findTest() {
         Agent agent = new Agent()
-                .id("1")
                 .name("lucas")
                 .cpf("11122233344")
                 .build();
@@ -35,7 +34,6 @@ public class AgentServiceTest {
     @Test
     void findNotExistTest() {
         Agent agent = new Agent()
-                .id("1")
                 .name("lucas")
                 .cpf("11122233344")
                 .build();

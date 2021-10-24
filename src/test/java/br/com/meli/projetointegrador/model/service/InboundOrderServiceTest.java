@@ -101,12 +101,10 @@ public class InboundOrderServiceTest {
 
     void makeData() {
         Agent agent = new Agent()
-                .id("1")
                 .name("lucas")
                 .build();
 
         Agent agent2 = new Agent()
-                .id("2")
                 .name("ed")
                 .build();
 
