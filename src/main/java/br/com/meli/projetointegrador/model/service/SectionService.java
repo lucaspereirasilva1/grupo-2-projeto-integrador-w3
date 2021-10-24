@@ -36,10 +36,13 @@ public class SectionService {
     /**
      * @author Jhony Zuim
      * @version 1.0.0
+<<<<<<< Updated upstream
      * @param section, recebe um section para validar se ele existe
+=======
+     * @param sectionCode, recebe um section para validar se ele existe
+>>>>>>> Stashed changes
      * @return true ou exception personalizada
      */
-
     public boolean validSection(String sectionCode) {
         Optional<Section> sectionOptional = sectionRepository.findBySectionCode(sectionCode);
         if (sectionOptional.isPresent()){
