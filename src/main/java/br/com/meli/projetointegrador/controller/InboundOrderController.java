@@ -27,7 +27,9 @@ public class InboundOrderController {
         AgentDTO agentDTO = new AgentDTO()
                 .name("lucas")
                 .cpf("11122233344")
+                .warehouseCode("SP")
                 .build();
+        inboundOrderService.inputValid(inboundOrderDTO, agentDTO);
         List<BatchStockDTO> listBatchStockDTO = inboundOrderService.post(inboundOrderDTO, agentDTO);
         URI uri = uriComponentsBuilder.path("/inboundorder/1").buildAndExpand(1).toUri();
         return ResponseEntity.created(uri).body(listBatchStockDTO);
@@ -39,7 +41,9 @@ public class InboundOrderController {
         AgentDTO agentDTO = new AgentDTO()
                 .name("lucas")
                 .cpf("11122233344")
+                .warehouseCode("SP")
                 .build();
+        inboundOrderService.inputValid(inboundOrderDTO, agentDTO);
         List<BatchStockDTO> listBatchStockDTO = inboundOrderService.put(inboundOrderDTO, agentDTO);
         URI uri = uriComponentsBuilder.path("/inboundorder/1").buildAndExpand(1).toUri();
         return ResponseEntity.created(uri).body(listBatchStockDTO);

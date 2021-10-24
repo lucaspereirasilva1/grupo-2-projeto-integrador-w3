@@ -28,12 +28,21 @@ public class ProductService {
      * @return true ou exception personalizada
      */
 
-    public boolean validProductSection(Product product){
+    public Boolean validProductSection(Product product){
         Optional<Product> productOptional = productRepository.findBySection(product.getSection());
         if (productOptional.isPresent()){
             return true;
         } else {
             throw new ProductException("Produto nao faz parte do setor, por favor verifique o setor correto!");
+        }
+    }
+
+    public Product find(String productId) {
+        Optional<Product> product = productRepository.findByProductId(productId);
+        if (product.isPresent()){
+            return product.get();
+        } else {
+            throw new ProductException("Produto nao cadastrado!!! Por gentileza cadastrar");
         }
     }
 }

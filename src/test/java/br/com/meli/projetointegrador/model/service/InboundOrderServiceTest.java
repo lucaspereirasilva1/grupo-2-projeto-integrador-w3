@@ -4,20 +4,18 @@ import br.com.meli.projetointegrador.model.dto.AgentDTO;
 import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
 import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;
 import br.com.meli.projetointegrador.model.dto.SectionDTO;
-import br.com.meli.projetointegrador.model.entity.Agent;
-import br.com.meli.projetointegrador.model.entity.BatchStock;
-import br.com.meli.projetointegrador.model.entity.InboundOrder;
+import br.com.meli.projetointegrador.model.entity.*;
 import br.com.meli.projetointegrador.model.repository.InboundOrderRepository;
 import org.junit.jupiter.api.Test;
-import org.modelmapper.ModelMapper;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.*;
 
 public class InboundOrderServiceTest {
@@ -26,22 +24,16 @@ public class InboundOrderServiceTest {
     private final BatchStockService mockBatchStockService = mock(BatchStockService.class);
     private final SectionService mockSectionService = mock(SectionService.class);
     private final WarehouseService mockWarehouseService = mock(WarehouseService.class);
-    private final AgentService mockAgentService = mock(AgentService.class);
     private final InboundOrderService inboundOrderService = new InboundOrderService(mockInboundOrderRepository,
-            mockBatchStockService, mockSectionService, mockWarehouseService, mockAgentService);
+            mockBatchStockService, mockSectionService, mockWarehouseService);
     private final List<BatchStock> listBatchStock = new ArrayList<>();
-    private final ModelMapper modelMapper = new ModelMapper();
 
     public InboundOrderServiceTest() {
         makeData();
     }
 
     @Test
-    void putTest() {
-        boolean resultTest = false;
-
-        List<InboundOrder> listInboundOrders = new ArrayList<>();
-
+    void postTest() {
         SectionDTO sectionDTO = new SectionDTO()
                 .sectionCode("LA")
                 .warehouseCode("SP")
@@ -82,30 +74,69 @@ public class InboundOrderServiceTest {
                 name("lucas").
                 cpf("11122233344");
 
-        listInboundOrders.add(modelMapper.map(inboundOrderDTO, InboundOrder.class));
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
 
-        when((mockInboundOrderRepository).save(any()))
-                .thenReturn(null);
+        Agent agent = new Agent().
+                cpf("11122233344").
+                name("lucas")
+                .warehouse(warehouse)
+                .build();
 
-        List<BatchStockDTO> listBatchStockDTO = inboundOrderService.put(inboundOrderDTO, agentDTO);
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("laticinios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
 
-//        for (InboudOrder i: listInboudOrders) {
-//            if (i.getOrderNumber().equals(listBatchStockDTO.getOrderNumber())) {
-//                resultTest = true;
-//                break;
-//            }
-//        }
+        BatchStock batchStock = new BatchStock()
+                .batchNumber(1)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .agent(agent)
+                .section(section)
+                .build();
 
-        assertTrue(resultTest);
+        InboundOrder inboundOrder = new InboundOrder()
+                .orderNumber(1)
+                .orderDate(LocalDate.now())
+                .section(section)
+                .listBatchStock(Collections.singletonList(batchStock))
+                .build();
+
+        when(mockSectionService.find(anyString()))
+                .thenReturn(section);
+        when(mockInboundOrderRepository.save(any(InboundOrder.class)))
+                .thenReturn(inboundOrder);
+
+        doNothing().when(mockBatchStockService).postAll(anyList(),
+                any(AgentDTO.class),
+                any(SectionDTO.class));
+
+        List<BatchStockDTO> listBatchStockDTO = inboundOrderService.post(inboundOrderDTO, agentDTO);
+
+        verify(mockInboundOrderRepository, times(1)).save(any(InboundOrder.class));
+
+        verify(mockBatchStockService, times(1)).postAll(anyList(),
+                any(AgentDTO.class),
+                any(SectionDTO.class));
+
+        assertFalse(listBatchStockDTO.isEmpty());
+
     }
 
     void makeData() {
         Agent agent = new Agent()
                 .name("lucas")
-                .build();
-
-        Agent agent2 = new Agent()
-                .name("ed")
                 .build();
 
         BatchStock batchStock = new BatchStock()
@@ -131,7 +162,7 @@ public class InboundOrderServiceTest {
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now())
-                .agent(agent2)
+                .agent(agent)
                 .build();
 
         listBatchStock.add(batchStock);

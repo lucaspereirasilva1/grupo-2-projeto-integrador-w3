@@ -21,7 +21,7 @@ public class Product {
     @Setter(AccessLevel.NONE)
     private String id;
 
-    private String productCode;
+    private String productId;
     private String productName;
     private Section section;
 
@@ -36,7 +36,7 @@ public class Product {
     }
 
     public Product productCode(String productCode) {
-        this.productCode = productCode;
+        this.productId = productCode;
         return this;
     }
 

@@ -31,13 +31,13 @@ public class SectionService {
 
     /**
      * @author Jhony Zuim
-     * @param section, recebe um section para validar se ele existe
+     * @version 1.0.0
+     * @param sectionCode, recebe um section para validar se ele existe
      * @return true ou exception personalizada
      */
-
-    public boolean validSection(Section section) {
-        Optional<Section> sectionOptional = sectionRepository.findBySectionCode(section.getSectionCode());
-        if (sectionOptional.isPresent())
+    public boolean validSection(String sectionCode) {
+        Optional<Section> sectionOptional = sectionRepository.findBySectionCode(sectionCode);
+        if (sectionOptional.isPresent()){
             return true;
         else
             throw new SectionException("Nao existe esse setor, por gentileza verificar o setor!");
