@@ -27,7 +27,6 @@ public class Product {
 
     /**
      * @author Jhony Zuim
-     * @version 1.0.0
      * Construcao de construtores fluentes para a classe produto
      */
 

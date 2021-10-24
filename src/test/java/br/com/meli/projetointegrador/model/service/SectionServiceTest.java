@@ -1,23 +1,17 @@
 package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.SectionException;
-import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
-import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;
-import br.com.meli.projetointegrador.model.dto.SectionDTO;
+import br.com.meli.projetointegrador.exception.ValidInputException;
 import br.com.meli.projetointegrador.model.entity.BatchStock;
 import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.entity.Warehouse;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import br.com.meli.projetointegrador.model.repository.SectionRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
- * @author Jhony Zuim
+ * @author Jhony Zuim - Edemilson Nobre
  * @version 1.0.0
  * @since 15/10/2021
  */
@@ -36,12 +30,11 @@ public class SectionServiceTest {
     private final BatchStockRepository mockBatchStockRepository=  mock(BatchStockRepository.class);
     private final SectionService sectionService = new SectionService(mockBatchStockRepository,mockSectionRepository);
 
+
     /**
      * @author Jhony Zuim
-     * @version 1.0.0
      *  Teste para validar se uma section existe
      */
-
     @Test
     void validSectionExistTest(){
 
@@ -51,26 +44,24 @@ public class SectionServiceTest {
                 .build();
 
         Section section = new Section()
-                .id("1")
                 .sectionCode("LA")
                 .sectionName("Laticionios")
                 .maxLength(10)
+                .warehouse(warehouse)
                 .build();
 
         when(mockSectionRepository.findById(any()))
                 .thenReturn(Optional.of(new Section()
-                        .id("1")
-                        .sectionCode("LA")
+                        .sectionCode("L5A")
                         .sectionName("Laticionios")
                         .maxLength(10)
+                        .warehouse(warehouse)
                         .build()));
 
 //        assertTrue(sectionService.validSection(section));
     }
-
     /**
      * @author Jhony Zuim
-     * @version 1.0.0
      *  Teste para validar se uma section nao existe
      */
     @Test
@@ -82,10 +73,10 @@ public class SectionServiceTest {
                 .build();
 
         Section section = new Section()
-                .id("1")
                 .sectionCode("LA")
                 .sectionName("Laticionios")
-                .maxLength(10)
+                .maxLength(3)
+                .warehouse(warehouse)
                 .build();
 
         when(mockSectionRepository.findById(any()))
@@ -99,24 +90,27 @@ public class SectionServiceTest {
 //        assertTrue(expectedMessage.contains(sectionException.getMessage()));
     }
 
+    /**
+     * @author Edemilson Nobre
+     * Teste para validar se uma section tem espaco livre
+     */
     @Test
     void validSectionFullTest() {
         List<BatchStock> listBatchStock = new ArrayList<>();
-      
+
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("RS")
                 .warehouseName("POA")
                 .build();
-      
+
         Section section = new Section()
-                .id("1")
                 .sectionCode("LA")
                 .sectionName("Laticionios")
                 .maxLength(3)
+                .warehouse(warehouse)
                 .build();
-      
+
         BatchStock batchStock1 = new BatchStock()
-                .id("1")
                 .batchNumber(1)
                 .productId("QJ")
                 .currentTemperature(10.0F)
@@ -128,9 +122,8 @@ public class SectionServiceTest {
                 .dueDate(LocalDate.now())
                 .section(section)
                 .build();
-      
+
         BatchStock batchStock2 = new BatchStock()
-                .id("2")
                 .batchNumber(2)
                 .productId("QJ")
                 .currentTemperature(10.0F)
@@ -143,7 +136,6 @@ public class SectionServiceTest {
                 .section(section)
                 .build();
         BatchStock batchStock3 = new BatchStock()
-                .id("3")
                 .batchNumber(3)
                 .productId("QJ")
                 .currentTemperature(10.0F)
@@ -155,46 +147,44 @@ public class SectionServiceTest {
                 .dueDate(LocalDate.now())
                 .section(section)
                 .build();
-      
+
         listBatchStock.add(batchStock1);
         listBatchStock.add(batchStock2);
         listBatchStock.add(batchStock3);
-      
+
         when(mockBatchStockRepository.countBySection(any()))
                 .thenReturn((long) listBatchStock.size());
-      
+
         SectionException sectionException = assertThrows
                 (SectionException.class,() -> sectionService.validSectionLength(section));
-      
+
         String mensagemEsperada = "Nao tem espaco.";
         String mensagemRecebida = sectionException.getMessage();
-      
+
         assertTrue(mensagemEsperada.contains(mensagemRecebida));
     }
-  
+
     /**
      * @author Edemilson Nobre
-     * @version 1.0.0
      * Teste para validar se uma section tem espaco livre
      */
     @Test
-    void validSectionNoFullTest() {
+    void validSectionNotFullTest() {
         List<BatchStock> listBatchStock = new ArrayList<>();
-      
+
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("RS")
                 .warehouseName("POA")
                 .build();
-      
+
         Section section = new Section()
-                .id("1")
                 .sectionCode("LA")
                 .sectionName("Laticionios")
                 .maxLength(3)
+                .warehouse(warehouse)
                 .build();
-      
+
         BatchStock batchStock1 = new BatchStock()
-                .id("1")
                 .batchNumber(1)
                 .productId("QJ")
                 .currentTemperature(10.0F)
@@ -206,9 +196,8 @@ public class SectionServiceTest {
                 .dueDate(LocalDate.now())
                 .section(section)
                 .build();
-      
+
         BatchStock batchStock2 = new BatchStock()
-                .id("2")
                 .batchNumber(2)
                 .productId("LA")
                 .currentTemperature(10.0F)
@@ -220,49 +209,68 @@ public class SectionServiceTest {
                 .dueDate(LocalDate.now())
                 .section(section)
                 .build();
-      
+
         listBatchStock.add(batchStock1);
         listBatchStock.add(batchStock2);
-      
+
         when(mockBatchStockRepository.countBySection(any()))
                 .thenReturn((long) listBatchStock.size());
-      
+
         assertTrue(sectionService.validSectionLength(section));
     }
-  
+
+    /**
+     * @author Edemilson Nobre
+     * Teste quando a section é passada no batchStock
+     */
     @Test
-    void findTest() {
+    void validSectionInformedTeste() {
         Section section = new Section()
-                .id("1")
                 .sectionCode("LA")
                 .sectionName("Laticionios")
-                .maxLength(10)
+                .maxLength(3)
                 .build();
 
-        when(mockSectionRepository.findBySectionCode(anyString()))
-                .thenReturn(Optional.of(section));
+        BatchStock batchStock = new BatchStock()
+                .batchNumber(1)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .section(section)
+                .build();
 
-        Section sectionReturn = sectionService.find(section.getSectionCode());
-        assertEquals(sectionReturn, section);
+        assertTrue(sectionService.validSectionInformed(batchStock));
     }
 
+    /**
+     * @author Edemilson Nobre
+     * Teste quando a section nao passada no batchStock
+     */
     @Test
-    void findNotExistTest() {
-        Section section = new Section()
-                .id("1")
-                .sectionCode("LA")
-                .sectionName("Laticionios")
-                .maxLength(10)
+    void validSectionNotInformedTeste() {
+        BatchStock batchStock = new BatchStock()
+                .batchNumber(1)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
                 .build();
 
-        when(mockSectionRepository.findBySectionCode(anyString()))
-                .thenReturn(Optional.empty());
+        ValidInputException validInputException = assertThrows
+                (ValidInputException.class,() -> sectionService.validSectionInformed(batchStock));
 
-        SectionException sectionException = assertThrows(SectionException.class, () ->
-                sectionService.find(section.getSectionCode()));
+        String mensagemEsperada = "Sessao nao informada!!! Reenviar com uma sessao  existente!";
+        String mensagemRecebida = validInputException.getMessage();
 
-        String expectedMessage = "Sessao nao existe!!! Reenviar com uma sessao valida";
-
-        assertTrue(expectedMessage.contains(sectionException.getMessage()));
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
     }
 }

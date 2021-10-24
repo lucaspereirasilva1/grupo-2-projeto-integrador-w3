@@ -22,6 +22,9 @@ public class SectionRepositoryTest {
     @Autowired
     private WarehouseRepository warehouseRepository;
 
+    @Autowired
+    private BatchStockRepository batchStockRepository;
+
     @BeforeEach
     void setUp() {
         Warehouse warehouse = new Warehouse()
@@ -49,6 +52,26 @@ public class SectionRepositoryTest {
     void findBySectionCode() {
         Optional<Section> section = sectionRepository.findBySectionCode("FR");
         assertTrue(section.isPresent());
+    }
+
+    @Test
+    void registerBatchIfSectorNoFull() {
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("RS")
+                .warehouseName("Porto Alegre")
+                .build();
+        warehouseRepository.save(warehouse);
+
+        Section section = new Section()
+                .sectionCode("FR")
+                .sectionName("frios")
+                .maxLength(1)
+                .warehouse(warehouse)
+                .build();
+        sectionRepository.save(section);
+
+        assertTrue(batchStockRepository.countBySection(section) < section.getMaxLength());
     }
 
     @Test

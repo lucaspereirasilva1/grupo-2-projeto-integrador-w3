@@ -83,11 +83,10 @@ public class BatchStockServiceTest {
                 .warehouse(warehouse)
                 .build();
 
-        Agent agent = new Agent().
-                id("1").
-                cpf("11122233344").
-                name("lucas").
-                build();
+        Agent agent = new Agent()
+                .cpf("11122233344")
+                .name("lucas")
+                .build();
 
         BatchStock batchStock = new BatchStock()
                 .id("1")
@@ -104,8 +103,8 @@ public class BatchStockServiceTest {
                 .section(section)
                 .build();
 
-        when(mockSectionService.find(anyString())).
-                thenReturn(section);
+//        when(mockSectionService.find(anyString())).
+ //               thenReturn(section);
         when(mockAgentService.find(anyString())).
                 thenReturn(agent);
 

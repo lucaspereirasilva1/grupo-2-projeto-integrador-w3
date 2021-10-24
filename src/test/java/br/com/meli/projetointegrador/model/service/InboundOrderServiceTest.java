@@ -136,7 +136,6 @@ public class InboundOrderServiceTest {
 
     void makeData() {
         Agent agent = new Agent()
-                .id("1")
                 .name("lucas")
                 .build();
 
