@@ -4,9 +4,8 @@ import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
 import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;
 import br.com.meli.projetointegrador.model.dto.SectionDTO;
 import br.com.meli.projetointegrador.model.entity.*;
-import br.com.meli.projetointegrador.model.repository.AgentRepository;
-import br.com.meli.projetointegrador.model.repository.InboundOrderRepository;
-import br.com.meli.projetointegrador.model.repository.SectionRepository;
+import br.com.meli.projetointegrador.model.repository.*;
+import br.com.meli.projetointegrador.model.service.SectionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,8 +51,17 @@ public class InboundOrderControllerTest {
     @MockBean
     private InboundOrderRepository inboundOrderRepository;
 
+    @MockBean
+    private WarehouseRepository warehouseRepository;
+
+    @MockBean
+    private ProductRepository productRepository;
+
+    @MockBean
+    private BatchStockRepository batchStockRepository;
+
     @Test
-    void putTest() throws Exception {
+    void postTest() throws Exception {
         SectionDTO sectionDTO = new SectionDTO()
                 .sectionCode("FR")
                 .warehouseCode("SP")
@@ -101,6 +109,7 @@ public class InboundOrderControllerTest {
                 .sectionCode("FR")
                 .sectionName("frios")
                 .warehouse(warehouse)
+                .maxLength(10)
                 .build();
 
         Agent agent = new Agent()
@@ -109,11 +118,24 @@ public class InboundOrderControllerTest {
                 .cpf("11122233344")
                 .build();
 
+        Product product = new Product()
+                .productCode("LEI")
+                .productName("Leite")
+                .section(section)
+                .build();
+
         when(sectionRepository.findBySectionCode(anyString()))
                 .thenReturn(Optional.of(section));
-
         when(agentRepository.findByCpf(anyString()))
                 .thenReturn(Optional.of(agent));
+        when(warehouseRepository.existsByWarehouseCode(anyString()))
+                .thenReturn(true);
+        when(productRepository.existsProductBySection(any(Section.class)))
+                .thenReturn(true);
+        when(productRepository.findByProductId(anyString()))
+                .thenReturn(Optional.of(product));
+        when(batchStockRepository.countBySection(any(Section.class)))
+                .thenReturn((9L));
 
         MockHttpServletResponse response = mockMvc.perform(post("http://localhost:8080/api/v1/fresh-products/inboundorder")
                 .contentType("application/json")
