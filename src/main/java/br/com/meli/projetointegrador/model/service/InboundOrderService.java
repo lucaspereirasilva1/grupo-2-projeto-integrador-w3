@@ -42,8 +42,8 @@ public class InboundOrderService {
     public List<BatchStockDTO> post(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
         InboundOrder inboundOrder = modelMapper.map(inboundOrderDTO, InboundOrder.class);
         inboundOrder.section(sectionService.find(inboundOrderDTO.getSectionDTO().getSectionCode()));
-        inboundOrderRepository.save(inboundOrder);
         batchStockService.postAll(inboundOrder.getListBatchStock(), agentDTO, inboundOrderDTO.getSectionDTO());
+        inboundOrderRepository.save(inboundOrder);
         return inboundOrderDTO.getListBatchStockDTO();
     }
 
