@@ -7,7 +7,6 @@ import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import br.com.meli.projetointegrador.model.repository.SectionRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
 
 import java.util.Optional;
 
@@ -16,33 +15,28 @@ import java.util.Optional;
  * @version 1.0.0
  * @since 15/10/2021
  */
-
 @Service
 public class SectionService {
-
     private final SectionRepository sectionRepository;
     private final BatchStockRepository batchStockRepository;
-
     public SectionService(BatchStockRepository batchStockRepository,
                           SectionRepository sectionRepository) {
         this.batchStockRepository = batchStockRepository;
         this.sectionRepository = sectionRepository;
     }
-
     /**
      * @author Jhony Zuim
-     * @version 1.0.0
-     * @param sectionCode, recebe um section para validar se ele existe
+     * @param sectionCode recebe um section para validar se ele existe
      * @return true ou exception personalizada
      */
     public boolean validSection(String sectionCode) {
         Optional<Section> sectionOptional = sectionRepository.findBySectionCode(sectionCode);
         if (sectionOptional.isPresent()){
             return true;
-        else
+        } else {
             throw new SectionException("Nao existe esse setor, por gentileza verificar o setor!");
+        }
     }
-
     /**
      * @author Edemilson Nobre
      * Teste para validar se uma section tem espaco livre
@@ -53,7 +47,6 @@ public class SectionService {
         else
             throw new SectionException("Nao tem espaco.");
     }
-
     /**
      * @author Edemilson Nobre
      * Teste para validar se uma section existe
@@ -63,5 +56,13 @@ public class SectionService {
             return true;
         else
             throw new ValidInputException("Sessao nao informada!!! Reenviar com uma sessao  existente!");
+    }
+
+    public Section find(String sectionCode) {
+        Optional<Section> section = sectionRepository.findBySectionCode(sectionCode);
+        if (section.isEmpty()) {
+            throw new SectionException("Sessao nao existe!!! Reenviar com uma sessao valida");
+        }
+        return section.get();
     }
 }

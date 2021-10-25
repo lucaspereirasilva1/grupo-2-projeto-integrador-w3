@@ -123,7 +123,7 @@ public class SectionServiceIntegrationTest {
                 .build();
 
         SectionException sectionException = assertThrows(SectionException.class, () ->
-                sectionService.validSection(section));
+                sectionService.validSection(section.getSectionCode()));
 
         String expectedMessage = "Nao existe esse setor, por gentileza verificar o setor!";
 
