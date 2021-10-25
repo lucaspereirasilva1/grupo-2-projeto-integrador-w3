@@ -75,7 +75,7 @@ public class BatchStockService {
                     listBatchStock.get(i).agent(agent);
                     x++;
             }
-            batchStockRepository.saveAll(listBatchStock);
+            batchStockRepository.save(listBatchStock.get(i));
         }
     }
 
