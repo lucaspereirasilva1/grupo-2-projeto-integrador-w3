@@ -23,32 +23,39 @@ public class ProductRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("Laticionios")
-                .maxLength(10)
-                .build();
-
-        Product product = new Product()
-                .productCode("LEI")
-                .productName("Leite")
-                .section(section)
-                .build();
-
-        sectionRepository.save(section);
-        productRepository.save(product);
+//        Section section = new Section()
+//                .sectionCode("LA")
+//                .sectionName("Laticionios")
+//                .maxLength(10)
+//                .build();
+//
+//        Product product = new Product()
+//                .productCode("LEI")
+//                .productName("Leite")
+//                .section(section)
+//                .build();
+//
+//        sectionRepository.save(section);
+//        productRepository.save(product);
     }
 
     @AfterEach
     void cleanUpDataBase(){
-        sectionRepository.deleteAll();
-        productRepository.deleteAll();
+//        sectionRepository.deleteAll();
+//        productRepository.deleteAll();
     }
 
     @Test
     void findBySection(){
         Optional<Section> section = sectionRepository.findBySectionCode("LA");
-        Optional<Product> productOptional = productRepository.findBySection(section.get());
-        assertTrue(productOptional.isPresent());
+//        Optional<Product> productOptional = productRepository.findBySection(section.get());
+//        assertTrue(productOptional.isPresent());
+    }
+
+    @Test
+    void existsProductBySectionTest() {
+        final Optional<Section> section = sectionRepository.findBySectionCode("FR");
+        final Boolean existProduct = productRepository.existsProductBySection(section.orElse(new Section()));
+        assertTrue(existProduct);
     }
 }

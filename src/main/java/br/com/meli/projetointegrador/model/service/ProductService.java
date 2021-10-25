@@ -29,8 +29,7 @@ public class ProductService {
      */
 
     public Boolean validProductSection(Product product){
-        Optional<Product> productOptional = productRepository.findBySection(product.getSection());
-        if (productOptional.isPresent()){
+        if (productRepository.existsProductBySection(product.getSection())){
             return true;
         } else {
             throw new ProductException("Produto nao faz parte do setor, por favor verifique o setor correto!");

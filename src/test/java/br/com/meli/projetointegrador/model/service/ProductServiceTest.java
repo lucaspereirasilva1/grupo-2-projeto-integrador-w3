@@ -50,13 +50,13 @@ public class ProductServiceTest {
                 .section(section)
                 .build();
 
-        when(mockProductRepository.findBySection(any()))
-                .thenReturn(Optional.of(new Product()
-                        .id("1")
-                        .productCode("LEI")
-                        .productName("Leite")
-                        .section(section)
-                        .build()));
+//        when(mockProductRepository.findBySection(any()))
+//                .thenReturn(Optional.of(new Product()
+//                        .id("1")
+//                        .productCode("LEI")
+//                        .productName("Leite")
+//                        .section(section)
+//                        .build()));
 
         assertTrue(productService.validProductSection(product));
     }
@@ -87,8 +87,8 @@ public class ProductServiceTest {
                 .section(section)
                 .build();
 
-        when(mockProductRepository.findBySection(any()))
-                .thenReturn(Optional.empty());
+//        when(mockProductRepository.findBySection(any()))
+//                .thenReturn(Optional.empty());
 
         ProductException productException = assertThrows(ProductException.class, () ->
                 productService.validProductSection(product));

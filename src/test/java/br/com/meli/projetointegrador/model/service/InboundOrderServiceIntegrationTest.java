@@ -1,10 +1,7 @@
 package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.model.dto.*;
-import br.com.meli.projetointegrador.model.entity.Agent;
-import br.com.meli.projetointegrador.model.entity.InboundOrder;
-import br.com.meli.projetointegrador.model.entity.Section;
-import br.com.meli.projetointegrador.model.entity.Warehouse;
+import br.com.meli.projetointegrador.model.entity.*;
 import br.com.meli.projetointegrador.model.repository.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +11,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,30 +39,13 @@ public class InboundOrderServiceIntegrationTest {
     @Autowired
     private WarehouseRepository warehouseRepository;
 
+    @Autowired
+    private ProductRepository productRepository;
+
     @BeforeEach
     void setUp() {
         clearBase();
-
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("sao paulo")
-                .build();
-        warehouseRepository.save(warehouse);
-
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("laticinios")
-                .maxLength(10)
-                .warehouse(warehouse)
-                .build();
-        sectionRepository.save(section);
-
-        Agent agent = new Agent().
-                cpf("11122233344").
-                name("lucas").
-                build();
-
-        agentRepository.save(agent);
+        createData();
     }
 
     @AfterEach
@@ -72,7 +54,7 @@ public class InboundOrderServiceIntegrationTest {
     }
 
     @Test
-    void putIntegrationTest() {
+    void postIntegrationTest() {
 
         SectionDTO sectionDTO = new SectionDTO()
                 .sectionCode("LA")
@@ -114,9 +96,10 @@ public class InboundOrderServiceIntegrationTest {
                 name("lucas").
                 cpf("11122233344");
 
-        inboundOrderService.put(inboundOrderDTO, agentDTO);
+        List<BatchStockDTO> listBatchStockDTO = inboundOrderService.post(inboundOrderDTO, agentDTO);
         Optional<InboundOrder> inboudOrder = inboundOrderRepository.findByOrderNumber(inboundOrderDTO.getOrderNumber());
         assertTrue(inboudOrder.isPresent());
+        assertFalse(listBatchStockDTO.isEmpty());
     }
 
     void clearBase() {
@@ -125,6 +108,45 @@ public class InboundOrderServiceIntegrationTest {
         agentRepository.deleteAll();
         batchStockRepository.deleteAll();
         warehouseRepository.deleteAll();
+    }
+
+    void createData() {
+        List<Product> listProduct = new ArrayList<>();
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+        warehouseRepository.save(warehouse);
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("laticinios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+        sectionRepository.save(section);
+
+        Agent agent = new Agent().
+                cpf("11122233344").
+                name("lucas").
+                build();
+        agentRepository.save(agent);
+
+        Product product = new Product()
+                .productCode("LE")
+                .productName("leite")
+                .section(section)
+                .build();
+
+        Product productUm = new Product()
+                .productCode("QJ")
+                .productName("queijo")
+                .section(section)
+                .build();
+        listProduct.add(product);
+        listProduct.add(productUm);
+        productRepository.saveAll(listProduct);
     }
 
 }
