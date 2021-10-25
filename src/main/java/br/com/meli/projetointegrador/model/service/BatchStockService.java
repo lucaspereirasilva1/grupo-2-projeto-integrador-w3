@@ -47,7 +47,7 @@ public class BatchStockService {
     public void postAll(List<BatchStock> listBatchStock, AgentDTO agentDTO, SectionDTO sectionDTO) {
         listBatchStock.forEach(b -> {
             Product product = productService.find(b.getProductId());
-            if (productService.validProductSection(product) &&
+            if (productService.validProductSection(sectionDTO.getSectionCode()) &&
                 sectionService.validSectionLength(product.getSection()))
                 b.agent(agentService.find(agentDTO.getCpf()));
                 b.section(sectionService.find(sectionDTO.getSectionCode()));
@@ -55,11 +55,10 @@ public class BatchStockService {
         batchStockRepository.saveAll(listBatchStock);
     }
 
-    public void putAll(List<BatchStock> listBatchStock, List<BatchStockDTO> listBatchStockDTO, AgentDTO agentDTO) {
+    public void putAll(List<BatchStock> listBatchStock, List<BatchStockDTO> listBatchStockDTO, AgentDTO agentDTO, SectionDTO sectionDTO) {
         for (int i = 0; i < listBatchStock.size(); i++) {
             for (int x = i; x < listBatchStockDTO.size(); x++) {
-                Product product = productService.find(listBatchStock.get(i).getProductId());
-                if (productService.validProductSection(product) &&
+                if (productService.validProductSection(sectionDTO.getSectionCode()) &&
                         sectionService.validSectionLength(listBatchStock.get(i).getSection()))
                     listBatchStock.get(i).batchNumber(listBatchStockDTO.get(x).getBatchNumber());
                     listBatchStock.get(i).productId(listBatchStockDTO.get(x).getProductId());

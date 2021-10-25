@@ -130,7 +130,7 @@ public class InboundOrderControllerTest {
                 .thenReturn(Optional.of(agent));
         when(warehouseRepository.existsByWarehouseCode(anyString()))
                 .thenReturn(true);
-        when(productRepository.existsProductBySection(any(Section.class)))
+        when(productRepository.existsProductBySection_SectionCode(anyString()))
                 .thenReturn(true);
         when(productRepository.findByProductId(anyString()))
                 .thenReturn(Optional.of(product));
@@ -253,7 +253,7 @@ public class InboundOrderControllerTest {
                 .thenReturn(Optional.of(agent));
         when(warehouseRepository.existsByWarehouseCode(anyString()))
                 .thenReturn(true);
-        when(productRepository.existsProductBySection(any(Section.class)))
+        when(productRepository.existsProductBySection_SectionCode(anyString()))
                 .thenReturn(true);
         when(productRepository.findByProductId(anyString()))
                 .thenReturn(Optional.of(product));

@@ -56,12 +56,12 @@ public class ProductServiceIntegrationTest {
         clearBase();
     }
 
-    @Test
-    void validProduct(){
-        List<Product> productOptional = productRepository.findAll();
-
-        assertTrue(productService.validProductSection(productOptional.get(0)));
-    }
+//    @Test
+//    void validProduct(){
+//        List<Product> productOptional = productRepository.findAll();
+//
+//        assertTrue(productService.validProductSection(productOptional.get(0)));
+//    }
 
     void clearBase() {
         sectionRepository.deleteAll();

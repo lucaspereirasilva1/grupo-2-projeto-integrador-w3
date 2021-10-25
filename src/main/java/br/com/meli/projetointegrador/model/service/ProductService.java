@@ -2,6 +2,7 @@ package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.ProductException;
 import br.com.meli.projetointegrador.model.entity.Product;
+import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -25,12 +26,12 @@ public class ProductService {
 
     /**
      * @author Jhony Zuim
-     * @param product, recebe um produto para validar se esta na section correta
+     * @param section, recebe um produto para validar se esta na section correta
      * @return true ou exception personalizada
      */
 
-    public Boolean validProductSection(Product product){
-        if (productRepository.existsProductBySection(product.getSection())){
+    public Boolean validProductSection(String sectionCode){
+        if (productRepository.existsProductBySection_SectionCode(sectionCode)){
             return true;
         } else {
             throw new ProductException("Produto nao faz parte do setor, por favor verifique o setor correto!");

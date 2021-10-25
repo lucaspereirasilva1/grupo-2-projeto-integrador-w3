@@ -230,6 +230,14 @@ public class InboundOrderServiceIntegrationTest {
                 .build();
         sectionRepository.save(section);
 
+        Section sectionDois = new Section()
+                .sectionCode("CO")
+                .sectionName("Congelados")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+        sectionRepository.save(sectionDois);
+
         Agent agent = new Agent().
                 cpf("11122233344").
                 name("lucas").

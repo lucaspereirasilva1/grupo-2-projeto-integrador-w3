@@ -59,10 +59,10 @@ public class ProductRepositoryTest {
 //        assertTrue(productOptional.isPresent());
     }
 
-    @Test
-    void existsProductBySectionTest() {
-        final Optional<Section> section = sectionRepository.findBySectionCode("FR");
-        final Boolean existProduct = productRepository.existsProductBySection(section.orElse(new Section()));
-        assertTrue(existProduct);
-    }
+//    @Test
+//    void existsProductBySectionTest() {
+//        final Optional<Section> section = sectionRepository.findBySectionCode("FR");
+//        final Boolean existProduct = productRepository.existsProductBySection(section.orElse(new Section()));
+//        assertTrue(existProduct);
+//    }
 }
