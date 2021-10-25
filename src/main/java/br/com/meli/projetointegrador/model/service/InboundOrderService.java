@@ -53,7 +53,7 @@ public class InboundOrderService {
             InboundOrder inboundOrder = inboundOrderCheck.get();
             inboundOrder.orderNumber(inboundOrderDTO.getOrderNumber());
             inboundOrder.orderDate(inboundOrderDTO.getOrderDate());
-            batchStockService.putAll(inboundOrder.getListBatchStock(), inboundOrderDTO.getListBatchStockDTO(), agentDTO);
+            batchStockService.putAll(inboundOrder.getListBatchStock(), inboundOrderDTO.getListBatchStockDTO(), agentDTO, inboundOrderDTO.getSectionDTO());
             inboundOrderRepository.save(inboundOrder);
         } else {
             throw new InboundOrderException("Ordem de entrada nao existe!!! Por gentileza realizar o cadastro antes de atualizar");
