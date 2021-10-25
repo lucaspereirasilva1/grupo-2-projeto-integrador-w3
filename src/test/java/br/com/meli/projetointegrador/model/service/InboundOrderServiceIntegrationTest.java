@@ -104,8 +104,12 @@ public class InboundOrderServiceIntegrationTest {
 
         List<BatchStockDTO> listBatchStockDTO = inboundOrderService.post(inboundOrderDTO, agentDTO);
         Optional<InboundOrder> inboudOrder = inboundOrderRepository.findByOrderNumber(inboundOrderDTO.getOrderNumber());
+
         assertTrue(inboudOrder.isPresent());
         assertFalse(listBatchStockDTO.isEmpty());
+        assertEquals(inboundOrderDTO.getOrderNumber(), inboudOrder.orElse(new InboundOrder()).getOrderNumber());
+        assertEquals(inboundOrderDTO.getOrderDate(), inboudOrder.orElse(new InboundOrder()).getOrderDate());
+        assertEquals(inboundOrderDTO.getSectionDTO().getSectionCode(), inboudOrder.orElse(new InboundOrder()).getSection().getSectionCode());
     }
 
     @Test

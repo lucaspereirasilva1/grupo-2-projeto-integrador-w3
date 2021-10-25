@@ -146,7 +146,7 @@ public class InboundOrderControllerTest {
     }
 
     @Test
-    void updateTest() throws Exception {
+    void putTest() throws Exception {
         SectionDTO sectionDTO = new SectionDTO()
                 .sectionCode("FR")
                 .warehouseCode("SP")
@@ -154,7 +154,7 @@ public class InboundOrderControllerTest {
 
         BatchStockDTO batchStockDTO = new BatchStockDTO()
                 .batchNumber(1)
-                .productId("MU")
+                .productId("QJ")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
                 .initialQuantity(1)
@@ -166,7 +166,7 @@ public class InboundOrderControllerTest {
 
         BatchStockDTO batchStockDTOUm = new BatchStockDTO()
                 .batchNumber(2)
-                .productId("PR")
+                .productId("LE")
                 .currentTemperature(20.0F)
                 .minimumTemperature(15.0F)
                 .initialQuantity(1)
@@ -194,18 +194,26 @@ public class InboundOrderControllerTest {
                 .sectionCode("FR")
                 .sectionName("frios")
                 .warehouse(warehouse)
+                .maxLength(10)
                 .build();
 
         Agent agent = new Agent()
                 .id("6171de17f68cfd1376441264")
                 .name("lucas")
                 .cpf("11122233344")
+                .warehouse(warehouse)
+                .build();
+
+        Product product = new Product()
+                .id("6176d1eecc1ee553f3aa6b2f")
+                .productCode("LEI")
+                .productName("Leite")
+                .section(section)
                 .build();
 
         BatchStock batchStock = new BatchStock()
-                .id("6172d46f40032058ac5e6bf2")
                 .batchNumber(1)
-                .productId("QJ")
+                .productId("LEI")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
                 .initialQuantity(1)
@@ -216,11 +224,9 @@ public class InboundOrderControllerTest {
                 .section(section)
                 .agent(agent)
                 .build();
-
         BatchStock batchStockUm = new BatchStock()
-                .id("6172d46f40032058ac5e6bf3")
                 .batchNumber(2)
-                .productId("LE")
+                .productId("LEI")
                 .currentTemperature(20.0F)
                 .minimumTemperature(15.0F)
                 .initialQuantity(1)
@@ -233,22 +239,26 @@ public class InboundOrderControllerTest {
                 .build();
 
         InboundOrder inboundOrder = new InboundOrder()
-                .id("6172d46f40032058ac5e6bf4")
                 .orderNumber(1)
                 .orderDate(LocalDate.now())
                 .section(section)
                 .listBatchStock(Arrays.asList(batchStock, batchStockUm))
                 .build();
 
-
-        when(sectionRepository.findBySectionCode(anyString()))
-                .thenReturn(Optional.of(section));
-
-        when(agentRepository.findByCpf(anyString()))
-                .thenReturn(Optional.of(agent));
-
         when(inboundOrderRepository.findByOrderNumber(anyInt()))
                 .thenReturn(Optional.of(inboundOrder));
+        when(sectionRepository.findBySectionCode(anyString()))
+                .thenReturn(Optional.of(section));
+        when(agentRepository.findByCpf(anyString()))
+                .thenReturn(Optional.of(agent));
+        when(warehouseRepository.existsByWarehouseCode(anyString()))
+                .thenReturn(true);
+        when(productRepository.existsProductBySection(any(Section.class)))
+                .thenReturn(true);
+        when(productRepository.findByProductId(anyString()))
+                .thenReturn(Optional.of(product));
+        when(batchStockRepository.countBySection(any(Section.class)))
+                .thenReturn((9L));
 
         MockHttpServletResponse response = mockMvc.perform(put("http://localhost:8080/api/v1/fresh-products/inboundorder")
                 .contentType("application/json")
