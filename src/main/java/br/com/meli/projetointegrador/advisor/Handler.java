@@ -9,6 +9,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Handler responsavel pela entrega das mensagens
+ */
+
 @ControllerAdvice
 public class Handler extends ResponseEntityExceptionHandler{
 

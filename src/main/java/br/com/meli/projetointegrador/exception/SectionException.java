@@ -4,7 +4,7 @@ package br.com.meli.projetointegrador.exception;
  * @author Jhony Zuim
  * @version 1.0.0
  * @since 15/10/2021
- * Exception personalizada para produtos
+ * Exception personalizada para section
  */
 
 public class SectionException extends RuntimeException{
