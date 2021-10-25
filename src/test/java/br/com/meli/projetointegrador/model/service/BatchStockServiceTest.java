@@ -103,8 +103,8 @@ public class BatchStockServiceTest {
                 .section(section)
                 .build();
 
-//        when(mockSectionService.find(anyString())).
- //               thenReturn(section);
+        when(mockSectionService.find(anyString())).
+                thenReturn(section);
         when(mockAgentService.find(anyString())).
                 thenReturn(agent);
 
