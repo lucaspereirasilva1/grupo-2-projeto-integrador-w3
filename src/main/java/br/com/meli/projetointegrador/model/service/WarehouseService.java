@@ -28,7 +28,7 @@ public class WarehouseService {
      */
 
     public Boolean validWarehouse(String warehouseCode) {
-        if (warehouseRepository.findByWarehouseCode(warehouseCode).isPresent()) {
+        if (warehouseRepository.existsByWarehouseCode(warehouseCode)) {
             return true;
         } else {
             throw new WarehouseException("Armazem nao cadastrado!!! Por gentileza cadastrar!!!");
