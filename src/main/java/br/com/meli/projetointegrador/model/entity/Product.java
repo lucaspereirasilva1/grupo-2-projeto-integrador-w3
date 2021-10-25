@@ -8,9 +8,10 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 /**
- * @author Jhony Zuim
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
  * @version 1.0.0
  * @since 15/10/2021
+ * Objeto criado para o produto e seus atributos
  */
 
 @Data

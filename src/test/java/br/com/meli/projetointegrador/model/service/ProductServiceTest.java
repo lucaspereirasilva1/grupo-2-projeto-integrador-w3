@@ -13,9 +13,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
- * @author Jhony Zuim
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
  * @version 1.0.0
  * @since 15/10/2021
+ * Camada de testes unitarios do service responsavel pela regra de negocio relacionada ao product
  */
 
 public class ProductServiceTest {

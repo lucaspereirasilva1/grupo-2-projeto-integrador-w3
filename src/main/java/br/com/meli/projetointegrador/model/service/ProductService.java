@@ -8,9 +8,10 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 /**
- * @author Jhony Zuim
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
  * @version 1.0.0
  * @since 15/10/2021
+ * Camada service responsavel pela regra de negocio relacionada ao product
  */
 
 @Service

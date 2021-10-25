@@ -8,6 +8,13 @@ import org.springframework.data.mongodb.core.mapping.*;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Objeto criado para o InboundOrder/Ordem de entrada e seus atributos
+ */
+
 @Data
 @Document(collection = "inboundorder")
 public class InboundOrder {

@@ -12,6 +12,13 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Camada de testes unitarios do service responsavel pela regra de negocio relacionada ao agent
+ */
+
 public class AgentServiceTest {
 
     private final AgentRepository agentRepository = mock(AgentRepository.class);
