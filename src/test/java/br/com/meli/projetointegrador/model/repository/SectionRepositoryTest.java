@@ -34,31 +34,30 @@ public class SectionRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("sao paulo")
-                .build();
-        warehouseRepository.save(warehouse);
-
-        Section section = new Section()
-                .sectionCode("FR")
-                .sectionName("frios")
-                .maxLength(10)
-                .warehouse(warehouse)
-                .build();
-        sectionRepository.save(section);
+//        Warehouse warehouse = new Warehouse()
+//                .warehouseCode("SP")
+//                .warehouseName("sao paulo")
+//                .build();
+//        warehouseRepository.save(warehouse);
+//
+//        Section section = new Section()
+//                .sectionCode("FR")
+//                .sectionName("frios")
+//                .maxLength(10)
+//                .warehouse(warehouse)
+//                .build();
+//        sectionRepository.save(section);
     }
 
     @AfterEach
     void cleanUpDatabase() {
-        sectionRepository.deleteAll();
-        warehouseRepository.deleteAll();
+//        sectionRepository.deleteAll();
+//        warehouseRepository.deleteAll();
     }
 
     @Test
     void findBySectionCode() {
-        Optional<Section> section = sectionRepository.findBySectionCode("FR");
-        assertTrue(section.isPresent());
+        assertTrue(sectionRepository.existsSectionBySectionCode("LA"));
     }
 
     @Test

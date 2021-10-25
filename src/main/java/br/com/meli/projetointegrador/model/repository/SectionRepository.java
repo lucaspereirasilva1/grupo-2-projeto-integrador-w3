@@ -17,5 +17,6 @@ import java.util.Optional;
 public interface SectionRepository extends MongoRepository<Section, String> {
 
   Optional<Section> findBySectionCode(String sectionCode);
+  Boolean existsSectionBySectionCode(String sectionCode);
 
 }

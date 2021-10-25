@@ -62,8 +62,8 @@ public class InboundOrderService {
     }
 
     public void inputValid(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
-        if (!warehouseService.validWarehouse(inboundOrderDTO.getSectionDTO().getWarehouseCode()) &&
-            !inboundOrderDTO.getSectionDTO().getWarehouseCode().equals(agentDTO.getWarehouseCode()) &&
+        if (!warehouseService.validWarehouse(inboundOrderDTO.getSectionDTO().getWarehouseCode()) &
+            !inboundOrderDTO.getSectionDTO().getWarehouseCode().equals(agentDTO.getWarehouseCode()) &
             !sectionService.validSection(inboundOrderDTO.getSectionDTO().getSectionCode()))
             throw new ValidInputException("Problema na validacao dos dados de entrada!!!");
     }

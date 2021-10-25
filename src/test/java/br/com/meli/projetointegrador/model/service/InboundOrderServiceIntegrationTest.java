@@ -195,6 +195,8 @@ public class InboundOrderServiceIntegrationTest {
                 .build();
         inboundOrderRepository.save(inboundOrder);
 
+        inboundOrderDTO.getSectionDTO().setSectionCode("XX");
+
         List<BatchStockDTO> listBatchStockDTO = inboundOrderService.put(inboundOrderDTO, agentDTO);
         Optional<InboundOrder> inboudOrder = inboundOrderRepository.findByOrderNumber(inboundOrderDTO.getOrderNumber());
 
