@@ -1,9 +1,8 @@
 package br.com.meli.projetointegrador.model.service;
 
-import br.com.meli.projetointegrador.model.entity.Agent;
-import br.com.meli.projetointegrador.model.entity.BatchStock;
-import br.com.meli.projetointegrador.model.entity.Section;
-import br.com.meli.projetointegrador.model.entity.Warehouse;
+import br.com.meli.projetointegrador.model.dto.AgentDTO;
+import br.com.meli.projetointegrador.model.dto.SectionDTO;
+import br.com.meli.projetointegrador.model.entity.*;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -76,23 +75,39 @@ public class BatchStockServiceTest {
 
     @Test
     void putTest() {
+
+        SectionDTO sectionDTO = new SectionDTO()
+                .sectionCode("LA")
+                .warehouseCode("SP")
+                .build();
+
+        AgentDTO agentDTO = new AgentDTO()
+                .cpf("11122233344")
+                .name("lucas")
+                .build();
+
         Warehouse warehouse = new Warehouse()
-                .id("1")
                 .warehouseCode("SP")
                 .warehouseName("sao paulo")
                 .build();
 
         Section section = new Section()
-                .id("1")
                 .sectionCode("LA")
                 .sectionName("laticinios")
                 .maxLength(10)
                 .warehouse(warehouse)
                 .build();
 
-        Agent agent = new Agent()
-                .cpf("11122233344")
-                .name("lucas")
+        Agent agent = new Agent().
+                id("1").
+                cpf("11122233344").
+                name("lucas").
+                build();
+
+        Product product = new Product()
+                .productCode("LE")
+                .productName("leite")
+                .section(section)
                 .build();
 
         BatchStock batchStock = new BatchStock()
@@ -110,12 +125,15 @@ public class BatchStockServiceTest {
                 .section(section)
                 .build();
 
+        when(mockProductService.find(anyString()))
+                .thenReturn(product);
+
         when(mockSectionService.find(anyString())).
                 thenReturn(section);
         when(mockAgentService.find(anyString())).
                 thenReturn(agent);
 
-        batchStockService.put(batchStock, section, agent);
+//        batchStockService.postAll();
 
         assertEquals(listBatchStock.get(0).getId(), batchStock.getId());
     }
