@@ -3,17 +3,15 @@ package br.com.meli.projetointegrador.model.entity;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import java.util.List;
-
 /**
- * @author Jhony Zuim
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
  * @version 1.0.0
  * @since 15/10/2021
+ * Objeto criado para o section/setor e seus atributos
  */
 
 @Data
@@ -27,19 +25,10 @@ public class Section {
     private String sectionCode;
     private String sectionName;
     private Integer maxLength;
-
-    public Section id(String id) {
-        this.id = id;
-        return this;
-    }
-
-
-    @DBRef(lazy = true)
-    private List<BatchStock> batchStockList;
+    private Warehouse warehouse;
 
     /**
      * @author Jhony Zuim
-     * @version 1.0.0
      * Construcao de construtores fluentes para a classe Section
      */
 
@@ -60,6 +49,11 @@ public class Section {
 
     public Section maxLength(Integer maxLength) {
         this.maxLength = maxLength;
+        return this;
+    }
+
+    public Section warehouse(Warehouse warehouse) {
+        this.warehouse = warehouse;
         return this;
     }
 

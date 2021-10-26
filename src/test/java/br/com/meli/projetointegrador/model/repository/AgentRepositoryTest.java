@@ -12,6 +12,13 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Repository de teste para trabalhar como uma porta ou janela de acesso a camada do banco da entity agent
+ */
+
 @DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
 public class AgentRepositoryTest {
 
@@ -37,5 +44,14 @@ public class AgentRepositoryTest {
     void findByCpfTest() {
         Optional<Agent> agent = agentRepository.findByCpf("11122233344");
         assertTrue(agent.isPresent());
+    }
+
+    @Test
+    void saveTest() {
+        Agent agent = new Agent().
+                cpf("11122233344").
+                name("lucas").
+                build();
+        agentRepository.save(agent);
     }
 }

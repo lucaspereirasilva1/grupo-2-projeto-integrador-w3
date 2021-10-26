@@ -13,7 +13,15 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Repository de teste para trabalhar como uma porta ou janela de acesso a camada do banco da entity inboundOrder
+ */
 
 @DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
 public class InboundOrderRepositoryTest {
@@ -30,14 +38,24 @@ public class InboundOrderRepositoryTest {
     @Autowired
     private AgentRepository agentRepository;
 
+    @Autowired
+    private WarehouseRepository warehouseRepository;
+
     @BeforeEach
     void setUp() {
         clearBase();
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+        warehouseRepository.save(warehouse);
 
         Section section = new Section()
                 .sectionCode("LA")
                 .sectionName("laticinios")
                 .maxLength(10)
+                .warehouse(warehouse)
                 .build();
         sectionRepository.save(section);
 
@@ -60,7 +78,6 @@ public class InboundOrderRepositoryTest {
         Optional<Section> section = sectionRepository.findBySectionCode("LA");
         Optional<Agent> agent = agentRepository.findByCpf("11122233344");
 
-
         BatchStock batchStock = new BatchStock()
                 .batchNumber(1)
                 .productId("QJ")
@@ -72,6 +89,7 @@ public class InboundOrderRepositoryTest {
                 .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now())
                 .agent(agent.orElse(new Agent()))
+                .section(section.orElse(new Section()))
                 .build();
         batchStockRepository.save(batchStock);
 
@@ -86,17 +104,18 @@ public class InboundOrderRepositoryTest {
                 .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now())
                 .agent(agent.orElse(new Agent()))
+                .section(section.orElse(new Section()))
                 .build();
         batchStockRepository.save(batchStockUm);
 
-        InboudOrder inboudOrder = new InboudOrder()
+        InboundOrder inboundOrder = new InboundOrder()
                 .orderNumber(1)
                 .orderDate(LocalDate.now())
                 .section(section.orElse(new Section()))
                 .listBatchStock(Arrays.asList(batchStock, batchStockUm))
                 .build();
-        inboundOrderRepository.save(inboudOrder);
-        assertFalse(inboundOrderRepository.findById(inboudOrder.getId()).isEmpty());
+        inboundOrderRepository.save(inboundOrder);
+        assertFalse(inboundOrderRepository.findById(inboundOrder.getId()).isEmpty());
     }
 
     @Test
@@ -121,6 +140,7 @@ public class InboundOrderRepositoryTest {
                         id("1").
                         name("lucas").
                         build())
+                .section(section)
                 .build();
 
         BatchStock batchStockUm = new BatchStock()
@@ -138,22 +158,24 @@ public class InboundOrderRepositoryTest {
                         id("2").
                         name("ed").
                         build())
+                .section(section)
                 .build();
 
-        InboudOrder inboudOrder = new InboudOrder()
+        InboundOrder inboundOrder = new InboundOrder()
                 .orderNumber(2)
                 .orderDate(LocalDate.now())
                 .section(section)
                 .listBatchStock(Arrays.asList(batchStock, batchStockUm))
                 .build();
 
-        inboundOrderRepository.save(inboudOrder);
-        inboundOrderRepository.deleteByOrderNumber(inboudOrder.getOrderNumber());
+        inboundOrderRepository.save(inboundOrder);
+        inboundOrderRepository.deleteByOrderNumber(inboundOrder.getOrderNumber());
 
-        assertTrue(inboundOrderRepository.findById(inboudOrder.getId()).isEmpty());
+        assertTrue(inboundOrderRepository.findById(inboundOrder.getId()).isEmpty());
     }
 
     void clearBase() {
+        warehouseRepository.deleteAll();
         sectionRepository.deleteAll();
         inboundOrderRepository.deleteAll();
         agentRepository.deleteAll();

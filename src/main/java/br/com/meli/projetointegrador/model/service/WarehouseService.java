@@ -6,8 +6,16 @@ import br.com.meli.projetointegrador.model.repository.WarehouseRepository;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
 
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Camada service responsavel pela regra de negocio relacionada ao warehouse
+ */
+
 @Service
 public class WarehouseService {
+
     private final WarehouseRepository warehouseRepository;
     public WarehouseService(WarehouseRepository warehouseRepository) {
         this.warehouseRepository = warehouseRepository;
@@ -19,12 +27,19 @@ public class WarehouseService {
      * @return
      */
 
-    public boolean validWarehouse(Warehouse warehouse) {
-        Optional<Warehouse> warehouseOptional = warehouseRepository.findById(warehouse.getWarehouseCode());
-        if (warehouseOptional.isPresent()) {
+    public Boolean validWarehouse(String warehouseCode) {
+        if (warehouseRepository.existsByWarehouseCode(warehouseCode)) {
             return true;
         } else {
-            throw new WarehouseException("NAOOOOOOOO");
+            throw new WarehouseException("Armazem nao cadastrado!!! Por gentileza cadastrar!!!");
         }
+    }
+
+    public Warehouse find(String warehouseCode) {
+        Optional<Warehouse> warehouseOptional = warehouseRepository.findByWarehouseCode(warehouseCode);
+        if (warehouseOptional.isEmpty()) {
+            throw new WarehouseException("Armazem nao cadastrado!!! Por gentileza reenviar com um armazem valido");
+        }
+        return warehouseOptional.get();
     }
 }

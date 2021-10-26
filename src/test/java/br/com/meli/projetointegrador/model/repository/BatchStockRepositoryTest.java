@@ -2,6 +2,8 @@ package br.com.meli.projetointegrador.model.repository;
 
 import br.com.meli.projetointegrador.model.entity.Agent;
 import br.com.meli.projetointegrador.model.entity.BatchStock;
+import br.com.meli.projetointegrador.model.entity.Section;
+import br.com.meli.projetointegrador.model.entity.Warehouse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,17 +18,51 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Repository de teste para trabalhar como uma porta ou janela de acesso a camada do banco da entity batchStock
+ */
+
 @DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
 public class BatchStockRepositoryTest {
 
     @Autowired
     private BatchStockRepository batchStockRepository;
 
+    @Autowired
+    private WarehouseRepository warehouseRepository;
+
+    @Autowired
+    private SectionRepository sectionRepository;
+
+    @Autowired
+    private AgentRepository agentRepository;
+
     @BeforeEach
     void setUp() {
+        clearBase();
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+        warehouseRepository.save(warehouse);
+
+        Section section = new Section()
+                .sectionCode("FR")
+                .sectionName("frios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+        sectionRepository.save(section);
+
         Agent agent = new Agent()
                 .name("lucas")
+                .cpf("11122233344")
                 .build();
+        agentRepository.save(agent);
 
         BatchStock batchStock = new BatchStock()
                 .batchNumber(1)
@@ -46,7 +82,7 @@ public class BatchStockRepositoryTest {
 
     @AfterEach
     void cleanUpDatabase() {
-        batchStockRepository.deleteAll();
+        clearBase();
     }
 
     @Test
@@ -57,6 +93,13 @@ public class BatchStockRepositoryTest {
         Optional<BatchStock> batchStockOptional = batchStockRepository.findByAgent(agent);
         assertTrue(batchStockOptional.isPresent());
         assertEquals(agent, batchStockOptional.get().getAgent());
+    }
+
+    void clearBase() {
+        agentRepository.deleteAll();
+        warehouseRepository.deleteAll();
+        sectionRepository.deleteAll();
+        batchStockRepository.deleteAll();
     }
 
 }

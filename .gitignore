@@ -31,3 +31,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+#arquivo sujo Intellij
+*.DS_Store

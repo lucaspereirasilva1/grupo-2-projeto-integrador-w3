@@ -1,7 +1,13 @@
 package br.com.meli.projetointegrador.exception;
 
-public class WarehouseException extends RuntimeException {
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Exception personalizada para warehouse
+ */
 
+public class WarehouseException extends RuntimeException {
 
     public WarehouseException(String message) {
         super(message);

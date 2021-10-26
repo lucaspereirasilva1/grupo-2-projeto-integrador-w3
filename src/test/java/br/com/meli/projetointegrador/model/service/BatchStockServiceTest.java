@@ -1,68 +1,122 @@
 package br.com.meli.projetointegrador.model.service;
 
-import br.com.meli.projetointegrador.exception.AgentException;
 import br.com.meli.projetointegrador.model.entity.Agent;
 import br.com.meli.projetointegrador.model.entity.BatchStock;
+import br.com.meli.projetointegrador.model.entity.Section;
+import br.com.meli.projetointegrador.model.entity.Warehouse;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Optional;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Camada de testes unitarios do service responsavel pela regra de negocio relacionada ao batchStock
+ */
 
 public class BatchStockServiceTest {
 
     private final BatchStockRepository mockBatchStockRepository = mock(BatchStockRepository.class);
-    private final BatchStockService batchStockService = new BatchStockService(mockBatchStockRepository);
+    private final SectionService mockSectionService = mock(SectionService.class);
+    private final AgentService mockAgentService = mock(AgentService.class);
+    private final ProductService mockProductService = mock(ProductService.class);
+    private final BatchStockService batchStockService = new BatchStockService(mockBatchStockRepository,
+            mockSectionService, mockAgentService, mockProductService);
+    private final List<BatchStock> listBatchStock = new ArrayList<>();
 
-    @Test
-    void validBatchStockAgentNotExistTest() {
-        Agent agent = new Agent()
-                .id("3")
-                .name("lucas")
+    @BeforeEach
+    void setUp() {
+        Warehouse warehouse = new Warehouse()
+                .id("1")
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
                 .build();
 
-        when((mockBatchStockRepository).findByAgent(any()))
-                .thenReturn(Optional.empty());
+        Section section = new Section()
+                .id("1")
+                .sectionCode("LA")
+                .sectionName("laticinios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
 
-        AgentException agentException = assertThrows(AgentException.class, () ->
-                batchStockService.validBatchStockAgent(agent));
+        Agent agent = new Agent().
+                id("1").
+                cpf("11122233344").
+                name("lucas").
+                build();
 
-        String expectedMessage = "Representante nao foi vinculado ao estoque, por gentileza reenviar a request!!!";
-        String receivedMessage = agentException.getMessage();
+        BatchStock batchStock = new BatchStock()
+                .id("1")
+                .batchNumber(1)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .agent(agent)
+                .section(section)
+                .build();
 
-        assertTrue(expectedMessage.contains(receivedMessage));
+        listBatchStock.add(batchStock);
     }
 
     @Test
-    void validBatchStockAgentExistTest() {
-        Agent agent = new Agent()
+    void putTest() {
+        Warehouse warehouse = new Warehouse()
                 .id("1")
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+
+        Section section = new Section()
+                .id("1")
+                .sectionCode("LA")
+                .sectionName("laticinios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+
+        Agent agent = new Agent()
+                .cpf("11122233344")
                 .name("lucas")
                 .build();
 
-        when(mockBatchStockRepository.findByAgent(any()))
-                .thenReturn(Optional.of(new BatchStock()
-                        .batchNumber(1)
-                        .productId("QJ")
-                        .currentTemperature(10.0F)
-                        .minimumTemperature(5.0F)
-                        .initialQuantity(2)
-                        .currentQuantity(10)
-                        .manufacturingDate(LocalDate.now())
-                        .manufacturingTime(LocalDateTime.now())
-                        .dueDate(LocalDate.now())
-                        .agent(agent)
-                        .build()));
+        BatchStock batchStock = new BatchStock()
+                .id("1")
+                .batchNumber(1)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .agent(agent)
+                .section(section)
+                .build();
 
-        boolean exist = batchStockService.validBatchStockAgent(agent);
+        when(mockSectionService.find(anyString())).
+                thenReturn(section);
+        when(mockAgentService.find(anyString())).
+                thenReturn(agent);
 
-        assertTrue(exist);
+        batchStockService.put(batchStock, section, agent);
+
+        assertEquals(listBatchStock.get(0).getId(), batchStock.getId());
     }
 }

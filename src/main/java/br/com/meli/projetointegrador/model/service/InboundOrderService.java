@@ -1,13 +1,24 @@
 package br.com.meli.projetointegrador.model.service;
 
+import br.com.meli.projetointegrador.exception.InboundOrderException;
+import br.com.meli.projetointegrador.exception.ValidInputException;
 import br.com.meli.projetointegrador.model.dto.AgentDTO;
+import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
 import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;
-import br.com.meli.projetointegrador.model.entity.Agent;
-import br.com.meli.projetointegrador.model.entity.InboudOrder;
-import br.com.meli.projetointegrador.model.entity.Section;
+import br.com.meli.projetointegrador.model.entity.*;
 import br.com.meli.projetointegrador.model.repository.InboundOrderRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Camada service responsavel pela regra de negocio relacionada ao inboundOrder
+ */
 
 @Service
 public class InboundOrderService {
@@ -16,33 +27,45 @@ public class InboundOrderService {
     private final InboundOrderRepository inboundOrderRepository;
     private final BatchStockService batchStockService;
     private final SectionService sectionService;
-    private final AgentService agentService;
+    private final WarehouseService warehouseService;
 
     public InboundOrderService(InboundOrderRepository inboudOrderRepository,
                                BatchStockService batchStockService,
                                SectionService sectionService,
-                               AgentService agentService) {
+                               WarehouseService warehouseService) {
         this.inboundOrderRepository = inboudOrderRepository;
         this.batchStockService = batchStockService;
         this.sectionService = sectionService;
-        this.agentService = agentService;
+        this.warehouseService = warehouseService;
     }
 
-    public InboundOrderDTO put(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
-        InboudOrder inboudOrder = modelMapper.map(inboundOrderDTO, InboudOrder.class);
+    public List<BatchStockDTO> post(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
+        InboundOrder inboundOrder = modelMapper.map(inboundOrderDTO, InboundOrder.class);
+        inboundOrder.section(sectionService.find(inboundOrderDTO.getSectionDTO().getSectionCode()));
+        batchStockService.postAll(inboundOrder.getListBatchStock(), agentDTO, inboundOrderDTO.getSectionDTO());
+        inboundOrderRepository.save(inboundOrder);
+        return inboundOrderDTO.getListBatchStockDTO();
+    }
 
-        Section section = sectionService.find(inboundOrderDTO.getSectionDTO().getSectionCode());
-        inboudOrder.section(section);
+    public List<BatchStockDTO> put(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
+        Optional<InboundOrder> inboundOrderCheck = inboundOrderRepository.findByOrderNumber(inboundOrderDTO.getOrderNumber());
+        if (inboundOrderCheck.isPresent()) {
+            InboundOrder inboundOrder = inboundOrderCheck.get();
+            inboundOrder.orderNumber(inboundOrderDTO.getOrderNumber());
+            inboundOrder.orderDate(inboundOrderDTO.getOrderDate());
+            batchStockService.putAll(inboundOrder.getListBatchStock(), inboundOrderDTO.getListBatchStockDTO(), agentDTO, inboundOrderDTO.getSectionDTO());
+            inboundOrderRepository.save(inboundOrder);
+        } else {
+            throw new InboundOrderException("Ordem de entrada nao existe!!! Por gentileza realizar o cadastro antes de atualizar");
+        }
+        return inboundOrderDTO.getListBatchStockDTO();
+    }
 
-        Agent agent = agentService.find(agentDTO.getCpf());
-        inboudOrder.getListBatchStock().forEach(b -> {
-            b.agent(agent);
-            batchStockService.put(b);
-        });
-
-        inboundOrderRepository.save(inboudOrder);
-
-        return inboundOrderDTO;
+    public void inputValid(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
+        if (!warehouseService.validWarehouse(inboundOrderDTO.getSectionDTO().getWarehouseCode()) &
+            !inboundOrderDTO.getSectionDTO().getWarehouseCode().equals(agentDTO.getWarehouseCode()) &
+            !sectionService.validSection(inboundOrderDTO.getSectionDTO().getSectionCode()))
+            throw new ValidInputException("Problema na validacao dos dados de entrada!!!");
     }
 
 }

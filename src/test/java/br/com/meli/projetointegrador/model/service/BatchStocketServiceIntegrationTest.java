@@ -1,29 +1,28 @@
 package br.com.meli.projetointegrador.model.service;
 
-import br.com.meli.projetointegrador.exception.AgentException;
 import br.com.meli.projetointegrador.model.entity.Agent;
 import br.com.meli.projetointegrador.model.entity.BatchStock;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Camada de teste integrado do service responsavel pela regra de negocio relacionada ao batchStock
+ */
 
 @SpringBootTest
 public class BatchStocketServiceIntegrationTest {
 
     @Autowired
     private BatchStockRepository batchStockRepository;
-
-    @Autowired
-    private BatchStockService batchStockService;
 
     @BeforeEach
     void setUp() {
@@ -49,34 +48,6 @@ public class BatchStocketServiceIntegrationTest {
     @AfterEach
     void cleanUpDatabase() {
         batchStockRepository.deleteAll();
-    }
-
-    @Test
-    void validAgentExistTest() {
-
-        Agent agent = new Agent()
-                .name("lucas")
-                .build();
-
-        assertTrue(batchStockService.validBatchStockAgent(agent));
-
-    }
-
-    @Test
-    void validAgentNotExistTest() {
-
-        Agent agent = new Agent()
-                .name("ed")
-                .build();
-
-        AgentException agentException = assertThrows(AgentException.class, () ->
-                batchStockService.validBatchStockAgent(agent));
-
-        String expectedMessage = "Representante nao foi vinculado ao estoque, por gentileza reenviar a request!!!";
-        String receivedMessage = agentException.getMessage();
-
-        assertTrue(expectedMessage.contains(receivedMessage));
-
     }
 
 }

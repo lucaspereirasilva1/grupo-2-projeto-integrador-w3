@@ -4,12 +4,13 @@ package br.com.meli.projetointegrador.exception;
  * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
  * @version 1.0.0
  * @since 15/10/2021
- * Exception personalizada para agente
+ * Exception personalizada para ordem de entrada
  */
 
-public class AgentException extends RuntimeException{
+public class InboundOrderException extends RuntimeException{
 
-    public AgentException(String message) {
+    public InboundOrderException(String message) {
         super(message);
     }
+
 }

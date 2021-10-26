@@ -10,6 +10,13 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Camada de testes unitarios do service responsavel pela regra de negocio relacionada ao warehouse
+ */
+
 public class WarehouseServiceTest {
 
     private WarehouseRepository mockWarehouseRepository = mock(WarehouseRepository.class);
@@ -35,7 +42,7 @@ public class WarehouseServiceTest {
                         .warehouseName("Minas")
                         .build()));
 
-        assertTrue(warehouseService.validWarehouse(warehouse));
+        assertTrue(warehouseService.validWarehouse("teste"));
 
     }
 
@@ -47,11 +54,11 @@ public class WarehouseServiceTest {
                 .warehouseName("Minas")
                 .build();
 
-        when((mockWarehouseRepository).findByWarehouse(any()))
-                .thenReturn(Optional.empty());
+//        when((mockWarehouseRepository).findByWarehouse(any()))
+//                .thenReturn(Optional.empty());
 
         WarehouseException warehouseException = assertThrows(WarehouseException.class, () ->
-                warehouseService.validWarehouse(warehouse));
+                warehouseService.validWarehouse("teste"));
 
         String expectedMessage = "Representante nao foi vinculado ao estoque, por gentileza reenviar a request!!!";
         String receivedMessage = warehouseException.getMessage();

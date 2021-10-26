@@ -8,9 +8,10 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 /**
- * @author Jhony Zuim
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
  * @version 1.0.0
  * @since 15/10/2021
+ * Objeto criado para o produto e seus atributos
  */
 
 @Data
@@ -21,13 +22,12 @@ public class Product {
     @Setter(AccessLevel.NONE)
     private String id;
 
-    private String productCode;
+    private String productId;
     private String productName;
     private Section section;
 
     /**
      * @author Jhony Zuim
-     * @version 1.0.0
      * Construcao de construtores fluentes para a classe produto
      */
 
@@ -37,7 +37,7 @@ public class Product {
     }
 
     public Product productCode(String productCode) {
-        this.productCode = productCode;
+        this.productId = productCode;
         return this;
     }
 

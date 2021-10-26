@@ -7,7 +7,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
-import java.util.List;
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Objeto criado para o warehouse/armazem e seus atributos
+ */
 
 @Data
 @Document(collection = "warehouse")
@@ -19,7 +24,6 @@ public class Warehouse {
 
     private String warehouseCode;
     private String warehouseName;
-    private List<Section> listSections;
 
     public Warehouse id(String id) {
         this.id = id;
@@ -27,12 +31,12 @@ public class Warehouse {
     }
 
     public Warehouse warehouseCode(String warehouseCode) {
-        this.werehouseCode = warehouseCode;
+        this.warehouseCode = warehouseCode;
         return this;
     }
 
     public Warehouse warehouseName(String warehouseName) {
-        this.werehouseName = warehouseName;
+        this.warehouseName = warehouseName;
         return this;
     }
 
