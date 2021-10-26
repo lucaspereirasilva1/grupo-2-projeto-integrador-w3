@@ -105,7 +105,7 @@ public class BatchStockServiceTest {
                 build();
 
         Product product = new Product()
-                .productCode("LE")
+                .productId("LE")
                 .productName("leite")
                 .section(section)
                 .build();

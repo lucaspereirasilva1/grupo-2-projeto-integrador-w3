@@ -42,7 +42,7 @@ public class ProductServiceIntegrationTest {
                 .build();
 
         Product product = new Product()
-                .productCode("LEI")
+                .productId("LEI")
                 .productName("Leite")
                 .section(section)
                 .build();

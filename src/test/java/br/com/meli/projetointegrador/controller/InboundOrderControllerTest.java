@@ -119,7 +119,7 @@ public class InboundOrderControllerTest {
                 .build();
 
         Product product = new Product()
-                .productCode("LEI")
+                .productId("LEI")
                 .productName("Leite")
                 .section(section)
                 .build();
@@ -206,7 +206,7 @@ public class InboundOrderControllerTest {
 
         Product product = new Product()
                 .id("6176d1eecc1ee553f3aa6b2f")
-                .productCode("LEI")
+                .productId("LEI")
                 .productName("Leite")
                 .section(section)
                 .build();

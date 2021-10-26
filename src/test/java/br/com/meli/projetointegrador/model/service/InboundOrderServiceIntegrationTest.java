@@ -248,13 +248,13 @@ public class InboundOrderServiceIntegrationTest {
         agentRepository.save(agent);
 
         Product product = new Product()
-                .productCode("LE")
+                .productId("LE")
                 .productName("leite")
                 .section(section)
                 .build();
 
         Product productUm = new Product()
-                .productCode("QJ")
+                .productId("QJ")
                 .productName("queijo")
                 .section(section)
                 .build();

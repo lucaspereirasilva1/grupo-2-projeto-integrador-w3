@@ -26,7 +26,7 @@ public class ProductService {
 
     /**
      * @author Jhony Zuim
-     * @param section, recebe um produto para validar se esta na section correta
+     * @param sectionCode, recebe um produto para validar se esta na section correta
      * @return true ou exception personalizada
      */
 
