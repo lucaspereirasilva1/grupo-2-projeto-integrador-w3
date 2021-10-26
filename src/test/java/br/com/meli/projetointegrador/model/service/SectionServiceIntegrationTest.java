@@ -227,6 +227,23 @@ public class SectionServiceIntegrationTest {
         assertTrue(mensagemEsperada.contains(mensagemRecebida));
     }
 
+    @Test
+    void findIntegrationTest() {
+        final Section section = sectionService.find("LA");
+        assertEquals("LA", section.getSectionCode());
+    }
+
+    @Test
+    void findNotExistIntegrationTest() {
+        SectionException sectionException = assertThrows
+                (SectionException.class,() -> sectionService.find("XX"));
+
+        String mensagemEsperada = "Sessao nao existe!!! Reenviar com uma sessao valida";
+        String mensagemRecebida = sectionException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
     /**
      * @author Edemilson Nobre
      * deixa vo Banco linpo
