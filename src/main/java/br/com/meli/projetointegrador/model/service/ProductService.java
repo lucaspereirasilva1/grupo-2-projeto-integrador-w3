@@ -1,11 +1,12 @@
 package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.ProductException;
+import br.com.meli.projetointegrador.model.dto.ProductDTO;
 import br.com.meli.projetointegrador.model.entity.Product;
-import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -24,12 +25,6 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    /**
-     * @author Jhony Zuim
-     * @param section, recebe um produto para validar se esta na section correta
-     * @return true ou exception personalizada
-     */
-
     public Boolean validProductSection(String sectionCode){
         if (productRepository.existsProductBySection_SectionCode(sectionCode)){
             return true;
@@ -44,6 +39,15 @@ public class ProductService {
             return product.get();
         } else {
             throw new ProductException("Produto nao cadastrado!!! Por gentileza cadastrar");
+        }
+    }
+
+    public List<ProductDTO> listProdutcBySection(String sectionCode) {
+        List<ProductDTO> productList = productRepository.findAllBySection_SectionCode(sectionCode);
+        if (!productList.isEmpty()){
+            return productList;
+        } else {
+            throw new ProductException("Nao temos o produtos nessa section, por favor informar a section correta!");
         }
     }
 }
