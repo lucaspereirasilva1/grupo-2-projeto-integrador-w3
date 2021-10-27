@@ -5,18 +5,14 @@ import br.com.meli.projetointegrador.model.entity.BatchStock;
 import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.entity.Warehouse;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
@@ -25,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Repository de teste para trabalhar como uma porta ou janela de acesso a camada do banco da entity batchStock
  */
 
-@DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
+@DataMongoTest
 public class BatchStockRepositoryTest {
 
     @Autowired
@@ -40,10 +36,13 @@ public class BatchStockRepositoryTest {
     @Autowired
     private AgentRepository agentRepository;
 
-    @BeforeEach
-    void setUp() {
+    @AfterEach
+    void cleanUpDatabase() {
         clearBase();
+    }
 
+    @Test
+    void countBySectionTest() {
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")
                 .warehouseName("sao paulo")
@@ -61,6 +60,7 @@ public class BatchStockRepositoryTest {
         Agent agent = new Agent()
                 .name("lucas")
                 .cpf("11122233344")
+                .warehouse(warehouse)
                 .build();
         agentRepository.save(agent);
 
@@ -75,24 +75,12 @@ public class BatchStockRepositoryTest {
                 .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now())
                 .agent(agent)
+                .section(section)
                 .build();
-
         batchStockRepository.save(batchStock);
-    }
 
-    @AfterEach
-    void cleanUpDatabase() {
-        clearBase();
-    }
-
-    @Test
-    void findByAgentTest() {
-        Agent agent = new Agent()
-                .name("lucas")
-                .build();
-        Optional<BatchStock> batchStockOptional = batchStockRepository.findByAgent(agent);
-        assertTrue(batchStockOptional.isPresent());
-        assertEquals(agent, batchStockOptional.get().getAgent());
+        final Long countBySection = batchStockRepository.countBySection(section);
+        assertEquals(1, countBySection);
     }
 
     void clearBase() {
