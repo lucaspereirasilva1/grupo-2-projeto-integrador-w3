@@ -6,7 +6,6 @@ import br.com.meli.projetointegrador.model.dto.SectionDTO;
 import br.com.meli.projetointegrador.model.entity.Agent;
 import br.com.meli.projetointegrador.model.entity.BatchStock;
 import br.com.meli.projetointegrador.model.entity.Product;
-import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import org.springframework.stereotype.Service;
 
@@ -57,6 +56,7 @@ public class BatchStockService {
                     listBatchStock.get(i).currentTemperature(listBatchStockDTO.get(x).getCurrentTemperature());
                     listBatchStock.get(i).minimumTemperature(listBatchStockDTO.get(x).getMinimumTemperature());
                     listBatchStock.get(i).initialQuantity(listBatchStockDTO.get(x).getInitialQuantity());
+                    listBatchStock.get(i).currentQuantity(listBatchStockDTO.get(x).getCurrentQuantity());
                     listBatchStock.get(i).manufacturingDate(listBatchStockDTO.get(x).getManufacturingDate());
                     listBatchStock.get(i).manufacturingTime(listBatchStockDTO.get(x).getManufacturingTime());
                     listBatchStock.get(i).dueDate(listBatchStockDTO.get(x).getDueDate());
