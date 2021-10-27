@@ -101,7 +101,7 @@ public class SaveDataRepositoryTest {
         productRepository.save(product);
 
         Product productDois = new Product()
-                .productCode("DA")
+                .productId("DA")
                 .productName("danone")
                 .section(section)
                 .build();
@@ -115,6 +115,11 @@ public class SaveDataRepositoryTest {
                 build();
 
         agentRepository.save(agent);
+
+    }
+
+    @Test
+    void saveUser() {
 
     }
 
