@@ -1,6 +1,10 @@
 package br.com.meli.projetointegrador.model.service;
 
-import br.com.meli.projetointegrador.model.dto.*;
+import br.com.meli.projetointegrador.exception.ValidInputException;
+import br.com.meli.projetointegrador.model.dto.AgentDTO;
+import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
+import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;
+import br.com.meli.projetointegrador.model.dto.SectionDTO;
 import br.com.meli.projetointegrador.model.entity.*;
 import br.com.meli.projetointegrador.model.repository.*;
 import org.junit.jupiter.api.AfterEach;
@@ -11,10 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.*;
  * @since 15/10/2021
  * Camada de teste integrado do service responsavel pela regra de negocio relacionada ao inboundOrder
  */
-
 @SpringBootTest
 public class InboundOrderServiceIntegrationTest {
 
@@ -195,7 +195,7 @@ public class InboundOrderServiceIntegrationTest {
                 .build();
         inboundOrderRepository.save(inboundOrder);
 
-        inboundOrderDTO.getSectionDTO().setSectionCode("XX");
+        inboundOrderDTO.getSectionDTO().setSectionCode("LA");
 
         List<BatchStockDTO> listBatchStockDTO = inboundOrderService.put(inboundOrderDTO, agentDTO);
         Optional<InboundOrder> inboudOrder = inboundOrderRepository.findByOrderNumber(inboundOrderDTO.getOrderNumber());
@@ -205,6 +205,47 @@ public class InboundOrderServiceIntegrationTest {
         assertEquals(inboundOrderDTO.getOrderNumber(), inboudOrder.orElse(new InboundOrder()).getOrderNumber());
         assertEquals(inboundOrderDTO.getOrderDate(), inboudOrder.orElse(new InboundOrder()).getOrderDate());
         assertEquals(inboundOrderDTO.getSectionDTO().getSectionCode(), inboudOrder.orElse(new InboundOrder()).getSection().getSectionCode());
+    }
+
+    @Test
+    void inputValidIntegrationTest() {
+        SectionDTO sectionDTO = new SectionDTO()
+                .sectionCode("LA")
+                .warehouseCode("SP")
+                .build();
+
+        BatchStockDTO batchStockDTO = new BatchStockDTO()
+                .batchNumber(1)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(2)
+                .currentQuantity(2)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .build();
+
+        InboundOrderDTO inboundOrderDTO = new InboundOrderDTO()
+                .orderNumber(1)
+                .orderDate(LocalDate.of(2000, 1, 1))
+                .sectionDTO(sectionDTO)
+                .batchStockDTO(Collections.singletonList(batchStockDTO))
+                .build();
+
+        AgentDTO agentDTO = new AgentDTO().
+                name("lucas").
+                cpf("11122233344").
+                warehouseCode("XX").
+                build();
+
+        ValidInputException validInputException = assertThrows
+                (ValidInputException.class,() -> inboundOrderService.inputValid(inboundOrderDTO, agentDTO));
+
+        String mensagemEsperada = "Problema na validacao dos dados de entrada!!!";
+        String mensagemRecebida = validInputException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
     }
 
     void clearBase() {
@@ -231,14 +272,6 @@ public class InboundOrderServiceIntegrationTest {
                 .warehouse(warehouse)
                 .build();
         sectionRepository.save(section);
-
-        Section sectionDois = new Section()
-                .sectionCode("CO")
-                .sectionName("Congelados")
-                .maxLength(10)
-                .warehouse(warehouse)
-                .build();
-        sectionRepository.save(sectionDois);
 
         Agent agent = new Agent().
                 cpf("11122233344").
