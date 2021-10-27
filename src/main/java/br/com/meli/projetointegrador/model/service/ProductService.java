@@ -6,6 +6,7 @@ import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,9 +44,18 @@ public class ProductService {
     }
 
     public List<ProductDTO> listProdutcBySection(String sectionCode) {
-        List<ProductDTO> productList = productRepository.findAllBySection_SectionCode(sectionCode);
+        List<ProductDTO> productListDTO = new ArrayList<>();
+        List<Product> productList = productRepository.findAllBySection_SectionCode(sectionCode);
         if (!productList.isEmpty()){
-            return productList;
+            for (Product p: productList) {
+                ProductDTO productDTO = new ProductDTO()
+                        .productId(p.getProductId())
+                        .productName(p.getProductName())
+                        .sectionName(p.getSection().getSectionName())
+                        .build();
+                productListDTO.add(productDTO);
+            }
+            return productListDTO;
         } else {
             throw new ProductException("Nao temos o produtos nessa section, por favor informar a section correta!");
         }

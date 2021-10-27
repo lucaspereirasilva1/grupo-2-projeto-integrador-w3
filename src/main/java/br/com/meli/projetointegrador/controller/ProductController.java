@@ -29,9 +29,7 @@ public class ProductController {
 
     @GetMapping(value = "/list") // list?sectionCode=LA
     public ResponseEntity<List<ProductDTO>> getProductBySection(@RequestParam("sectionCode") String sectionCode){
-        productService.listProdutcBySection(sectionCode);
         List<ProductDTO> productList = productService.listProdutcBySection(sectionCode);
-
         return ResponseEntity.ok(productList);
     }
 }

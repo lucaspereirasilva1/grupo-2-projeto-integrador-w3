@@ -1,6 +1,5 @@
 package br.com.meli.projetointegrador.model.repository;
 
-import br.com.meli.projetointegrador.model.dto.ProductDTO;
 import br.com.meli.projetointegrador.model.entity.Product;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
@@ -20,5 +19,5 @@ public interface ProductRepository extends MongoRepository<Product, String> {
 
     Boolean existsProductBySection_SectionCode(String sectionCode);
     Optional<Product> findByProductId(String productId);
-    List<ProductDTO> findAllBySection_SectionCode(String sectionCode);
+    List<Product> findAllBySection_SectionCode(String sectionCode);
 }
