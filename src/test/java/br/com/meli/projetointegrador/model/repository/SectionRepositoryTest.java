@@ -59,7 +59,6 @@ public class SectionRepositoryTest {
 
     @Test
     void registerBatchIfSectorNoFull() {
-
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("RS")
                 .warehouseName("Porto Alegre")

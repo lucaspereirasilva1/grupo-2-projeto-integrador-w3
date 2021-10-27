@@ -146,7 +146,6 @@ public class SectionServiceIntegrationTest {
      */
     @Test
     void validSectionFull() {
-
         Optional<Section> sectionOptional = sectionRepository.findBySectionCode("LA");
         BatchStock batchStock = new BatchStock()
                 .batchNumber(1)
