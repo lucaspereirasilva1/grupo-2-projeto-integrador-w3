@@ -2,7 +2,6 @@ package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.ProductException;
 import br.com.meli.projetointegrador.model.entity.Product;
-import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +38,7 @@ public class ProductService {
     }
 
     public Product find(String productId) {
-        Optional<Product> product = productRepository.findByProductId(productId);
+        Optional<Product> product = productRepository.findDistinctFirstByProductId(productId);
         if (product.isPresent()){
             return product.get();
         } else {

@@ -11,7 +11,7 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
@@ -66,7 +66,7 @@ public class ProductRepositoryTest {
 
     @Test
     void findBySection(){
-        Optional<Product> product = productRepository.findByProductId("LE");
+        Optional<Product> product = productRepository.findDistinctFirstByProductId("LE");
         assertTrue(product.isPresent());
     }
 

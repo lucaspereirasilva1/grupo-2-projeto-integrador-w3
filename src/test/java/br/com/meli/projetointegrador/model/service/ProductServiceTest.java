@@ -96,7 +96,7 @@ public class ProductServiceTest {
                 .section(section)
                 .build();
 
-        when(mockProductRepository.findByProductId(product.getProductId()))
+        when(mockProductRepository.findDistinctFirstByProductId(product.getProductId()))
                 .thenReturn(Optional.of(product));
 
         Product productReturn = productService.find(product.getProductId());
@@ -124,7 +124,7 @@ public class ProductServiceTest {
                 .section(section)
                 .build();
 
-        when(mockProductRepository.findByProductId(product.getProductId()))
+        when(mockProductRepository.findDistinctFirstByProductId(product.getProductId()))
                 .thenReturn(Optional.empty());
 
         ProductException productException = assertThrows(ProductException.class, () ->
