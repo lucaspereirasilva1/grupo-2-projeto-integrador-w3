@@ -4,10 +4,10 @@ import br.com.meli.projetointegrador.exception.WarehouseException;
 import br.com.meli.projetointegrador.model.entity.Warehouse;
 import br.com.meli.projetointegrador.model.repository.WarehouseRepository;
 import org.junit.jupiter.api.Test;
+
 import java.util.Optional;
-import static org.junit.Assert.*;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
@@ -19,8 +19,8 @@ import static org.mockito.Mockito.*;
 
 public class WarehouseServiceTest {
 
-    private WarehouseRepository mockWarehouseRepository = mock(WarehouseRepository.class);
-    private WarehouseService warehouseService = new WarehouseService(mockWarehouseRepository);
+    private final WarehouseRepository mockWarehouseRepository = mock(WarehouseRepository.class);
+    private final WarehouseService warehouseService = new WarehouseService(mockWarehouseRepository);
 
     /**
      * Teste unitarios
@@ -30,40 +30,49 @@ public class WarehouseServiceTest {
 
     @Test
     void validWarehouseExist(){
+        when(mockWarehouseRepository.existsByWarehouseCode(anyString()))
+                .thenReturn(true);
 
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("MG")
-                .warehouseName("Minas")
-                .build();
-
-        when(mockWarehouseRepository.findById(any()))
-                .thenReturn(Optional.of(new Warehouse()
-                        .warehouseCode("MG")
-                        .warehouseName("Minas")
-                        .build()));
-
-        assertTrue(warehouseService.validWarehouse("teste"));
-
+        assertTrue(warehouseService.validWarehouse("MG"));
     }
 
     @Test
     void notValidWarehouseExist() {
-
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("MG")
-                .warehouseName("Minas")
-                .build();
-
-//        when((mockWarehouseRepository).findByWarehouse(any()))
-//                .thenReturn(Optional.empty());
+        when(mockWarehouseRepository.existsByWarehouseCode(anyString()))
+                .thenReturn(false);
 
         WarehouseException warehouseException = assertThrows(WarehouseException.class, () ->
-                warehouseService.validWarehouse("teste"));
+                warehouseService.validWarehouse(""));
 
-        String expectedMessage = "Representante nao foi vinculado ao estoque, por gentileza reenviar a request!!!";
+        String expectedMessage = "Armazem nao cadastrado!!! Por gentileza cadastrar!!!";
         String receivedMessage = warehouseException.getMessage();
 
-        assertFalse(expectedMessage.contains(receivedMessage));
+        assertTrue(expectedMessage.contains(receivedMessage));
+    }
+
+    @Test
+    void findExistTest() {
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("RS")
+                .warehouseName("POA")
+                .build();
+        when(mockWarehouseRepository.findByWarehouseCode(anyString()))
+                .thenReturn(Optional.of(warehouse));
+        assertEquals("RS", warehouse.getWarehouseCode());
+    }
+
+    @Test
+    void findNotExistTest() {
+        when(mockWarehouseRepository.findByWarehouseCode(anyString()))
+                .thenReturn(Optional.empty());
+
+        WarehouseException warehouseException = assertThrows(WarehouseException.class, () ->
+                warehouseService.find(""));
+
+        String expectedMessage = "Armazem nao encontrado!!! Por gentileza reenviar com um armazem valido";
+        String receivedMessage = warehouseException.getMessage();
+
+        assertTrue(expectedMessage.contains(receivedMessage));
     }
 
 }

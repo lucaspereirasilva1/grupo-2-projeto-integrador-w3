@@ -31,14 +31,8 @@ public class SectionServiceTest {
     private final BatchStockRepository mockBatchStockRepository=  mock(BatchStockRepository.class);
     private final SectionService sectionService = new SectionService(mockBatchStockRepository,mockSectionRepository);
 
-
-    /**
-     * @author Jhony Zuim
-     *  Teste para validar se uma section existe
-     */
     @Test
     void validSectionExistTest(){
-
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")
                 .warehouseName("Sao Paulo")
@@ -51,23 +45,14 @@ public class SectionServiceTest {
                 .warehouse(warehouse)
                 .build();
 
-        when(mockSectionRepository.findById(any()))
-                .thenReturn(Optional.of(new Section()
-                        .sectionCode("L5A")
-                        .sectionName("Laticionios")
-                        .maxLength(10)
-                        .warehouse(warehouse)
-                        .build()));
+        when(mockSectionRepository.existsSectionBySectionCode(anyString()))
+                .thenReturn(true);
 
-//        assertTrue(sectionService.validSection(section));
+        assertTrue(sectionService.validSection(section.getSectionCode()));
     }
-    /**
-     * @author Jhony Zuim
-     *  Teste para validar se uma section nao existe
-     */
+
     @Test
     void validSectionNotExistTest(){
-
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")
                 .warehouseName("Sao Paulo")
@@ -76,19 +61,19 @@ public class SectionServiceTest {
         Section section = new Section()
                 .sectionCode("LA")
                 .sectionName("Laticionios")
-                .maxLength(3)
+                .maxLength(10)
                 .warehouse(warehouse)
                 .build();
 
-        when(mockSectionRepository.findById(any()))
-                .thenReturn(Optional.empty());
+        when(mockSectionRepository.existsSectionBySectionCode(anyString()))
+                .thenReturn(false);
 
-//        SectionException sectionException = assertThrows(SectionException.class, () ->
-//                sectionService.validSection(section));
+        SectionException sectionException = assertThrows(SectionException.class, () ->
+                sectionService.validSection(section.getSectionCode()));
 
         String expectedMessage = "Nao existe esse setor, por gentileza verificar o setor!";
 
-//        assertTrue(expectedMessage.contains(sectionException.getMessage()));
+        assertTrue(expectedMessage.contains(sectionException.getMessage()));
     }
 
     /**
@@ -271,6 +256,41 @@ public class SectionServiceTest {
 
         String mensagemEsperada = "Sessao nao informada!!! Reenviar com uma sessao  existente!";
         String mensagemRecebida = validInputException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
+    void findExistTest() {
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("Laticionios")
+                .maxLength(3)
+                .build();
+
+        when(mockSectionRepository.findBySectionCode(anyString()))
+                .thenReturn(Optional.of(section));
+
+        final Section sectionReturn = sectionService.find(section.getSectionCode());
+        assertEquals(section, sectionReturn);
+    }
+
+    @Test
+    void findNotExistTest() {
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("Laticionios")
+                .maxLength(3)
+                .build();
+
+        when(mockSectionRepository.findBySectionCode(anyString()))
+                .thenReturn(Optional.empty());
+
+        SectionException sectionException = assertThrows
+                (SectionException.class,() -> sectionService.find(section.getSectionCode()));
+
+        String mensagemEsperada = "Sessao nao existe!!! Reenviar com uma sessao valida";
+        String mensagemRecebida = sectionException.getMessage();
 
         assertTrue(mensagemEsperada.contains(mensagemRecebida));
     }

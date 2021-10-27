@@ -146,7 +146,6 @@ public class SectionServiceIntegrationTest {
      */
     @Test
     void validSectionFull() {
-
         Optional<Section> sectionOptional = sectionRepository.findBySectionCode("LA");
         BatchStock batchStock = new BatchStock()
                 .batchNumber(1)
@@ -223,6 +222,23 @@ public class SectionServiceIntegrationTest {
 
         String mensagemEsperada = "Sessao nao informada!!! Reenviar com uma sessao  existente!";
         String mensagemRecebida = validInputException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
+    void findIntegrationTest() {
+        final Section section = sectionService.find("LA");
+        assertEquals("LA", section.getSectionCode());
+    }
+
+    @Test
+    void findNotExistIntegrationTest() {
+        SectionException sectionException = assertThrows
+                (SectionException.class,() -> sectionService.find("XX"));
+
+        String mensagemEsperada = "Sessao nao existe!!! Reenviar com uma sessao valida";
+        String mensagemRecebida = sectionException.getMessage();
 
         assertTrue(mensagemEsperada.contains(mensagemRecebida));
     }

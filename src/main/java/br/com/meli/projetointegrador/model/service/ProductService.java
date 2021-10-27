@@ -26,6 +26,11 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
+    /**
+     * @author Jhony Zuim
+     * @param sectionCode, recebe um produto para validar se esta na section correta
+     * @return true ou exception personalizada
+     */
     public Boolean validProductSection(String sectionCode){
         if (productRepository.existsProductBySection_SectionCode(sectionCode)){
             return true;
@@ -35,7 +40,7 @@ public class ProductService {
     }
 
     public Product find(String productId) {
-        Optional<Product> product = productRepository.findByProductId(productId);
+        Optional<Product> product = productRepository.findDistinctFirstByProductId(productId);
         if (product.isPresent()){
             return product.get();
         } else {
@@ -60,4 +65,5 @@ public class ProductService {
             throw new ProductException("Nao temos o produtos nessa section, por favor informar a section correta!");
         }
     }
+  
 }

@@ -18,6 +18,7 @@ import java.util.Optional;
 public interface ProductRepository extends MongoRepository<Product, String> {
 
     Boolean existsProductBySection_SectionCode(String sectionCode);
-    Optional<Product> findByProductId(String productId);
+    Optional<Product> findDistinctFirstByProductId(String productId);
     List<Product> findAllBySection_SectionCode(String sectionCode);
+  
 }

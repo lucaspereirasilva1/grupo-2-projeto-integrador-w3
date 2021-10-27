@@ -4,6 +4,7 @@ import br.com.meli.projetointegrador.exception.WarehouseException;
 import br.com.meli.projetointegrador.model.entity.Warehouse;
 import br.com.meli.projetointegrador.model.repository.WarehouseRepository;
 import org.springframework.stereotype.Service;
+
 import java.util.Optional;
 
 /**
@@ -23,8 +24,8 @@ public class WarehouseService {
 
     /** metodo para verificar se Warehouse é valido.
      *
-     * @param warehouse
-     * @return
+     * @param warehouseCode recebe o codigo do warehouse para validar se existe no banco
+     * @return Boolean ou WarehouseException em caso de insucesso
      */
 
     public Boolean validWarehouse(String warehouseCode) {
@@ -38,7 +39,7 @@ public class WarehouseService {
     public Warehouse find(String warehouseCode) {
         Optional<Warehouse> warehouseOptional = warehouseRepository.findByWarehouseCode(warehouseCode);
         if (warehouseOptional.isEmpty()) {
-            throw new WarehouseException("Armazem nao cadastrado!!! Por gentileza reenviar com um armazem valido");
+            throw new WarehouseException("Armazem nao encontrado!!! Por gentileza reenviar com um armazem valido");
         }
         return warehouseOptional.get();
     }

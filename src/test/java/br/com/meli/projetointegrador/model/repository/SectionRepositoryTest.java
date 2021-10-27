@@ -6,12 +6,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
@@ -20,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Repository de teste para trabalhar como uma porta ou janela de acesso a camada do banco da entity section
  */
 
-@DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
+@DataMongoTest
 public class SectionRepositoryTest {
 
     @Autowired
@@ -34,35 +31,34 @@ public class SectionRepositoryTest {
 
     @BeforeEach
     void setUp() {
-//        Warehouse warehouse = new Warehouse()
-//                .warehouseCode("SP")
-//                .warehouseName("sao paulo")
-//                .build();
-//        warehouseRepository.save(warehouse);
-//
-//        Section section = new Section()
-//                .sectionCode("FR")
-//                .sectionName("frios")
-//                .maxLength(10)
-//                .warehouse(warehouse)
-//                .build();
-//        sectionRepository.save(section);
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+        warehouseRepository.save(warehouse);
+
+        Section section = new Section()
+                .sectionCode("FR")
+                .sectionName("frios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+        sectionRepository.save(section);
     }
 
     @AfterEach
     void cleanUpDatabase() {
-//        sectionRepository.deleteAll();
-//        warehouseRepository.deleteAll();
+        sectionRepository.deleteAll();
+        warehouseRepository.deleteAll();
     }
 
     @Test
-    void findBySectionCode() {
-        assertTrue(sectionRepository.existsSectionBySectionCode("LA"));
+    void findBySectionCodeTest() {
+        assertTrue(sectionRepository.existsSectionBySectionCode("FR"));
     }
 
     @Test
     void registerBatchIfSectorNoFull() {
-
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("RS")
                 .warehouseName("Porto Alegre")
@@ -81,20 +77,8 @@ public class SectionRepositoryTest {
     }
 
     @Test
-    void saveTest() {
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("sao paulo")
-                .build();
-        warehouseRepository.save(warehouse);
-
-        Section section = new Section()
-                .sectionCode("FR")
-                .sectionName("frios")
-                .maxLength(10)
-                .warehouse(warehouse)
-                .build();
-        sectionRepository.save(section);
+    void existsSectionBySectionCodeTest() {
+        assertTrue(sectionRepository.existsSectionBySectionCode("FR"));
     }
 
 }
