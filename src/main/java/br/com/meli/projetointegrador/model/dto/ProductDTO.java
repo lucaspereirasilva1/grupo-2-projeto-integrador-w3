@@ -14,7 +14,7 @@ public class ProductDTO {
 
     private String productId;
     private String productName;
-    private SectionDTO sectionDTO;
+    private String sectionName;
 
     public ProductDTO productId(String productId) {
         this.productId = productId;
@@ -26,8 +26,8 @@ public class ProductDTO {
         return this;
     }
 
-    public ProductDTO sectionDTO(SectionDTO sectionDTO) {
-        this.sectionDTO = sectionDTO;
+    public ProductDTO sectionName(String sectionName) {
+        this.sectionName = sectionName;
         return this;
     }
 

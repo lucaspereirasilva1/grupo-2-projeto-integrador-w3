@@ -99,6 +99,14 @@ public class SaveDataRepositoryTest {
 
         productRepository.save(product);
 
+        Product productDois = new Product()
+                .productCode("DA")
+                .productName("danone")
+                .section(section)
+                .build();
+
+        productRepository.save(productDois);
+
         Agent agent = new Agent().
                 cpf("11122233344").
                 name("lucas").
