@@ -1,9 +1,8 @@
 package br.com.meli.projetointegrador.model.repository;
 
-import br.com.meli.projetointegrador.model.entity.Agent;
-import br.com.meli.projetointegrador.model.entity.Product;
-import br.com.meli.projetointegrador.model.entity.Section;
-import br.com.meli.projetointegrador.model.entity.Warehouse;
+import br.com.meli.projetointegrador.model.entity.*;
+import br.com.meli.projetointegrador.util.SectionCategory;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
@@ -96,6 +95,7 @@ public class SaveDataRepositoryTest {
                 .productId("LE")
                 .productName("leite")
                 .section(section)
+                .sectionCategory(SectionCategory.FF)
                 .build();
 
         productRepository.save(product);
@@ -104,6 +104,7 @@ public class SaveDataRepositoryTest {
                 .productId("DA")
                 .productName("danone")
                 .section(section)
+                .sectionCategory(SectionCategory.FF)
                 .build();
 
         productRepository.save(productDois);

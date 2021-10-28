@@ -1,9 +1,11 @@
 package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.ProductException;
+import br.com.meli.projetointegrador.exception.ProductExceptionNotFound;
 import br.com.meli.projetointegrador.model.dto.ProductDTO;
 import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
+import br.com.meli.projetointegrador.util.SectionCategory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -48,22 +50,21 @@ public class ProductService {
         }
     }
 
-    public List<ProductDTO> listProdutcBySection(String sectionCode) {
+    public List<ProductDTO> listProdutcByCategory(SectionCategory sectionCategory) {
         List<ProductDTO> productListDTO = new ArrayList<>();
-        List<Product> productList = productRepository.findAllBySection_SectionCode(sectionCode);
+        List<Product> productList = productRepository.findProductBySectionCategory(sectionCategory);
         if (!productList.isEmpty()){
             for (Product p: productList) {
                 ProductDTO productDTO = new ProductDTO()
                         .productId(p.getProductId())
                         .productName(p.getProductName())
-                        .sectionName(p.getSection().getSectionName())
+                        .sectionCategory(p.getSectionCategory())
                         .build();
                 productListDTO.add(productDTO);
             }
             return productListDTO;
         } else {
-            throw new ProductException("Nao temos o produtos nessa section, por favor informar a section correta!");
+            throw new ProductExceptionNotFound("Nao temos o produtos nessa categoria, por favor informar a categoria correta!");
         }
     }
-  
 }

@@ -59,6 +59,12 @@ public class Handler extends ResponseEntityExceptionHandler{
         String bodyOfResponse = ex.getMessage();
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
+  
+      @ExceptionHandler(value = ProductExceptionNotFound.class)
+    protected ResponseEntity<Object> handleConflict(ProductExceptionNotFound ex, WebRequest request) {
+        String bodyOfResponse = ex.getMessage();
+        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
+    }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {

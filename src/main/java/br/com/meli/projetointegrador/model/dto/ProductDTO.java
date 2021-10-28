@@ -1,5 +1,6 @@
 package br.com.meli.projetointegrador.model.dto;
 
+import br.com.meli.projetointegrador.util.SectionCategory;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -35,6 +36,8 @@ public class ProductDTO {
     @Size(min = 1, message = "sectionName most be minimum size 1")
     private String sectionName;
 
+    private SectionCategory sectionCategory;
+
     public ProductDTO productId(String productId) {
         this.productId = productId;
         return this;
@@ -45,12 +48,13 @@ public class ProductDTO {
         return this;
     }
 
-    public ProductDTO sectionName(String sectionName) {
-        this.sectionName = sectionName;
+    public ProductDTO sectionCategory(SectionCategory sectionCategory) {
+        this.sectionCategory = sectionCategory;
         return this;
     }
 
     public ProductDTO build(){
         return this;
     }
+  
 }

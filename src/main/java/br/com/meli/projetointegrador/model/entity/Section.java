@@ -1,5 +1,6 @@
 package br.com.meli.projetointegrador.model.entity;
 
+import br.com.meli.projetointegrador.util.SectionCategory;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
@@ -26,6 +27,7 @@ public class Section {
     private String sectionName;
     private Integer maxLength;
     private Warehouse warehouse;
+    private SectionCategory sectionCategory;
 
     /**
      * @author Jhony Zuim
@@ -54,6 +56,11 @@ public class Section {
 
     public Section warehouse(Warehouse warehouse) {
         this.warehouse = warehouse;
+        return this;
+    }
+
+    public Section sectionCategory(SectionCategory sectionCategory) {
+        this.sectionCategory = sectionCategory;
         return this;
     }
 
