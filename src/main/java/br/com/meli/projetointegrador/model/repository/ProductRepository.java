@@ -22,4 +22,5 @@ public interface ProductRepository extends MongoRepository<Product, String> {
     Optional<Product> findDistinctFirstByProductId(String productId);
     List<Product> findProductBySectionCategory(SectionCategory sectionCategory);
 
+
 }

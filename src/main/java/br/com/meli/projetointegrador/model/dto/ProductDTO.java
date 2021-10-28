@@ -1,5 +1,6 @@
 package br.com.meli.projetointegrador.model.dto;
 
+import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.util.SectionCategory;
 import lombok.Data;
 
@@ -16,6 +17,7 @@ public class ProductDTO {
     private String productId;
     private String productName;
     private SectionCategory sectionCategory;
+    private Section sectionName;
 
     public ProductDTO productId(String productId) {
         this.productId = productId;
@@ -31,6 +33,10 @@ public class ProductDTO {
         this.sectionCategory = sectionCategory;
         return this;
     }
+    public ProductDTO sectionName(Section sectionName) {
+        this.sectionName = sectionName;
+        return this;
+        }
 
     public ProductDTO build(){
         return this;
