@@ -38,8 +38,8 @@ public class Product {
         return this;
     }
 
-    public Product productCode(String productCode) {
-        this.productId = productCode;
+    public Product productId(String productId) {
+        this.productId = productId;
         return this;
     }
 

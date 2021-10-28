@@ -16,7 +16,6 @@ import java.util.Optional;
 @Repository
 public interface InboundOrderRepository extends MongoRepository<InboundOrder, String> {
 
-    void deleteByOrderNumber(Integer orderNumber);
     Optional<InboundOrder> findByOrderNumber(Integer orderNumber);
 
 }

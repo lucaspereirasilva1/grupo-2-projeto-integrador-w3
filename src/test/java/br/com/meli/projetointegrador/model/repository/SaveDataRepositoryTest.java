@@ -2,6 +2,7 @@ package br.com.meli.projetointegrador.model.repository;
 
 import br.com.meli.projetointegrador.model.entity.*;
 import br.com.meli.projetointegrador.util.SectionCategory;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
@@ -34,13 +35,13 @@ public class SaveDataRepositoryTest {
         final Optional<Section> section = sectionRepository.findBySectionCode("FR");
 
         Product product = new Product()
-                .productCode("LE")
+                .productId("LE")
                 .productName("leite")
                 .section(section.orElse(new Section()))
                 .build();
 
         Product productUm = new Product()
-                .productCode("QJ")
+                .productName("QJ")
                 .productName("queijo")
                 .section(section.orElse(new Section()))
                 .build();
@@ -91,7 +92,7 @@ public class SaveDataRepositoryTest {
         sectionRepository.save(sectionCO);
 
         Product product = new Product()
-                .productCode("LE")
+                .productId("LE")
                 .productName("leite")
                 .section(section)
                 .sectionCategory(SectionCategory.FF)
