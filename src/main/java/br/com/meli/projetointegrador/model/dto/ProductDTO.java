@@ -1,6 +1,6 @@
 package br.com.meli.projetointegrador.model.dto;
 
-import br.com.meli.projetointegrador.util.SectionCategory;
+import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -36,7 +36,9 @@ public class ProductDTO {
     @Size(min = 1, message = "sectionName most be minimum size 1")
     private String sectionName;
 
-    private SectionCategory sectionCategory;
+    @NotNull(message = "sectionName cannot be null")
+    @Size(min = 1, message = "sectionName most be minimum size 1")
+    private ESectionCategory category;
 
     public ProductDTO productId(String productId) {
         this.productId = productId;
@@ -48,8 +50,13 @@ public class ProductDTO {
         return this;
     }
 
-    public ProductDTO sectionCategory(SectionCategory sectionCategory) {
-        this.sectionCategory = sectionCategory;
+    public ProductDTO sectionName(String sectionName) {
+        this.sectionName = sectionName;
+        return this;
+    }
+
+    public ProductDTO category(ESectionCategory category) {
+        this.category = category;
         return this;
     }
 

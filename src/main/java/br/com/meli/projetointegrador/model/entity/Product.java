@@ -1,9 +1,9 @@
 package br.com.meli.projetointegrador.model.entity;
 
-import br.com.meli.projetointegrador.util.SectionCategory;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
@@ -25,8 +25,11 @@ public class Product {
 
     private String productId;
     private String productName;
+
+    @DBRef
     private Section section;
-    private SectionCategory sectionCategory;
+
+    private SectionCategory category;
 
     /**
      * @author Jhony Zuim
@@ -53,10 +56,11 @@ public class Product {
         return this;
     }
 
-    public Product sectionCategory(SectionCategory sectionCategory) {
-        this.sectionCategory = sectionCategory;
+    public Product category(SectionCategory category) {
+        this.category = category;
         return this;
     }
+
     public Product build(){
         return this;
     }

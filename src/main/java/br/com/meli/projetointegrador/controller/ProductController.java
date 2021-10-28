@@ -1,8 +1,8 @@
 package br.com.meli.projetointegrador.controller;
 
 import br.com.meli.projetointegrador.model.dto.ProductDTO;
+import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.service.ProductService;
-import br.com.meli.projetointegrador.util.SectionCategory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,14 +30,15 @@ public class ProductController {
 
     @GetMapping(value = "/list") // Chamada do endpoint: /list?sectionCategory=FF ou FS ou RF ou um que nao existe.
     public ResponseEntity<List<ProductDTO>> getProductByCategory(@RequestParam("sectionCategory") String category){
-        if (category.equals(SectionCategory.FS.toString()) |
-                category.equals(SectionCategory.FF.toString()) |
-                category.equals(SectionCategory.RF.toString())) {
-            List<ProductDTO> productList = productService.listProdutcByCategory(SectionCategory.valueOf(category));
+        if (category.equals(ESectionCategory.FS.toString()) |
+                category.equals(ESectionCategory.FF.toString()) |
+                category.equals(ESectionCategory.RF.toString())) {
+            List<ProductDTO> productList = productService.listProdutcByCategory(category);
             if(!productList.isEmpty()){
                 return ResponseEntity.ok(productList);
             }
         }
     return ResponseEntity.badRequest().build();
     }
+
 }

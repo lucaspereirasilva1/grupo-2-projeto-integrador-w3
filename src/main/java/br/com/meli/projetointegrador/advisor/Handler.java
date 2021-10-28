@@ -60,7 +60,7 @@ public class Handler extends ResponseEntityExceptionHandler{
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
   
-      @ExceptionHandler(value = ProductExceptionNotFound.class)
+    @ExceptionHandler(value = ProductExceptionNotFound.class)
     protected ResponseEntity<Object> handleConflict(ProductExceptionNotFound ex, WebRequest request) {
         String bodyOfResponse = ex.getMessage();
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
@@ -75,6 +75,12 @@ public class Handler extends ResponseEntityExceptionHandler{
             errors.put(fieldName, errorMessage);
         });
         return this.handleExceptionInternal(ex, errors, headers, status, request);
+    }
+
+    @ExceptionHandler(value = PurchaseOrderException.class)
+    protected ResponseEntity<Object> handleConflict(PurchaseOrderException ex, WebRequest request) {
+        String bodyOfResponse = ex.getMessage();
+        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
 }
