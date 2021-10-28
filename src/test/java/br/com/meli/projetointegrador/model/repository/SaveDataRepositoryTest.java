@@ -1,13 +1,12 @@
 package br.com.meli.projetointegrador.model.repository;
 
 import br.com.meli.projetointegrador.model.entity.*;
+import br.com.meli.projetointegrador.util.SectionCategory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -95,6 +94,7 @@ public class SaveDataRepositoryTest {
                 .productCode("LE")
                 .productName("leite")
                 .section(section)
+                .sectionCategory(SectionCategory.FF)
                 .build();
 
         productRepository.save(product);
@@ -103,6 +103,7 @@ public class SaveDataRepositoryTest {
                 .productCode("DA")
                 .productName("danone")
                 .section(section)
+                .sectionCategory(SectionCategory.FF)
                 .build();
 
         productRepository.save(productDois);

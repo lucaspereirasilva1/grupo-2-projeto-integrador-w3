@@ -1,5 +1,6 @@
 package br.com.meli.projetointegrador.model.entity;
 
+import br.com.meli.projetointegrador.util.SectionCategory;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
@@ -25,6 +26,7 @@ public class Product {
     private String productId;
     private String productName;
     private Section section;
+    private SectionCategory sectionCategory;
 
     /**
      * @author Jhony Zuim
@@ -51,6 +53,10 @@ public class Product {
         return this;
     }
 
+    public Product sectionCategory(SectionCategory sectionCategory) {
+        this.sectionCategory = sectionCategory;
+        return this;
+    }
     public Product build(){
         return this;
     }
