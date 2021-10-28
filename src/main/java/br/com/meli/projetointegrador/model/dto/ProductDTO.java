@@ -1,6 +1,6 @@
 package br.com.meli.projetointegrador.model.dto;
 
-import br.com.meli.projetointegrador.util.SectionCategory;
+import br.com.meli.projetointegrador.model.enums.SectionCategory;
 import lombok.Data;
 
 /**

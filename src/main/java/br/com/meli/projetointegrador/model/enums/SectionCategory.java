@@ -1,4 +1,4 @@
-package br.com.meli.projetointegrador.util;
+package br.com.meli.projetointegrador.model.enums;
 
 public enum SectionCategory {
 

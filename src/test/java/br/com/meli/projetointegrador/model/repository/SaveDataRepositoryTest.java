@@ -1,7 +1,7 @@
 package br.com.meli.projetointegrador.model.repository;
 
 import br.com.meli.projetointegrador.model.entity.*;
-import br.com.meli.projetointegrador.util.SectionCategory;
+import br.com.meli.projetointegrador.model.enums.SectionCategory;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -5,7 +5,7 @@ import br.com.meli.projetointegrador.exception.ProductExceptionNotFound;
 import br.com.meli.projetointegrador.model.dto.ProductDTO;
 import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
-import br.com.meli.projetointegrador.util.SectionCategory;
+import br.com.meli.projetointegrador.model.enums.SectionCategory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
