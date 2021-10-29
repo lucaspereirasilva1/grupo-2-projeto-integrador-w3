@@ -2,6 +2,7 @@ package br.com.meli.projetointegrador.model.dto;
 
 import lombok.Data;
 
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -15,14 +16,37 @@ import java.time.LocalDateTime;
 @Data
 public class BatchStockDTO {
 
+    @NotNull(message = "batchNumber cannot be null")
+    @Min(value = 1, message = "batchNumber minimum value is 1")
     private Integer batchNumber;
+
+    @NotNull(message = "productId cannot be null")
+    @NotEmpty(message = "productId cannot be empty")
+    @NotBlank(message = "productId cannot be blank")
+    @Size(min = 1, message = "productId most be minimum size 1")
     private String productId;
+
+    @NotNull(message = "currentTemperature cannot be null")
     private Float currentTemperature;
+
+    @NotNull(message = "minimumTemperature cannot be null")
     private Float minimumTemperature;
+
+    @NotNull(message = "initialQuantity cannot be null")
+    @Min(value = 1, message = "initialQuantity minimum value is 1")
     private Integer initialQuantity;
+
+    @NotNull(message = "currentQuantity cannot be null")
+    @Min(value = 1, message = "currentQuantity minimum value is 1")
     private Integer currentQuantity;
+
+    @NotNull(message = "manufacturingDate cannot be null")
     private LocalDate manufacturingDate;
+
+    @NotNull(message = "manufacturingTime cannot be null")
     private LocalDateTime manufacturingTime;
+
+    @NotNull(message = "dueDate cannot be null")
     private LocalDate dueDate;
 
     public BatchStockDTO batchNumber(Integer batchNumber) {

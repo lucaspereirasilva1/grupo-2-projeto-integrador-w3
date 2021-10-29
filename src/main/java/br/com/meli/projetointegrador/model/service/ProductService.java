@@ -4,8 +4,10 @@ import br.com.meli.projetointegrador.exception.ProductException;
 import br.com.meli.projetointegrador.exception.ProductExceptionNotFound;
 import br.com.meli.projetointegrador.model.dto.ProductDTO;
 import br.com.meli.projetointegrador.model.entity.Product;
+import br.com.meli.projetointegrador.model.entity.SectionCategory;
+import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
-import br.com.meli.projetointegrador.model.enums.SectionCategory;
+
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -50,15 +52,15 @@ public class ProductService {
         }
     }
 
-    public List<ProductDTO> listProdutcByCategory(SectionCategory sectionCategory) {
+    public List<ProductDTO> listProdutcByCategory(String category) {
         List<ProductDTO> productListDTO = new ArrayList<>();
-        List<Product> productList = productRepository.findProductBySectionCategory(sectionCategory);
+        List<Product> productList = productRepository.findProductByCategory(new SectionCategory().name(ESectionCategory.valueOf(category)));
         if (!productList.isEmpty()){
             for (Product p: productList) {
                 ProductDTO productDTO = new ProductDTO()
                         .productId(p.getProductId())
                         .productName(p.getProductName())
-                        .sectionCategory(p.getSectionCategory())
+                        .category(p.getCategory().getName())
                         .build();
                 productListDTO.add(productDTO);
             }

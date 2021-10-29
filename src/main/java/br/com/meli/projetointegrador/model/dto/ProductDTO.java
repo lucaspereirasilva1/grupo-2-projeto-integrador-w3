@@ -1,7 +1,13 @@
 package br.com.meli.projetointegrador.model.dto;
 
-import br.com.meli.projetointegrador.model.enums.SectionCategory;
+import br.com.meli.projetointegrador.model.enums.ESectionCategory;
+
 import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
@@ -13,9 +19,27 @@ import lombok.Data;
 @Data
 public class ProductDTO {
 
+    @NotNull(message = "productId cannot be null")
+    @NotEmpty(message = "productId cannot be empty")
+    @NotBlank(message = "productId cannot be blank")
+    @Size(min = 1, message = "productId most be minimum size 1")
     private String productId;
+
+    @NotNull(message = "productName cannot be null")
+    @NotEmpty(message = "productName cannot be empty")
+    @NotBlank(message = "productName cannot be blank")
+    @Size(min = 1, message = "productName most be minimum size 1")
     private String productName;
-    private SectionCategory sectionCategory;
+
+    @NotNull(message = "sectionName cannot be null")
+    @NotEmpty(message = "sectionName cannot be empty")
+    @NotBlank(message = "sectionName cannot be blank")
+    @Size(min = 1, message = "sectionName most be minimum size 1")
+    private String sectionName;
+
+    @NotNull(message = "sectionName cannot be null")
+    @Size(min = 1, message = "sectionName most be minimum size 1")
+    private ESectionCategory category;
 
     public ProductDTO productId(String productId) {
         this.productId = productId;
@@ -27,12 +51,18 @@ public class ProductDTO {
         return this;
     }
 
-    public ProductDTO sectionCategory(SectionCategory sectionCategory) {
-        this.sectionCategory = sectionCategory;
+    public ProductDTO sectionName(String sectionName) {
+        this.sectionName = sectionName;
+        return this;
+    }
+
+    public ProductDTO category(ESectionCategory category) {
+        this.category = category;
         return this;
     }
 
     public ProductDTO build(){
         return this;
     }
+  
 }
