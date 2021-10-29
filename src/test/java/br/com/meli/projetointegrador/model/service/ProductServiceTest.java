@@ -1,13 +1,14 @@
 package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.ProductException;
-import br.com.meli.projetointegrador.model.dto.ProductDTO;
 import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.entity.Warehouse;
+import br.com.meli.projetointegrador.model.enums.SectionCategory;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +26,7 @@ public class ProductServiceTest {
 
     private final ProductRepository mockProductRepository = mock(ProductRepository.class);
     private final ProductService productService = new ProductService(mockProductRepository);
+    private SectionCategory sectionCategory;
 
     /**
      * @author Jhony Zuim
@@ -135,5 +137,47 @@ public class ProductServiceTest {
         String expectedMessage = "Produto nao cadastrado!!! Por gentileza cadastrar";
 
         assertTrue(expectedMessage.contains(productException.getMessage()));
+    }
+
+    @Test
+    void validListProductByCategoryTest(){
+
+        List<Product> productList = new ArrayList<>();
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("Sao Paulo")
+                .build();
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("Laticionios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+
+        Product productUm = new Product()
+                .productId("LE")
+                .productName("leite")
+                .section(section)
+                .sectionCategory(SectionCategory.FF)
+                .build();
+
+        productList.add(productUm);
+
+        Product productDois = new Product()
+                .productId("LE")
+                .productName("leite")
+                .section(section)
+                .sectionCategory(SectionCategory.FF)
+                .build();
+
+        productList.add(productDois);
+
+        when(mockProductRepository.findProductBySectionCategory(any()))
+                .thenReturn(productList);
+
+        assertTrue(productService.listProdutcByCategory(SectionCategory.FF).size() == 2);
+
     }
 }

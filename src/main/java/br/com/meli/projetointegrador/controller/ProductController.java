@@ -3,6 +3,8 @@ package br.com.meli.projetointegrador.controller;
 import br.com.meli.projetointegrador.model.dto.ProductDTO;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.service.ProductService;
+import br.com.meli.projetointegrador.model.enums.SectionCategory;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
