@@ -1,6 +1,7 @@
 package br.com.meli.projetointegrador.model.dto;
 
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
+
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;

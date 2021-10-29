@@ -7,6 +7,7 @@ import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.entity.SectionCategory;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
