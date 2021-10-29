@@ -9,6 +9,7 @@ import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -68,4 +69,12 @@ public class ProductService {
             throw new ProductExceptionNotFound("Nao temos o produtos nessa categoria, por favor informar a categoria correta!");
         }
     }
+
+    public Boolean doeDataProduct(LocalDate dueDate){
+        if (dueDate.isAfter(LocalDate.now().plusWeeks(+3)))
+            return true;
+        else
+            throw new ProductException("Produto Vencido");
+    }
+
 }

@@ -1,7 +1,9 @@
 package br.com.meli.projetointegrador.model.service;
 
+import br.com.meli.projetointegrador.exception.BatchStockException;
 import br.com.meli.projetointegrador.model.dto.AgentDTO;
 import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
+import br.com.meli.projetointegrador.model.dto.ProductPurchaseOrderDTO;
 import br.com.meli.projetointegrador.model.dto.SectionDTO;
 import br.com.meli.projetointegrador.model.entity.Agent;
 import br.com.meli.projetointegrador.model.entity.BatchStock;
@@ -70,4 +72,16 @@ public class BatchStockService {
         }
     }
 
+    public void updateBatchStock(List<ProductPurchaseOrderDTO> productList) {
+        productList.forEach(p -> {
+            final List<BatchStock> listBatchStock = batchStockRepository.findAllByProductId(p.getProductId());
+            if (listBatchStock.isEmpty()) {
+                throw new BatchStockException("Nao foi encontrado estoque para esse produto!!!");
+            }
+            listBatchStock.forEach(b -> {
+                b.setCurrentQuantity(b.getCurrentQuantity()-p.getQuantity());
+                batchStockRepository.save(b);
+            });
+        });
+    }
 }

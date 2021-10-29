@@ -28,7 +28,7 @@ public class PurchaseOrder {
     private EOrderStatus orderStatus;
 
     @DBRef
-    private List<Product> product;
+    private List<Product> productList;
 
     public PurchaseOrder date(LocalDate date) {
         this.date = date;
@@ -46,7 +46,7 @@ public class PurchaseOrder {
     }
 
     public PurchaseOrder product(List<Product> product) {
-        this.product = product;
+        this.productList = product;
         return this;
     }
 

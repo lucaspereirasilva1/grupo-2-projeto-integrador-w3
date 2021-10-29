@@ -7,6 +7,8 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 /**
  * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
@@ -40,6 +42,9 @@ public class ProductDTO {
     @Size(min = 1, message = "sectionName most be minimum size 1")
     private ESectionCategory category;
 
+    private BigDecimal productPrice;
+    private LocalDate dueDate;
+
     public ProductDTO productId(String productId) {
         this.productId = productId;
         return this;
@@ -57,6 +62,16 @@ public class ProductDTO {
 
     public ProductDTO category(ESectionCategory category) {
         this.category = category;
+        return this;
+    }
+
+    public ProductDTO productPrice(BigDecimal productPrice) {
+        this.productPrice = productPrice;
+        return this;
+    }
+
+    public ProductDTO dueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
         return this;
     }
 
