@@ -45,6 +45,8 @@ public class PurchaseOrderService {
                     .productId(p.getProductId())
                     .productName(p.getProductName())
                     .sectionName(p.getSection().getSectionName())
+                    .productPrice(p.getProductPrice())
+                    .dueDate(p.getDueDate())
                     .category(p.getCategory().getName());
             listProductDTO.add(productDTO);
         });
@@ -57,7 +59,7 @@ public class PurchaseOrderService {
         List<Product> listProduct = new ArrayList<>();
         for (ProductPurchaseOrderDTO p:purchaseOrderDTO.getListProductPurchaseOrderDTO()) {
             Product product = productService.find(p.getProductId());
-            productService.doeDataProduct(product.getDueDate());
+            productService.dueDataProduct(product.getDueDate());
             if (p.getProductId().equals(product.getProductId())){
                 total=total.add(product.getProductPrice().multiply(new BigDecimal(p.getQuantity())));
             }else{

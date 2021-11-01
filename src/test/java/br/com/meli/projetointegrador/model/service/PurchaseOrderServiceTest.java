@@ -1,5 +1,6 @@
 package br.com.meli.projetointegrador.model.service;
 
+import br.com.meli.projetointegrador.model.dto.OrderStatusDTO;
 import br.com.meli.projetointegrador.model.dto.ProductPurchaseOrderDTO;
 import br.com.meli.projetointegrador.model.dto.PurchaseOrderDTO;
 import br.com.meli.projetointegrador.model.entity.*;
@@ -42,7 +43,7 @@ public class PurchaseOrderServiceTest {
         PurchaseOrderDTO purchaseOrderDTO = new PurchaseOrderDTO()
                 .data(LocalDate.now())
                 .buyerId("1")
-                .orderStatus(EOrderStatus.ORDER_CHART)
+                .orderStatus(new OrderStatusDTO().statusCode(EOrderStatus.IN_PROGRESS))
                 .listProductPurchaseOrderDTO(listProductPurchaseOrderDTO);
 
         Warehouse warehouse = new Warehouse()

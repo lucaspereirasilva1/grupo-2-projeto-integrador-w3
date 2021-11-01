@@ -4,10 +4,7 @@ import br.com.meli.projetointegrador.model.enums.EOrderStatus;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.FieldType;
-import org.springframework.data.mongodb.core.mapping.MongoId;
+import org.springframework.data.mongodb.core.mapping.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -28,6 +25,7 @@ public class PurchaseOrder {
     private EOrderStatus orderStatus;
 
     @DBRef
+    @Field("product")
     private List<Product> productList;
 
     public PurchaseOrder date(LocalDate date) {
