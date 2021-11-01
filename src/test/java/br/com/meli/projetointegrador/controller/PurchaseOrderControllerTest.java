@@ -30,6 +30,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @SpringBootTest
@@ -68,6 +69,9 @@ public class PurchaseOrderControllerTest {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private PurchaseOrderRepository purchaseOrderRepository;
 
     @BeforeEach
     void setup() throws Exception {
@@ -214,6 +218,105 @@ public class PurchaseOrderControllerTest {
                 .andReturn().getResponse();
 
         assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+    }
+
+    @Test
+    void getControllerTest() throws Exception {
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("Sao Paulo")
+                .build();
+        warehouseRepository.save(warehouse);
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("Laticionios")
+                .warehouse(warehouse)
+                .maxLength(10)
+                .build();
+        sectionRepository.save(section);
+
+        Buyer buyer = new Buyer()
+                .name("lucas")
+                .cpf("22233344411")
+                .build();
+        buyerRepository.save(buyer);
+
+        SectionCategory sectionCategory = new SectionCategory()
+                .name(ESectionCategory.FF)
+                .build();
+        sectionCategoryRepository.save(sectionCategory);
+
+        Product product = new Product()
+                .productId("LE")
+                .productName("leite")
+                .section(section)
+                .productPrice(new BigDecimal(2))
+                .dueDate(LocalDate.of(2021,11,30))
+                .category(sectionCategory)
+                .build();
+
+        Product productUm = new Product()
+                .productId("QJ")
+                .productName("queijo")
+                .section(section)
+                .productPrice(new BigDecimal(3))
+                .dueDate(LocalDate.of(2021,11,30))
+                .category(sectionCategory)
+                .build();
+        productRepository.saveAll(Arrays.asList(product, productUm));
+
+        Agent agent = new Agent()
+                .name("lucas")
+                .cpf("11122233344")
+                .warehouse(warehouse)
+                .build();
+        agentRepository.save(agent);
+
+        BatchStock batchStock = new BatchStock()
+                .batchNumber(1)
+                .productId("LE")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .agent(agent)
+                .section(section)
+                .build();
+
+        BatchStock batchStockDois = new BatchStock()
+                .batchNumber(1)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(10)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .agent(agent)
+                .section(section)
+                .build();
+        batchStockRepository.saveAll(Arrays.asList(batchStock, batchStockDois));
+
+        PurchaseOrder purchaseOrder = new PurchaseOrder()
+                .date(LocalDate.now())
+                .buyer(buyer)
+                .orderStatus(EOrderStatus.IN_PROGRESS)
+                .productList(Arrays.asList(product,
+                        productUm));
+        purchaseOrderRepository.save(purchaseOrder);
+
+        MockHttpServletResponse response = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/order/")
+                .param("id", purchaseOrder.getId())
+                .header("Authorization", "Bearer " + tokenTest.getAccessToken())
+                .contentType("application/json"))
+                .andReturn().getResponse();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
     }
 
 }

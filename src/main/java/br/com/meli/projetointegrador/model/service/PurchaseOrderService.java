@@ -65,7 +65,7 @@ public class PurchaseOrderService {
             }
             listProduct.add(product);
         }
-        purchaseOrder.product(listProduct);
+        purchaseOrder.productList(listProduct);
         purchaseOrder.date(LocalDate.now());
         purchaseOrder.buyer(buyerService.find(purchaseOrderDTO.getBuyerId()));
         purchaseOrder.orderStatus(EOrderStatus.ORDER_CHART);

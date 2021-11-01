@@ -45,7 +45,7 @@ public class PurchaseOrder {
         return this;
     }
 
-    public PurchaseOrder product(List<Product> product) {
+    public PurchaseOrder productList(List<Product> product) {
         this.productList = product;
         return this;
     }

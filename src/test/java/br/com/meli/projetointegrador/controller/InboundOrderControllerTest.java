@@ -3,6 +3,7 @@ package br.com.meli.projetointegrador.controller;
 import br.com.meli.projetointegrador.model.dto.*;
 import br.com.meli.projetointegrador.model.entity.*;
 import br.com.meli.projetointegrador.model.enums.ERole;
+import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.*;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
@@ -16,9 +17,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -37,7 +38,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureDataMongo
-@ActiveProfiles(value = "test")
 public class InboundOrderControllerTest {
 
     @Autowired
@@ -68,6 +68,10 @@ public class InboundOrderControllerTest {
     private RoleRepository roleRepository;
 
     private TokenTest tokenTest = new TokenTest();
+
+    @Autowired
+    private UserRepository userRepository;
+
 
     @BeforeEach
     void setup() throws Exception{
@@ -107,6 +111,18 @@ public class InboundOrderControllerTest {
 
     @Test
     void postTest() throws Exception {
+        productRepository.deleteAll();
+
+        Product product = new Product()
+                .productId("LE")
+                .productName("leite")
+                .section(Optional.of(sectionRepository.findBySectionCode("LA")).get().orElse(null))
+                .productPrice(new BigDecimal("2.0"))
+                .dueDate(LocalDate.now())
+                .category(new SectionCategory().name(ESectionCategory.FF))
+                .build();
+        productRepository.save(product);
+
         SectionDTO sectionDTO = new SectionDTO()
                 .sectionCode("LA")
                 .warehouseCode("SP")
@@ -251,6 +267,9 @@ public class InboundOrderControllerTest {
                 .productId("LE")
                 .productName("leite")
                 .section(section)
+                .productPrice(new BigDecimal("2.0"))
+                .dueDate(LocalDate.now())
+                .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
         productRepository.save(product);
 
@@ -268,6 +287,8 @@ public class InboundOrderControllerTest {
     }
 
     void clearBase() {
+        userRepository.deleteAll();
+        roleRepository.deleteAll();
         sectionRepository.deleteAll();
         inboundOrderRepository.deleteAll();
         agentRepository.deleteAll();
