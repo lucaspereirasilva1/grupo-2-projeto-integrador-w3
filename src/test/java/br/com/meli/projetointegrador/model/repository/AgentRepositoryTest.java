@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Repository de teste para trabalhar como uma porta ou janela de acesso a camada do banco da entity agent
  */
 
-@DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
+@DataMongoTest
 public class AgentRepositoryTest {
 
     @Autowired
@@ -46,12 +46,4 @@ public class AgentRepositoryTest {
         assertTrue(agent.isPresent());
     }
 
-    @Test
-    void saveTest() {
-        Agent agent = new Agent().
-                cpf("11122233344").
-                name("lucas").
-                build();
-        agentRepository.save(agent);
-    }
 }

@@ -26,6 +26,7 @@ public class SectionService {
         this.batchStockRepository = batchStockRepository;
         this.sectionRepository = sectionRepository;
     }
+
     /**
      * @author Jhony Zuim
      * @param sectionCode recebe um section para validar se ele existe
@@ -38,6 +39,7 @@ public class SectionService {
             throw new SectionException("Nao existe esse setor, por gentileza verificar o setor!");
         }
     }
+
     /**
      * @author Edemilson Nobre
      * Teste para validar se uma section tem espaco livre
@@ -48,6 +50,7 @@ public class SectionService {
         else
             throw new SectionException("Nao tem espaco.");
     }
+
     /**
      * @author Edemilson Nobre
      * Teste para validar se uma section existe

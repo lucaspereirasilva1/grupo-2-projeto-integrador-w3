@@ -1,29 +1,32 @@
 package br.com.meli.projetointegrador.controller;
 
-import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
-import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;
-import br.com.meli.projetointegrador.model.dto.SectionDTO;
+import br.com.meli.projetointegrador.model.dto.*;
 import br.com.meli.projetointegrador.model.entity.*;
+import br.com.meli.projetointegrador.model.enums.ERole;
+import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.*;
-import br.com.meli.projetointegrador.model.service.SectionService;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Optional;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 /**
  * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
@@ -34,6 +37,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@AutoConfigureDataMongo
 public class InboundOrderControllerTest {
 
     @Autowired
@@ -42,34 +46,91 @@ public class InboundOrderControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @MockBean
+    @Autowired
     private SectionRepository sectionRepository;
 
-    @MockBean
+    @Autowired
     private AgentRepository agentRepository;
 
-    @MockBean
+    @Autowired
     private InboundOrderRepository inboundOrderRepository;
 
-    @MockBean
+    @Autowired
     private WarehouseRepository warehouseRepository;
 
-    @MockBean
+    @Autowired
     private ProductRepository productRepository;
 
-    @MockBean
+    @Autowired
     private BatchStockRepository batchStockRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    private TokenTest tokenTest = new TokenTest();
+
+    @Autowired
+    private UserRepository userRepository;
+
+
+    @BeforeEach
+    void setup() throws Exception{
+        clearBase();
+        createData();
+
+        Set<String> roles = new HashSet<>();
+        roles.add(ERole.ROLE_USER.toString());
+        roles.add(ERole.ROLE_ADMIN.toString());
+        roles.add(ERole.ROLE_MODERATOR.toString());
+        SignupRequest signupRequest = new SignupRequest();
+        signupRequest.setUsername("lucas");
+        signupRequest.setEmail("lucas@gmail.com");
+        signupRequest.setPassword("12345678");
+        signupRequest.setRole(roles);
+        mockMvc.perform(post("http://localhost:8080/api/auth/signup")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(signupRequest)))
+                .andReturn().getResponse();
+
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setUsername("lucas");
+        loginRequest.setPassword("12345678");
+        MockHttpServletResponse responseSignin = mockMvc.perform(post("http://localhost:8080/api/auth/signin")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(loginRequest)))
+                .andReturn().getResponse();
+        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        String tokenNoFormat = responseSignin.getContentAsString();
+        tokenTest = objectMapper.readValue(tokenNoFormat, TokenTest.class);
+    }
+
+    @AfterEach
+    void cleanUpDatabase() {
+        clearBase();
+    }
 
     @Test
     void postTest() throws Exception {
+        productRepository.deleteAll();
+
+        Product product = new Product()
+                .productId("LE")
+                .productName("leite")
+                .section(Optional.of(sectionRepository.findBySectionCode("LA")).get().orElse(null))
+                .productPrice(new BigDecimal("2.0"))
+                .dueDate(LocalDate.now())
+                .category(new SectionCategory().name(ESectionCategory.FF))
+                .build();
+        productRepository.save(product);
+
         SectionDTO sectionDTO = new SectionDTO()
-                .sectionCode("FR")
+                .sectionCode("LA")
                 .warehouseCode("SP")
                 .build();
 
         BatchStockDTO batchStockDTO = new BatchStockDTO()
                 .batchNumber(1)
-                .productId("QJ")
+                .productId("LE")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
                 .initialQuantity(1)
@@ -98,46 +159,8 @@ public class InboundOrderControllerTest {
                 .batchStockDTO(Arrays.asList(batchStockDTO, batchStockDTOUm))
                 .build();
 
-        Warehouse warehouse = new Warehouse()
-                .id("6171dd92a488fe7100a796b1")
-                .warehouseName("sao paulo")
-                .warehouseCode("SP")
-                .build();
-
-        Section section = new Section()
-                .id("6171dd92a488fe7100a796b2")
-                .sectionCode("FR")
-                .sectionName("frios")
-                .warehouse(warehouse)
-                .maxLength(10)
-                .build();
-
-        Agent agent = new Agent()
-                .id("6171de17f68cfd1376441264")
-                .name("lucas")
-                .cpf("11122233344")
-                .build();
-
-        Product product = new Product()
-                .productCode("LEI")
-                .productName("Leite")
-                .section(section)
-                .build();
-
-        when(sectionRepository.findBySectionCode(anyString()))
-                .thenReturn(Optional.of(section));
-        when(agentRepository.findByCpf(anyString()))
-                .thenReturn(Optional.of(agent));
-        when(warehouseRepository.existsByWarehouseCode(anyString()))
-                .thenReturn(true);
-        when(productRepository.existsProductBySection_SectionCode(anyString()))
-                .thenReturn(true);
-        when(productRepository.findByProductId(anyString()))
-                .thenReturn(Optional.of(product));
-        when(batchStockRepository.countBySection(any(Section.class)))
-                .thenReturn((9L));
-
         MockHttpServletResponse response = mockMvc.perform(post("http://localhost:8080/api/v1/fresh-products/inboundorder")
+                .header("Authorization", "Bearer " + tokenTest.getAccessToken())
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(inboundOrderDTO)))
                 .andReturn().getResponse();
@@ -148,13 +171,13 @@ public class InboundOrderControllerTest {
     @Test
     void putTest() throws Exception {
         SectionDTO sectionDTO = new SectionDTO()
-                .sectionCode("FR")
+                .sectionCode("LA")
                 .warehouseCode("SP")
                 .build();
 
         BatchStockDTO batchStockDTO = new BatchStockDTO()
                 .batchNumber(1)
-                .productId("QJ")
+                .productId("LE")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
                 .initialQuantity(1)
@@ -183,37 +206,12 @@ public class InboundOrderControllerTest {
                 .batchStockDTO(Arrays.asList(batchStockDTO, batchStockDTOUm))
                 .build();
 
-        Warehouse warehouse = new Warehouse()
-                .id("6171dd92a488fe7100a796b1")
-                .warehouseName("sao paulo")
-                .warehouseCode("SP")
-                .build();
-
-        Section section = new Section()
-                .id("6171dd92a488fe7100a796b2")
-                .sectionCode("FR")
-                .sectionName("frios")
-                .warehouse(warehouse)
-                .maxLength(10)
-                .build();
-
-        Agent agent = new Agent()
-                .id("6171de17f68cfd1376441264")
-                .name("lucas")
-                .cpf("11122233344")
-                .warehouse(warehouse)
-                .build();
-
-        Product product = new Product()
-                .id("6176d1eecc1ee553f3aa6b2f")
-                .productCode("LEI")
-                .productName("Leite")
-                .section(section)
-                .build();
+        final Optional<Section> section = sectionRepository.findBySectionCode("LA");
+        final Optional<Agent> agent = agentRepository.findByCpf("11122233344");
 
         BatchStock batchStock = new BatchStock()
                 .batchNumber(1)
-                .productId("LEI")
+                .productId("LE")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
                 .initialQuantity(1)
@@ -221,51 +219,81 @@ public class InboundOrderControllerTest {
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now())
-                .section(section)
-                .agent(agent)
+                .section(section.orElse(new Section()))
+                .agent(agent.orElse(new Agent()))
                 .build();
-        BatchStock batchStockUm = new BatchStock()
-                .batchNumber(2)
-                .productId("LEI")
-                .currentTemperature(20.0F)
-                .minimumTemperature(15.0F)
-                .initialQuantity(1)
-                .currentQuantity(5)
-                .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
-                .dueDate(LocalDate.now())
-                .section(section)
-                .agent(agent)
-                .build();
+        batchStockRepository.save(batchStock);
 
         InboundOrder inboundOrder = new InboundOrder()
                 .orderNumber(1)
                 .orderDate(LocalDate.now())
-                .section(section)
-                .listBatchStock(Arrays.asList(batchStock, batchStockUm))
+                .section(section.orElse(new Section()))
+                .listBatchStock(Collections.singletonList(batchStock))
                 .build();
-
-        when(inboundOrderRepository.findByOrderNumber(anyInt()))
-                .thenReturn(Optional.of(inboundOrder));
-        when(sectionRepository.findBySectionCode(anyString()))
-                .thenReturn(Optional.of(section));
-        when(agentRepository.findByCpf(anyString()))
-                .thenReturn(Optional.of(agent));
-        when(warehouseRepository.existsByWarehouseCode(anyString()))
-                .thenReturn(true);
-        when(productRepository.existsProductBySection_SectionCode(anyString()))
-                .thenReturn(true);
-        when(productRepository.findByProductId(anyString()))
-                .thenReturn(Optional.of(product));
-        when(batchStockRepository.countBySection(any(Section.class)))
-                .thenReturn((9L));
+        inboundOrderRepository.save(inboundOrder);
 
         MockHttpServletResponse response = mockMvc.perform(put("http://localhost:8080/api/v1/fresh-products/inboundorder")
+                .header("Authorization", "Bearer " + tokenTest.getAccessToken())
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(inboundOrderDTO)))
                 .andReturn().getResponse();
 
         assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+    }
+
+    void createData() {
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+        warehouseRepository.save(warehouse);
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("laticinios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+        sectionRepository.save(section);
+
+        Agent agent = new Agent().
+                cpf("11122233344").
+                name("lucas").
+                warehouse(warehouse).
+                build();
+        agentRepository.save(agent);
+
+        Product product = new Product()
+                .productId("LE")
+                .productName("leite")
+                .section(section)
+                .productPrice(new BigDecimal("2.0"))
+                .dueDate(LocalDate.now())
+                .category(new SectionCategory().name(ESectionCategory.FF))
+                .build();
+        productRepository.save(product);
+
+        Role role = new Role();
+        role.setName(ERole.ROLE_USER);
+        roleRepository.save(role);
+
+        Role role2 = new Role();
+        role.setName(ERole.ROLE_MODERATOR);
+        roleRepository.save(role2);
+
+        Role role3 = new Role();
+        role.setName(ERole.ROLE_ADMIN);
+        roleRepository.save(role3);
+    }
+
+    void clearBase() {
+        userRepository.deleteAll();
+        roleRepository.deleteAll();
+        sectionRepository.deleteAll();
+        inboundOrderRepository.deleteAll();
+        agentRepository.deleteAll();
+        batchStockRepository.deleteAll();
+        warehouseRepository.deleteAll();
     }
 
 }

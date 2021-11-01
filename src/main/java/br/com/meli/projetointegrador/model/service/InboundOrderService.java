@@ -5,7 +5,7 @@ import br.com.meli.projetointegrador.exception.ValidInputException;
 import br.com.meli.projetointegrador.model.dto.AgentDTO;
 import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
 import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;
-import br.com.meli.projetointegrador.model.entity.*;
+import br.com.meli.projetointegrador.model.entity.InboundOrder;
 import br.com.meli.projetointegrador.model.repository.InboundOrderRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -53,7 +53,9 @@ public class InboundOrderService {
             InboundOrder inboundOrder = inboundOrderCheck.get();
             inboundOrder.orderNumber(inboundOrderDTO.getOrderNumber());
             inboundOrder.orderDate(inboundOrderDTO.getOrderDate());
-            batchStockService.putAll(inboundOrder.getListBatchStock(), inboundOrderDTO.getListBatchStockDTO(), agentDTO, inboundOrderDTO.getSectionDTO());
+            batchStockService.putAll(inboundOrder.getListBatchStock(),
+                    inboundOrderDTO.getListBatchStockDTO(), agentDTO
+                    , inboundOrderDTO.getSectionDTO());
             inboundOrderRepository.save(inboundOrder);
         } else {
             throw new InboundOrderException("Ordem de entrada nao existe!!! Por gentileza realizar o cadastro antes de atualizar");
@@ -62,10 +64,11 @@ public class InboundOrderService {
     }
 
     public void inputValid(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
-        if (!warehouseService.validWarehouse(inboundOrderDTO.getSectionDTO().getWarehouseCode()) &
-            !inboundOrderDTO.getSectionDTO().getWarehouseCode().equals(agentDTO.getWarehouseCode()) &
-            !sectionService.validSection(inboundOrderDTO.getSectionDTO().getSectionCode()))
+        if (!warehouseService.validWarehouse(inboundOrderDTO.getSectionDTO().getWarehouseCode()) |
+            !inboundOrderDTO.getSectionDTO().getWarehouseCode().equals(agentDTO.getWarehouseCode()) |
+            !sectionService.validSection(inboundOrderDTO.getSectionDTO().getSectionCode())) {
             throw new ValidInputException("Problema na validacao dos dados de entrada!!!");
+        }
     }
 
 }

@@ -3,9 +3,13 @@ package br.com.meli.projetointegrador.model.entity;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
 
 /**
  * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
@@ -24,7 +28,13 @@ public class Product {
 
     private String productId;
     private String productName;
+    private BigDecimal productPrice;
+    private LocalDate dueDate;
+
+    @DBRef
     private Section section;
+
+    private SectionCategory category;
 
     /**
      * @author Jhony Zuim
@@ -36,8 +46,8 @@ public class Product {
         return this;
     }
 
-    public Product productCode(String productCode) {
-        this.productId = productCode;
+    public Product productId(String productId) {
+        this.productId = productId;
         return this;
     }
 
@@ -46,8 +56,23 @@ public class Product {
         return this;
     }
 
+    public Product productPrice(BigDecimal productPrice) {
+        this.productPrice = productPrice;
+        return this;
+    }
+
+    public Product dueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
+        return this;
+    }
+
     public Product section(Section section) {
         this.section = section;
+        return this;
+    }
+
+    public Product category(SectionCategory category) {
+        this.category = category;
         return this;
     }
 

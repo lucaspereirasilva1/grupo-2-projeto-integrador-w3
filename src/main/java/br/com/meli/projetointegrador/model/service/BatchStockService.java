@@ -1,12 +1,13 @@
 package br.com.meli.projetointegrador.model.service;
 
+import br.com.meli.projetointegrador.exception.BatchStockException;
 import br.com.meli.projetointegrador.model.dto.AgentDTO;
 import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
+import br.com.meli.projetointegrador.model.dto.ProductPurchaseOrderDTO;
 import br.com.meli.projetointegrador.model.dto.SectionDTO;
 import br.com.meli.projetointegrador.model.entity.Agent;
 import br.com.meli.projetointegrador.model.entity.BatchStock;
 import br.com.meli.projetointegrador.model.entity.Product;
-import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import org.springframework.stereotype.Service;
 
@@ -36,14 +37,6 @@ public class BatchStockService {
         this.productService = productService;
     }
 
-    public void put(BatchStock batchStock, Section section, Agent agent) {
-        Section s = sectionService.find(section.getSectionCode());
-        Agent a = agentService.find(agent.getCpf());
-        batchStock.agent(a);
-        batchStock.section(s);
-        batchStockRepository.save(batchStock);
-    }
-
     public void postAll(List<BatchStock> listBatchStock, AgentDTO agentDTO, SectionDTO sectionDTO) {
         listBatchStock.forEach(b -> {
             Product product = productService.find(b.getProductId());
@@ -65,6 +58,7 @@ public class BatchStockService {
                     listBatchStock.get(i).currentTemperature(listBatchStockDTO.get(x).getCurrentTemperature());
                     listBatchStock.get(i).minimumTemperature(listBatchStockDTO.get(x).getMinimumTemperature());
                     listBatchStock.get(i).initialQuantity(listBatchStockDTO.get(x).getInitialQuantity());
+                    listBatchStock.get(i).currentQuantity(listBatchStockDTO.get(x).getCurrentQuantity());
                     listBatchStock.get(i).manufacturingDate(listBatchStockDTO.get(x).getManufacturingDate());
                     listBatchStock.get(i).manufacturingTime(listBatchStockDTO.get(x).getManufacturingTime());
                     listBatchStock.get(i).dueDate(listBatchStockDTO.get(x).getDueDate());
@@ -78,4 +72,16 @@ public class BatchStockService {
         }
     }
 
+    public void updateBatchStock(List<ProductPurchaseOrderDTO> productList) {
+        productList.forEach(p -> {
+            final List<BatchStock> listBatchStock = batchStockRepository.findAllByProductId(p.getProductId());
+            if (listBatchStock.isEmpty()) {
+                throw new BatchStockException("Nao foi encontrado estoque para esse produto!!!");
+            }
+            listBatchStock.forEach(b -> {
+                b.setCurrentQuantity(b.getCurrentQuantity()-p.getQuantity());
+                batchStockRepository.save(b);
+            });
+        });
+    }
 }
