@@ -10,6 +10,7 @@ import br.com.meli.projetointegrador.model.entity.PurchaseOrder;
 import br.com.meli.projetointegrador.model.enums.EOrderStatus;
 import br.com.meli.projetointegrador.model.repository.PurchaseOrderRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ public class PurchaseOrderService {
     private final ProductService productService;
     private final BuyerService buyerService;
     private final BatchStockService batchStockService;
+    private BigDecimal total = new BigDecimal(0);
 
     public PurchaseOrderService(PurchaseOrderRepository purchaseOrderRepository
             , ProductService productService, BuyerService buyerService
@@ -54,26 +56,44 @@ public class PurchaseOrderService {
     }
 
     public BigDecimal total(PurchaseOrderDTO purchaseOrderDTO){
-        BigDecimal total= new BigDecimal(0);
         PurchaseOrder purchaseOrder = new PurchaseOrder();
-        List<Product> listProduct = new ArrayList<>();
-        for (ProductPurchaseOrderDTO p:purchaseOrderDTO.getListProductPurchaseOrderDTO()) {
+        total =  total.add(new BigDecimal(0));
+        if (ObjectUtils.isEmpty(purchaseOrderDTO.getId())) {
+            final List<Product> productListPost = calculeTotal(purchaseOrderDTO);
+            purchaseOrder.productList(productListPost);
+            purchaseOrder.date(LocalDate.now());
+            purchaseOrder.buyer(buyerService.find(purchaseOrderDTO.getBuyerId()));
+            purchaseOrder.orderStatus(EOrderStatus.ORDER_CHART);
+            purchaseOrderRepository.save(purchaseOrder);
+            batchStockService.updateBatchStock(purchaseOrderDTO.getListProductPurchaseOrderDTO());
+        }else {
+            final List<Product> productListPut = calculeTotal(purchaseOrderDTO);
+            purchaseOrder.productList(productListPut);
+            purchaseOrder.date(purchaseOrderDTO.getData());
+            purchaseOrder.buyer(buyerService.find(purchaseOrderDTO.getBuyerId()));
+            purchaseOrder.orderStatus(EOrderStatus.ORDER_CHART);
+            purchaseOrder.id(purchaseOrderDTO.getId());
+            purchaseOrderRepository.save(purchaseOrder);
+            batchStockService.updateBatchStock(purchaseOrderDTO.getListProductPurchaseOrderDTO());
+        }
+
+        return total;
+    }
+
+    private List<Product> calculeTotal(PurchaseOrderDTO purchaseOrderDTO) {
+        List<Product> productList = new ArrayList<>();
+        for (ProductPurchaseOrderDTO p : purchaseOrderDTO.getListProductPurchaseOrderDTO()) {
             Product product = productService.find(p.getProductId());
             productService.dueDataProduct(product.getDueDate());
-            if (p.getProductId().equals(product.getProductId())){
-                total=total.add(product.getProductPrice().multiply(new BigDecimal(p.getQuantity())));
-            }else{
+            if (p.getProductId().equals(product.getProductId())) {
+                total = total.add(product.getProductPrice().multiply(new BigDecimal(p.getQuantity())));
+            } else {
                 throw new ProductException("Produto nao encontrado");
             }
-            listProduct.add(product);
+            productList.add(product);
         }
-        purchaseOrder.productList(listProduct);
-        purchaseOrder.date(LocalDate.now());
-        purchaseOrder.buyer(buyerService.find(purchaseOrderDTO.getBuyerId()));
-        purchaseOrder.orderStatus(EOrderStatus.ORDER_CHART);
-        purchaseOrderRepository.save(purchaseOrder);
-        batchStockService.updateBatchStock(purchaseOrderDTO.getListProductPurchaseOrderDTO());
-        return total;
+
+        return productList;
     }
 
 }

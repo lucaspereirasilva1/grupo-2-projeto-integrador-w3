@@ -15,6 +15,10 @@ import java.util.List;
 @Data
 public class PurchaseOrderDTO {
 
+    @JsonProperty("id")
+    private String id;
+
+    @JsonProperty("data")
     @JsonFormat(shape = JsonFormat.Shape.STRING,pattern="dd/MM/yyyy")
     @NotNull(message = "data cannot be null")
     private LocalDate data;
@@ -36,6 +40,11 @@ public class PurchaseOrderDTO {
     @Size(min = 1, message = "products most be minimum size 1")
     @Valid
     private List<ProductPurchaseOrderDTO> listProductPurchaseOrderDTO;
+
+    public PurchaseOrderDTO id(String id) {
+        this.id = id;
+        return this;
+    }
 
     public PurchaseOrderDTO data(LocalDate data) {
         this.data = data;

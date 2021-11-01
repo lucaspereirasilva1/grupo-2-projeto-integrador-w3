@@ -28,6 +28,12 @@ public class PurchaseOrder {
     @Field("product")
     private List<Product> productList;
 
+    public PurchaseOrder id(String id) {
+        this.id = id;
+        return this;
+    }
+
+
     public PurchaseOrder date(LocalDate date) {
         this.date = date;
         return this;

@@ -38,4 +38,12 @@ public class PurchaseOrderController {
         return ResponseEntity.created(uri).body(total);
     }
 
+    @PutMapping(value = "/order", produces = "application/json")
+    public ResponseEntity<BigDecimal> put(@Valid @RequestBody PurchaseOrderDTO purchaseOrderDTO,
+                                                          UriComponentsBuilder uriComponentsBuilder) {
+        BigDecimal total = purchaseOrderService.total(purchaseOrderDTO);
+        URI uri = uriComponentsBuilder.path("/order/1").buildAndExpand(1).toUri();
+        return ResponseEntity.created(uri).body(total);
+    }
+
 }
