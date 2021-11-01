@@ -1,17 +1,22 @@
 package br.com.meli.projetointegrador.model.service;
 
-import br.com.meli.projetointegrador.model.dto.AgentDTO;
-import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
-import br.com.meli.projetointegrador.model.dto.SectionDTO;
+import br.com.meli.projetointegrador.exception.ProductExceptionNotFound;
+import br.com.meli.projetointegrador.model.dto.*;
 import br.com.meli.projetointegrador.model.entity.*;
+import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
@@ -168,5 +173,19 @@ public class BatchStockServiceTest {
                 ,agentDTO, sectionDTO);
 
         verify(mockBatchStockRepository, times(1)).save(any(BatchStock.class));
+    }
+
+
+    @Test
+    void validListProductIdNotExist(){
+
+        ProductExceptionNotFound productException = assertThrows
+                (ProductExceptionNotFound.class,() ->
+                        batchStockService.listProductId("ME"));
+
+        String menssagemEsperada = "Nao existe produto para esse codigo, por favor verifique o codigo inserido!";
+
+        assertTrue(menssagemEsperada.contains(productException.getMessage()));
+
     }
 }

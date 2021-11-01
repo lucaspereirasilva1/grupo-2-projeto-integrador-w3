@@ -73,27 +73,32 @@ public class BatchStockService {
     public BatchStockResponseDTO listProductId(String productId) {
         BatchStockResponseDTO batchStockResponseDTO = new BatchStockResponseDTO();
         List<BatchStock> batchStockList = batchStockRepository.findAllByProductId(productId);
-        List<BatchStockListProductDTO> listBatchStockProductDTO = new ArrayList<>();
         Product product = productService.find(productId);
-        SectionDTO sectionDTO = new SectionDTO()
-                .sectionCode(product.getSection().getSectionCode())
-                .warehouseCode(product.getSection().getWarehouse().getWarehouseCode())
-                .build();
-        batchStockResponseDTO.sectionDTO(sectionDTO);
-        batchStockResponseDTO.productId(productId);
         if(!batchStockList.isEmpty()){
-            for (BatchStock b: batchStockList){
-                BatchStockListProductDTO batchStockListProductDTO = new BatchStockListProductDTO()
-                        .batchNumber(b.getBatchNumber())
-                        .currentQuantity(b.getCurrentQuantity())
-                        .dueDate(b.getDueDate())
-                        .build();
-                listBatchStockProductDTO.add(batchStockListProductDTO);
-            }
+            List<BatchStockListProductDTO> listBatchStockProductDTO = convertDTO(batchStockList);
+            SectionDTO sectionDTO = new SectionDTO()
+                    .sectionCode(product.getSection().getSectionCode())
+                    .warehouseCode(product.getSection().getWarehouse().getWarehouseCode())
+                    .build();
+            batchStockResponseDTO.sectionDTO(sectionDTO);
+            batchStockResponseDTO.productId(product.getProductId());
             batchStockResponseDTO.batchStock(listBatchStockProductDTO);
             return batchStockResponseDTO;
         } else {
-            throw new ProductExceptionNotFound("Exemplo de mensagem");
+            throw new ProductExceptionNotFound("Nao existe produto para esse codigo, por favor verifique o codigo inserido!");
         }
+    }
+
+    public List<BatchStockListProductDTO> convertDTO(List<BatchStock> batchStockList) {
+        List<BatchStockListProductDTO> listBatchStockProductDTO = new ArrayList<>();
+        for (BatchStock b : batchStockList) {
+            BatchStockListProductDTO batchStockListProductDTO = new BatchStockListProductDTO()
+                    .batchNumber(b.getBatchNumber())
+                    .currentQuantity(b.getCurrentQuantity())
+                    .dueDate(b.getDueDate())
+                    .build();
+            listBatchStockProductDTO.add(batchStockListProductDTO);
+        }
+        return listBatchStockProductDTO;
     }
 }

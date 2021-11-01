@@ -12,14 +12,16 @@ import java.util.List;
  * @since 15/10/2021
  * Objeto de Transferência de Dados do product
  */
+@JsonPropertyOrder({"section", "productId", "batchStock"})
 
 @Data
 public class BatchStockResponseDTO {
 
+    @JsonProperty("section")
     private SectionDTO sectionDTO;
-
+    @JsonProperty("productId")
     private String productId;
-
+    @JsonProperty("batchStock")
     private List<BatchStockListProductDTO> batchStock;
 
     public BatchStockResponseDTO sectionDTO(SectionDTO sectionDTO) {
