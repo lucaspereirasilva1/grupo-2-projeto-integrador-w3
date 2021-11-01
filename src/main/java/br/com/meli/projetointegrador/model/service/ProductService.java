@@ -79,4 +79,20 @@ public class ProductService {
             throw new ProductException("Produto Vencido");
     }
 
+    public List <ProductDTO> converteProductlist  (List<Product> productList) {
+        List <ProductDTO> productDTOList = new ArrayList<>();
+        for (Product p : productList) {
+            ProductDTO productDTO = new ProductDTO()
+                    .productId(p.getProductId())
+                    .productName(p.getProductName())
+                    .sectionName(p.getSection().getSectionName())
+                    .category(p.getCategory().getName())
+                    .productPrice(p.getProductPrice())
+                    .dueDate(p.getDueDate())
+                    .build();
+            productDTOList.add(productDTO);
+        }
+        return productDTOList;
+    }
+
 }
