@@ -1,9 +1,6 @@
 package br.com.meli.projetointegrador.controller;
 
-import br.com.meli.projetointegrador.model.dto.LoginRequest;
-import br.com.meli.projetointegrador.model.dto.ProductPurchaseOrderDTO;
-import br.com.meli.projetointegrador.model.dto.PurchaseOrderDTO;
-import br.com.meli.projetointegrador.model.dto.SignupRequest;
+import br.com.meli.projetointegrador.model.dto.*;
 import br.com.meli.projetointegrador.model.entity.*;
 import br.com.meli.projetointegrador.model.enums.EOrderStatus;
 import br.com.meli.projetointegrador.model.enums.ERole;
@@ -171,7 +168,7 @@ public class PurchaseOrderControllerTest {
         PurchaseOrderDTO purchaseOrderDTO = new PurchaseOrderDTO()
                 .data(LocalDate.now())
                 .buyerId(buyer.getId())
-                .orderStatus(EOrderStatus.IN_PROGRESS)
+                .orderStatus(new OrderStatusDTO().statusCode(EOrderStatus.IN_PROGRESS))
                 .listProductPurchaseOrderDTO(Arrays.asList(productPurchaseOrderDTO1,
                         productPurchaseOrderDTO2));
 

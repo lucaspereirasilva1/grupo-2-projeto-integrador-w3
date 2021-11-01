@@ -1,5 +1,6 @@
 package br.com.meli.projetointegrador.model.service;
 
+import br.com.meli.projetointegrador.model.dto.OrderStatusDTO;
 import br.com.meli.projetointegrador.model.dto.ProductDTO;
 import br.com.meli.projetointegrador.model.dto.ProductPurchaseOrderDTO;
 import br.com.meli.projetointegrador.model.dto.PurchaseOrderDTO;
@@ -167,7 +168,7 @@ public class PurchaseOrderServiceIntegrationTest {
         PurchaseOrderDTO purchaseOrderDTO = new PurchaseOrderDTO()
                 .data(LocalDate.now())
                 .buyerId(buyer.getId())
-                .orderStatus(EOrderStatus.IN_PROGRESS)
+                .orderStatus(new OrderStatusDTO().statusCode(EOrderStatus.IN_PROGRESS))
                 .listProductPurchaseOrderDTO(Arrays.asList(productPurchaseOrderDTO1,
                         productPurchaseOrderDTO2));
 
@@ -211,6 +212,123 @@ public class PurchaseOrderServiceIntegrationTest {
 
         assertFalse(ObjectUtils.isEmpty(total));
         assertEquals(new BigDecimal(19), total);
+    }
+
+    @Test
+    void putIntegrationTest() {
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("Sao Paulo")
+                .build();
+        warehouseRepository.save(warehouse);
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("Laticionios")
+                .warehouse(warehouse)
+                .maxLength(10)
+                .build();
+        sectionRepository.save(section);
+
+        Buyer buyer = new Buyer()
+                .name("lucas")
+                .cpf("22233344411")
+                .build();
+        buyerRepository.save(buyer);
+
+        SectionCategory sectionCategory = new SectionCategory()
+                .name(ESectionCategory.FF)
+                .build();
+        sectionCategoryRepository.save(sectionCategory);
+
+        Product product = new Product()
+                .productId("LE")
+                .productName("leite")
+                .section(section)
+                .productPrice(new BigDecimal(2))
+                .dueDate(LocalDate.of(2021,11,30))
+                .category(sectionCategory)
+                .build();
+
+        Product productUm = new Product()
+                .productId("QJ")
+                .productName("queijo")
+                .section(section)
+                .productPrice(new BigDecimal(3))
+                .dueDate(LocalDate.of(2021,11,30))
+                .category(sectionCategory)
+                .build();
+        productRepository.saveAll(Arrays.asList(product, productUm));
+
+        Agent agent = new Agent()
+                .name("lucas")
+                .cpf("11122233344")
+                .warehouse(warehouse)
+                .build();
+        agentRepository.save(agent);
+
+        BatchStock batchStock = new BatchStock()
+                .batchNumber(1)
+                .productId("LE")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .agent(agent)
+                .section(section)
+                .build();
+
+        BatchStock batchStockDois = new BatchStock()
+                .batchNumber(1)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(10)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .agent(agent)
+                .section(section)
+                .build();
+        batchStockRepository.saveAll(Arrays.asList(batchStock, batchStockDois));
+
+        PurchaseOrder purchaseOrder = new PurchaseOrder()
+                .date(LocalDate.now())
+                .buyer(buyer)
+                .orderStatus(EOrderStatus.ORDER_CHART)
+                .productList(Arrays.asList(product, productUm))
+                .build();
+        purchaseOrderRepository.save(purchaseOrder);
+
+        ProductPurchaseOrderDTO productPurchaseOrderDTO1 = new ProductPurchaseOrderDTO()
+                .productId("LE")
+                .quantity(5)
+                .build();
+        ProductPurchaseOrderDTO productPurchaseOrderDTO2 = new ProductPurchaseOrderDTO()
+                .productId("QJ")
+                .quantity(3)
+                .build();
+
+        PurchaseOrderDTO purchaseOrderPutDTO = new PurchaseOrderDTO()
+                .id(purchaseOrder.getId())
+                .data(LocalDate.now())
+                .buyerId(buyer.getId())
+                .orderStatus(new OrderStatusDTO().statusCode(EOrderStatus.ORDER_CHART))
+                .listProductPurchaseOrderDTO(Arrays.asList(productPurchaseOrderDTO1,
+                        productPurchaseOrderDTO2));
+
+
+        final BigDecimal total = purchaseOrderService.total(purchaseOrderPutDTO);
+
+        assertFalse(ObjectUtils.isEmpty(total));
+        assertEquals(new BigDecimal(19), total);
+        assertEquals(purchaseOrderPutDTO.getBuyerId(), purchaseOrder.getBuyer().getId());
+        assertEquals(purchaseOrderPutDTO.getData(), purchaseOrder.getDate());
+        assertEquals(purchaseOrderPutDTO.getOrderStatus().getStatusCode(), purchaseOrder.getOrderStatus());
     }
 
 

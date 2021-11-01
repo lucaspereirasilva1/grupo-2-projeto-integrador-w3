@@ -74,10 +74,8 @@ public class ProductService {
         }
     }
 
-    public Boolean doeDataProduct(LocalDate dueDate){
-        if (dueDate.isAfter(LocalDate.now().plusWeeks(+3)))
-            return true;
-        else
+    public void dueDataProduct(LocalDate dueDate){
+        if (!dueDate.isAfter(LocalDate.now().plusWeeks(+3)))
             throw new ProductException("Produto Vencido");
     }
 
