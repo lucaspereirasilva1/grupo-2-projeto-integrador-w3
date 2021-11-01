@@ -1,12 +1,18 @@
 package br.com.meli.projetointegrador.controller;
 
+import br.com.meli.projetointegrador.model.dto.LoginRequest;
 import br.com.meli.projetointegrador.model.dto.ProductPurchaseOrderDTO;
 import br.com.meli.projetointegrador.model.dto.PurchaseOrderDTO;
+import br.com.meli.projetointegrador.model.dto.SignupRequest;
 import br.com.meli.projetointegrador.model.entity.*;
 import br.com.meli.projetointegrador.model.enums.EOrderStatus;
+import br.com.meli.projetointegrador.model.enums.ERole;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.*;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
@@ -20,6 +26,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -53,7 +61,53 @@ public class PurchaseOrderControllerTest {
     @Autowired
     private AgentRepository agentRepository;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private TokenTest tokenTest = new TokenTest();
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @BeforeEach
+    void setup() throws Exception {
+        Role role = new Role();
+        role.setName(ERole.ROLE_USER);
+        roleRepository.save(role);
+
+        Role role2 = new Role();
+        role.setName(ERole.ROLE_MODERATOR);
+        roleRepository.save(role2);
+
+        Role role3 = new Role();
+        role.setName(ERole.ROLE_ADMIN);
+        roleRepository.save(role3);
+
+        Set<String> roles = new HashSet<>();
+        roles.add(ERole.ROLE_USER.toString());
+        roles.add(ERole.ROLE_ADMIN.toString());
+        roles.add(ERole.ROLE_MODERATOR.toString());
+        SignupRequest signupRequest = new SignupRequest();
+        signupRequest.setUsername("lucas");
+        signupRequest.setEmail("lucas@gmail.com");
+        signupRequest.setPassword("12345678");
+        signupRequest.setRole(roles);
+        mockMvc.perform(post("http://localhost:8080/api/auth/signup")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(signupRequest)))
+                .andReturn().getResponse();
+
+        LoginRequest loginRequest = new LoginRequest();
+        loginRequest.setUsername("lucas");
+        loginRequest.setPassword("12345678");
+        MockHttpServletResponse responseSignin = mockMvc.perform(post("http://localhost:8080/api/auth/signin")
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(loginRequest)))
+                .andReturn().getResponse();
+        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
+        String tokenNoFormat = responseSignin.getContentAsString();
+        tokenTest = objectMapper.readValue(tokenNoFormat, TokenTest.class);
+    }
 
     @Test
     void postControllerTest() throws Exception {
@@ -153,7 +207,8 @@ public class PurchaseOrderControllerTest {
                 .build();
         batchStockRepository.saveAll(Arrays.asList(batchStock, batchStockDois));
 
-        MockHttpServletResponse response = mockMvc.perform(post("http://localhost:8080/api/v1/fresh-products/orders")
+        MockHttpServletResponse response = mockMvc.perform(post("http://localhost:8080/api/v1/fresh-products/order")
+                .header("Authorization", "Bearer " + tokenTest.getAccessToken())
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(purchaseOrderDTO)))
                 .andReturn().getResponse();
