@@ -5,6 +5,8 @@ import br.com.meli.projetointegrador.model.entity.Section;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
  * @version 1.0.0
@@ -16,5 +18,5 @@ import org.springframework.stereotype.Repository;
 public interface BatchStockRepository extends MongoRepository<BatchStock, String> {
 
     Long countBySection(Section section);
-
+    List<BatchStock> findAllByProductId(String productId);
 }

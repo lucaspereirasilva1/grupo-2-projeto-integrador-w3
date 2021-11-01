@@ -1,10 +1,12 @@
 package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.ProductException;
+import br.com.meli.projetointegrador.exception.ProductExceptionNotFound;
 import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.entity.Section;
+import br.com.meli.projetointegrador.model.entity.SectionCategory;
 import br.com.meli.projetointegrador.model.entity.Warehouse;
-import br.com.meli.projetointegrador.model.enums.SectionCategory;
+import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
 
@@ -160,7 +162,7 @@ public class ProductServiceTest {
                 .productId("LE")
                 .productName("leite")
                 .section(section)
-                .sectionCategory(SectionCategory.FF)
+                .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
 
         productList.add(productUm);
@@ -169,15 +171,28 @@ public class ProductServiceTest {
                 .productId("LE")
                 .productName("leite")
                 .section(section)
-                .sectionCategory(SectionCategory.FF)
+                .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
 
         productList.add(productDois);
 
-        when(mockProductRepository.findProductBySectionCategory(any()))
+        when(mockProductRepository.findProductByCategory(any()))
                 .thenReturn(productList);
 
-        assertTrue(productService.listProdutcByCategory(SectionCategory.FF).size() == 2);
+        assertTrue(productService.listProdutcByCategory(ESectionCategory.FF.toString()).size() == 2);
+
+    }
+
+    @Test
+    void validListProductByCategoryNotExistTest(){
+
+        ProductExceptionNotFound productException = assertThrows
+                (ProductExceptionNotFound.class,() ->
+                        productService.listProdutcByCategory(ESectionCategory.FF.toString()));
+
+        String menssagemEsperada = "Nao temos o produtos nessa categoria, por favor informar a categoria correta!";
+
+        assertTrue(menssagemEsperada.contains(productException.getMessage()));
 
     }
 }
