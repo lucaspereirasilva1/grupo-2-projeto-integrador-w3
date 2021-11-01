@@ -45,32 +45,14 @@ public class ProductController {
         return ResponseEntity.badRequest().build();
     }
 
-//        @GetMapping (value = "/products")
-//    public ResponseEntity<List<ProductDTO>> getProductbyListSection(@PathVariable("productlist") List listproduct) {
-//      //  List<ProductDTO> listProduct =  new ArrayList<>();
-//        List<ProductDTO> products =  productService.listProductBylist(listproduct);
-//        if (!products.isEmpty()) {
-//            return ResponseEntity.ok(products);
-//        } else
-//            return ResponseEntity.badRequest().build();
-//    }
-
     @GetMapping(value = "/products")
-    public ResponseEntity<List<Product>> getlistProductBylist(@PathVariable("productlist") {
-        List<ProductDTO> listProducts = new ArrayList<>();
+    public ResponseEntity<List<ProductDTO>> getlistProductBylist() {
         List<Product> products = productRepository.findAll();
         if (!products.isEmpty()) {
-            for (Product p : products) {
-                ProductDTO productDTO = new ProductDTO()
-                        .productId(p.getProductId())
-                        .productName(p.getProductName())
-                        .sectionName(p.getSection()
-                                .build());
-                products.add((Product) products);
-                return ResponseEntity.ok(products);
-            }
+                return ResponseEntity.ok(productService.converteProductlist(products));
+            } else {
 
-        } return ResponseEntity.badRequest().build();
+        } return ResponseEntity.notFound().build();
     }
 }
 

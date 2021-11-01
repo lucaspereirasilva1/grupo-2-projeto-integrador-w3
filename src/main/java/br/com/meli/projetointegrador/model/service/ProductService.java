@@ -6,6 +6,8 @@ import br.com.meli.projetointegrador.model.dto.ProductDTO;
 import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
 import br.com.meli.projetointegrador.util.SectionCategory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,7 +24,7 @@ import java.util.Optional;
 @Service
 public class ProductService {
 
-    private final ProductRepository productRepository;
+    private ProductRepository productRepository;
 
     public ProductService(ProductRepository productRepository) {
         this.productRepository = productRepository;
@@ -68,21 +70,17 @@ public class ProductService {
         }
     }
 
-//    public List <ProductDTO> listProductBylist (List<ProductDTO> listProduct) {
-//        List<Product> productList =  productRepository.findAll();
-//        if (!productList.isEmpty()) {
-//            for (Product p: productList) {
-//                ProductDTO productDTO = new ProductDTO()
-//                        .productId(p.getProductId())
-//                        .productName(p.getProductName())
-//                        .sectionName(p.getSection()
-//                        .build());
-//               productList.add((Product) productList);
-//            }
-//            return listProduct;
-//        } else {
-//            throw new ProductException("Nao temos o produtos nessa section, por favor informar a section correta!");
-//        }
-//    }
+    public List <ProductDTO> converteProductlist  (List<Product> productList) {
+        List <ProductDTO> productDTOList = new ArrayList<>();
+            for (Product p : productList) {
+                ProductDTO productDTO = new ProductDTO()
+                        .productId(p.getProductId())
+                        .productName(p.getProductName())
+                        .sectionName(p.getSection()
+                                .build());
+                productDTOList.add(productDTO);
+            }
+            return productDTOList;
+        }
 
 }

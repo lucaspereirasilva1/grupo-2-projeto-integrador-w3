@@ -21,6 +21,8 @@ public interface ProductRepository extends MongoRepository<Product, String> {
     Boolean existsProductBySection_SectionCode(String sectionCode);
     Optional<Product> findDistinctFirstByProductId(String productId);
     List<Product> findProductBySectionCategory(SectionCategory sectionCategory);
+    List <Product> converteProductList();
+
 
 
 }

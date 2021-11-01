@@ -7,7 +7,9 @@ import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.entity.Warehouse;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,8 +25,14 @@ import static org.mockito.Mockito.*;
 
 public class ProductServiceTest {
 
-    private final ProductRepository mockProductRepository = mock(ProductRepository.class);
+
+
+   private final ProductRepository mockProductRepository = mock(ProductRepository.class);
     private final ProductService productService = new ProductService(mockProductRepository);
+
+
+
+
 
     /**
      * @author Jhony Zuim
@@ -53,6 +61,7 @@ public class ProductServiceTest {
      * @author Jhony Zuim
      *  Teste para validar se uma produto nao corresponde a section
      */
+
     @Test
     void validProductSectionNotExistTest() {
         Warehouse warehouse = new Warehouse()
@@ -136,4 +145,5 @@ public class ProductServiceTest {
 
         assertTrue(expectedMessage.contains(productException.getMessage()));
     }
+
 }
