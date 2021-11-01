@@ -72,6 +72,8 @@ public class ProductRepositoryTest {
 
     @Test
     void existsProductBySectionTest() {
-        assertTrue(productRepository.existsProductBySection_SectionCode("LA"));
+        final Optional<Section> section = sectionRepository.findBySectionCode("LA");
+        assertTrue(productRepository.existsProductBySection(section.orElse(null)));
+        assertTrue(productRepository.existsProductBySection(section.orElse(null)));
     }
 }

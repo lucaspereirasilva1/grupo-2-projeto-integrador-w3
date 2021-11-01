@@ -3,8 +3,9 @@ package br.com.meli.projetointegrador.model.service;
 import br.com.meli.projetointegrador.exception.ProductException;
 import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.entity.Section;
+import br.com.meli.projetointegrador.model.entity.SectionCategory;
 import br.com.meli.projetointegrador.model.entity.Warehouse;
-import br.com.meli.projetointegrador.model.enums.SectionCategory;
+import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
 
@@ -25,8 +26,8 @@ import static org.mockito.Mockito.*;
 public class ProductServiceTest {
 
     private final ProductRepository mockProductRepository = mock(ProductRepository.class);
-    private final ProductService productService = new ProductService(mockProductRepository);
-    private SectionCategory sectionCategory;
+    private final SectionService mockSectionService = mock(SectionService.class);
+    private final ProductService productService = new ProductService(mockProductRepository, mockSectionService);
 
     /**
      * @author Jhony Zuim
@@ -160,7 +161,7 @@ public class ProductServiceTest {
                 .productId("LE")
                 .productName("leite")
                 .section(section)
-                .sectionCategory(SectionCategory.FF)
+                .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
 
         productList.add(productUm);
@@ -169,15 +170,15 @@ public class ProductServiceTest {
                 .productId("LE")
                 .productName("leite")
                 .section(section)
-                .sectionCategory(SectionCategory.FF)
+                .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
 
         productList.add(productDois);
 
-        when(mockProductRepository.findProductBySectionCategory(any()))
+        when(mockProductRepository.findProductByCategory(any(SectionCategory.class)))
                 .thenReturn(productList);
 
-        assertTrue(productService.listProdutcByCategory(SectionCategory.FF).size() == 2);
+        assertEquals(productService.listProdutcByCategory(ESectionCategory.FF.toString()).size(), 2);
 
     }
 }

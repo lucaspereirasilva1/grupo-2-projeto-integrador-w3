@@ -101,7 +101,7 @@ public class PurchaseOrderServiceIntegrationTest {
                 .date(LocalDate.now())
                 .buyer(buyer)
                 .orderStatus(EOrderStatus.IN_PROGRESS)
-                .product(Arrays.asList(product, productUm))
+                .productList(Arrays.asList(product, productUm))
                 .build();
         purchaseOrderRepository.save(purchaseOrder);
 
