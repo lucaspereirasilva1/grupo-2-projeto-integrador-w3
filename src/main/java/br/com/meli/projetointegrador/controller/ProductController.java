@@ -1,7 +1,9 @@
 package br.com.meli.projetointegrador.controller;
 
 import br.com.meli.projetointegrador.model.dto.ProductDTO;
+import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
+import br.com.meli.projetointegrador.model.repository.ProductRepository;
 import br.com.meli.projetointegrador.model.service.ProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,9 +25,11 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
+    private final ProductRepository productRepository;
 
-    public ProductController(ProductService productService) {
+    public ProductController(ProductService productService, ProductRepository productRepository) {
         this.productService = productService;
+        this.productRepository = productRepository;
     }
 
     @GetMapping(value = "/list") // Chamada do endpoint: /list?sectionCategory=FF ou FS ou RF ou um que nao existe.
@@ -39,6 +43,16 @@ public class ProductController {
             }
         }
     return ResponseEntity.badRequest().build();
+    }
+
+    @GetMapping(value = "/products")
+    public ResponseEntity<List<ProductDTO>> getlistProductBylist() {
+        List<Product> products = productRepository.findAll();
+        if (!products.isEmpty()) {
+            return ResponseEntity.ok(productService.converteProductlist(products));
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 }
