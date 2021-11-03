@@ -13,6 +13,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Camada de teste integrado do service responsavel pela regra de negocio relacionada ao agent
+ */
+
 @SpringBootTest
 public class AgentServiceIntegrationTest {
 

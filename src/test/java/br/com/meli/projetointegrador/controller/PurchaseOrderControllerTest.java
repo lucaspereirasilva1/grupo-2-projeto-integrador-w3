@@ -30,6 +30,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Camada de teste do controller responsavel pela regra de negocio relacionada ao PurchaseOrderControllerTest
+ */
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureDataMongo

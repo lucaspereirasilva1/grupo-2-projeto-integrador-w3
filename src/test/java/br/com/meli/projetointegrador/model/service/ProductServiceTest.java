@@ -32,10 +32,6 @@ public class ProductServiceTest {
     private final SectionService mockSectionService = mock(SectionService.class);
     private final ProductService productService = new ProductService(mockProductRepository, mockSectionService);
 
-    /**
-     * @author Jhony Zuim
-     *  Teste unitario para validar se um produto corresponde a section
-     */
     @Test
     void validProductSectionExistTest(){
         Warehouse warehouse = new Warehouse()
@@ -57,10 +53,6 @@ public class ProductServiceTest {
         assertTrue(productService.validProductSection(section.getSectionCode()));
     }
 
-    /**
-     * @author Jhony Zuim
-     *  Teste para validar se uma produto nao corresponde a section
-     */
     @Test
     void validProductSectionNotExistTest() {
         Warehouse warehouse = new Warehouse()

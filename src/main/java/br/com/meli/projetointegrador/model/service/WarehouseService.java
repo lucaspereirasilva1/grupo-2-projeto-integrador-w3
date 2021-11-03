@@ -18,16 +18,15 @@ import java.util.Optional;
 public class WarehouseService {
 
     private final WarehouseRepository warehouseRepository;
+
     public WarehouseService(WarehouseRepository warehouseRepository) {
         this.warehouseRepository = warehouseRepository;
     }
 
-    /** metodo para verificar se Warehouse é valido.
-     *
-     * @param warehouseCode recebe o codigo do warehouse para validar se existe no banco
-     * @return Boolean ou WarehouseException em caso de insucesso
+    /**
+     * @param warehouseCode recebe o codigo do warehouse para validar se existe no banco;
+     * @return verdadeiro ou exception.
      */
-
     public Boolean validWarehouse(String warehouseCode) {
         if (warehouseRepository.existsByWarehouseCode(warehouseCode)) {
             return true;
@@ -36,6 +35,10 @@ public class WarehouseService {
         }
     }
 
+    /**
+     * @param warehouseCode recebe um codigo de warehouse;
+     * @return optional de warehouse ou exception.
+     */
     public Warehouse find(String warehouseCode) {
         Optional<Warehouse> warehouseOptional = warehouseRepository.findByWarehouseCode(warehouseCode);
         if (warehouseOptional.isEmpty()) {

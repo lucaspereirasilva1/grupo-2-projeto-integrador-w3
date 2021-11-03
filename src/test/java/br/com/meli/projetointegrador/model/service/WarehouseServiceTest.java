@@ -22,12 +22,6 @@ public class WarehouseServiceTest {
     private final WarehouseRepository mockWarehouseRepository = mock(WarehouseRepository.class);
     private final WarehouseService warehouseService = new WarehouseService(mockWarehouseRepository);
 
-    /**
-     * Teste unitarios
-     * validWarehouseExist - metodo para validar se Warehouse é valido
-     *  Verificar se Warehouse é invalido.
-     */
-
     @Test
     void validWarehouseExist(){
         when(mockWarehouseRepository.existsByWarehouseCode(anyString()))
