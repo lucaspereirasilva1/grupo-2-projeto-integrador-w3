@@ -1,5 +1,6 @@
 package br.com.meli.projetointegrador.model.service;
 
+import br.com.meli.projetointegrador.exception.BatchStockException;
 import br.com.meli.projetointegrador.exception.ProductExceptionNotFound;
 import br.com.meli.projetointegrador.model.dto.*;
 import br.com.meli.projetointegrador.model.entity.*;
@@ -245,6 +246,7 @@ public class BatchStockServiceTest {
         verify(mockBatchStockRepository, times(listProductPurchaseOrderDTO.size())).findAllByProductId(anyString());
         verify(mockBatchStockRepository, times(listProductPurchaseOrderDTO.size() + listProductPurchaseOrderDTO.size())).save(any(BatchStock.class));
     }
+
     @Test
     void validListProductId(){
         List<BatchStock> batchStockList = new ArrayList<>();
@@ -317,7 +319,6 @@ public class BatchStockServiceTest {
 
     @Test
     void validListProductIdNotExist(){
-
         ProductExceptionNotFound productException = assertThrows
                 (ProductExceptionNotFound.class,() ->
                         batchStockService.listProductId("ME"));
@@ -325,5 +326,33 @@ public class BatchStockServiceTest {
         String menssagemEsperada = "Nao existe produto para esse codigo, por favor verifique o codigo inserido!";
 
         assertTrue(menssagemEsperada.contains(productException.getMessage()));
+    }
+
+    @Test
+    void updateBatchStockNotExist() {
+        List<ProductPurchaseOrderDTO> listProductPurchaseOrderDTO = new ArrayList<>();
+        ProductPurchaseOrderDTO productPurchaseOrderDTO1 = new ProductPurchaseOrderDTO()
+                .productId("LE")
+                .quantity(5)
+                .build();
+        ProductPurchaseOrderDTO productPurchaseOrderDTO2 = new ProductPurchaseOrderDTO()
+                .productId("QJ")
+                .quantity(3)
+                .build();
+        listProductPurchaseOrderDTO.add(productPurchaseOrderDTO1);
+        listProductPurchaseOrderDTO.add(productPurchaseOrderDTO2);
+
+        when(mockBatchStockRepository.findAllByProductId(anyString()))
+                .thenReturn(new ArrayList<>());
+        when(mockBatchStockRepository.save(any(BatchStock.class)))
+                .thenReturn(new BatchStock());
+
+        BatchStockException batchStockException = assertThrows
+                (BatchStockException.class,() ->
+                        batchStockService.updateBatchStock(listProductPurchaseOrderDTO));
+
+        String menssagemEsperada = "Nao foi encontrado estoque para esse produto!!!";
+
+        assertTrue(menssagemEsperada.contains(batchStockException.getMessage()));
     }
 }

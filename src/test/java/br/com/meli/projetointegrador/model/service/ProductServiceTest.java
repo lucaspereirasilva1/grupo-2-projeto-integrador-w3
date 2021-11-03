@@ -2,7 +2,6 @@ package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.ProductException;
 import br.com.meli.projetointegrador.exception.ProductExceptionNotFound;
-import br.com.meli.projetointegrador.exception.ValidInputException;
 import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.entity.SectionCategory;
@@ -210,6 +209,44 @@ public class ProductServiceTest {
         String mensagemRecebida = productException.getMessage();
 
         assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
+    void findAllProducts() {
+        List<Product> productList = new ArrayList<>();
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("Sao Paulo")
+                .build();
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("Laticionios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+        Product productUm = new Product()
+                .productId("LE")
+                .productName("leite")
+                .section(section)
+                .category(new SectionCategory().name(ESectionCategory.FF))
+                .build();
+
+        productList.add(productUm);
+
+        Product productDois = new Product()
+                .productId("LE")
+                .productName("leite")
+                .section(section)
+                .category(new SectionCategory().name(ESectionCategory.FF))
+                .build();
+
+        productList.add(productDois);
+        when(mockProductRepository.findAll())
+                .thenReturn(productList);
+
+        assertFalse(productService.findAllProducts().isEmpty());
     }
 
 
