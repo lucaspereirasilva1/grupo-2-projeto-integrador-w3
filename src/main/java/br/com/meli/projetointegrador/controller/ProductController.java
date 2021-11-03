@@ -5,6 +5,7 @@ import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
 import br.com.meli.projetointegrador.model.service.ProductService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,15 +45,4 @@ public class ProductController {
         }
     return ResponseEntity.badRequest().build();
     }
-
-    @GetMapping(value = "/products")
-    public ResponseEntity<List<ProductDTO>> getlistProductBylist() {
-        List<Product> products = productRepository.findAll();
-        if (!products.isEmpty()) {
-            return ResponseEntity.ok(productService.converteProductlist(products));
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-
 }
