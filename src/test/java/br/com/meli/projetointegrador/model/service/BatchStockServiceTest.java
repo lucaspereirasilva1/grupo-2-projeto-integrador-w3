@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -21,7 +22,7 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 /**
- * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @author Jhony Zuim / Lucas Pereira / Edemilson Nobre / Rafael Vicente
  * @version 1.0.0
  * @since 15/10/2021
  * Camada de testes unitarios do service responsavel pela regra de negocio relacionada ao batchStock
@@ -102,7 +103,7 @@ public class BatchStockServiceTest {
         when(mockBatchStockRepository.saveAll(anyList()))
                 .thenReturn(Collections.singletonList(batchStock));
 
-       batchStockService.postAll(Collections.singletonList(batchStock), agentDTO, sectionDTO);
+        batchStockService.postAll(Collections.singletonList(batchStock), agentDTO, sectionDTO);
 
         verify(mockBatchStockRepository, times(1)).saveAll(anyList());
     }
@@ -175,7 +176,75 @@ public class BatchStockServiceTest {
         verify(mockBatchStockRepository, times(1)).save(any(BatchStock.class));
     }
 
+    @Test
+    void updateBatchStock() {
+        List<ProductPurchaseOrderDTO> listProductPurchaseOrderDTO = new ArrayList<>();
+        ProductPurchaseOrderDTO productPurchaseOrderDTO1 = new ProductPurchaseOrderDTO()
+                .productId("LE")
+                .quantity(5)
+                .build();
+        ProductPurchaseOrderDTO productPurchaseOrderDTO2 = new ProductPurchaseOrderDTO()
+                .productId("QJ")
+                .quantity(3)
+                .build();
+        listProductPurchaseOrderDTO.add(productPurchaseOrderDTO1);
+        listProductPurchaseOrderDTO.add(productPurchaseOrderDTO2);
 
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("Sao Paulo")
+                .build();
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("Laticionios")
+                .warehouse(warehouse)
+                .maxLength(10)
+                .build();
+
+        Agent agent = new Agent()
+                .name("lucas")
+                .cpf("11122233344")
+                .warehouse(warehouse)
+                .build();
+
+        BatchStock batchStock = new BatchStock()
+                .batchNumber(1)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(2)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .agent(agent)
+                .section(section)
+                .build();
+
+        BatchStock batchStockDois = new BatchStock()
+                .batchNumber(2)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(2)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .agent(agent)
+                .section(section)
+                .build();
+
+        when(mockBatchStockRepository.findAllByProductId(anyString()))
+                .thenReturn(Arrays.asList(batchStock, batchStockDois));
+        when(mockBatchStockRepository.save(any(BatchStock.class)))
+                .thenReturn(new BatchStock());
+
+        batchStockService.updateBatchStock(listProductPurchaseOrderDTO);
+        verify(mockBatchStockRepository, times(listProductPurchaseOrderDTO.size())).findAllByProductId(anyString());
+        verify(mockBatchStockRepository, times(listProductPurchaseOrderDTO.size() + listProductPurchaseOrderDTO.size())).save(any(BatchStock.class));
+    }
     @Test
     void validListProductId(){
         List<BatchStock> batchStockList = new ArrayList<>();
@@ -232,21 +301,6 @@ public class BatchStockServiceTest {
                 .build();
 
         batchStockList.add(batchStockUm);
-
-//        BatchStock batchStockDois = new BatchStock()
-//                .batchNumber(2)
-//                .productId("QJ")
-//                .currentTemperature(10.0F)
-//                .minimumTemperature(5.0F)
-//                .initialQuantity(1)
-//                .currentQuantity(5)
-//                .manufacturingDate(LocalDate.now())
-//                .manufacturingTime(LocalDateTime.now())
-//                .dueDate(LocalDate.now())
-//                .agent(agent)
-//                .section(section)
-//                .build();
-//        batchStockList.add(batchStockDois);
 
         Product product = new Product()
                 .productId("QJ")

@@ -8,6 +8,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 /**
  * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
  * @version 1.0.0
@@ -25,6 +28,8 @@ public class Product {
 
     private String productId;
     private String productName;
+    private BigDecimal productPrice;
+    private LocalDate dueDate;
 
     @DBRef
     private Section section;
@@ -48,6 +53,16 @@ public class Product {
 
     public Product productName(String productName) {
         this.productName = productName;
+        return this;
+    }
+
+    public Product productPrice(BigDecimal productPrice) {
+        this.productPrice = productPrice;
+        return this;
+    }
+
+    public Product dueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
         return this;
     }
 

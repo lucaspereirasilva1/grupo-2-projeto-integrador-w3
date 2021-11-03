@@ -3,12 +3,12 @@ package br.com.meli.projetointegrador.model.repository;
 import br.com.meli.projetointegrador.model.entity.*;
 import br.com.meli.projetointegrador.model.enums.EOrderStatus;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
-
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,6 +54,8 @@ public class SaveDataRepositoryTest {
                 .productName("leite")
                 .section(section.orElse(new Section()))
                 .category(sectionCategory)
+                .dueDate(LocalDate.now())
+                .productPrice(new BigDecimal("2.0"))
                 .build();
 
         Product productUm = new Product()
@@ -61,6 +63,8 @@ public class SaveDataRepositoryTest {
                 .productName("queijo")
                 .section(section.orElse(new Section()))
                 .category(sectionCategory)
+                .dueDate(LocalDate.now())
+                .productPrice(new BigDecimal("2.0"))
                 .build();
 
         listProduct.add(product);
@@ -86,8 +90,8 @@ public class SaveDataRepositoryTest {
         PurchaseOrder purchaseOrder = new PurchaseOrder()
                 .date(LocalDate.now())
                 .buyer(buyer.orElse(new Buyer()))
-                .orderStatus(EOrderStatus.IN_PROGRESS)
-                .product(listProduct)
+                .orderStatus(EOrderStatus.ORDER_CHART)
+                .productList(listProduct)
                 .build();
 
         purchaseOrderRepository.save(purchaseOrder);

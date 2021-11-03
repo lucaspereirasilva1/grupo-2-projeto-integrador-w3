@@ -4,12 +4,13 @@ import br.com.meli.projetointegrador.exception.ProductException;
 import br.com.meli.projetointegrador.exception.ProductExceptionNotFound;
 import br.com.meli.projetointegrador.model.dto.ProductDTO;
 import br.com.meli.projetointegrador.model.entity.Product;
+import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.entity.SectionCategory;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
-
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,10 +26,11 @@ import java.util.Optional;
 public class ProductService {
 
     private ProductRepository productRepository;
+    private final SectionService sectionService;
 
-
-    public ProductService(ProductRepository productRepository) {
+    public ProductService(ProductRepository productRepository, SectionService sectionService) {
         this.productRepository = productRepository;
+        this.sectionService = sectionService;
     }
 
     /**
@@ -37,7 +39,8 @@ public class ProductService {
      * @return true ou exception personalizada
      */
     public Boolean validProductSection(String sectionCode){
-        if (productRepository.existsProductBySection_SectionCode(sectionCode)){
+        final Section section = sectionService.find(sectionCode);
+        if (productRepository.existsProductBySection(section)){
             return true;
         } else {
             throw new ProductException("Produto nao faz parte do setor, por favor verifique o setor correto!");
@@ -70,4 +73,26 @@ public class ProductService {
             throw new ProductExceptionNotFound("Nao temos o produtos nessa categoria, por favor informar a categoria correta!");
         }
     }
+
+    public void dueDataProduct(LocalDate dueDate){
+        if (!dueDate.isAfter(LocalDate.now().plusWeeks(+3)))
+            throw new ProductException("Produto Vencido");
+    }
+
+    public List <ProductDTO> converteProductlist  (List<Product> productList) {
+        List <ProductDTO> productDTOList = new ArrayList<>();
+        for (Product p : productList) {
+            ProductDTO productDTO = new ProductDTO()
+                    .productId(p.getProductId())
+                    .productName(p.getProductName())
+                    .sectionName(p.getSection().getSectionName())
+                    .category(p.getCategory().getName())
+                    .productPrice(p.getProductPrice())
+                    .dueDate(p.getDueDate())
+                    .build();
+            productDTOList.add(productDTO);
+        }
+        return productDTOList;
+    }
+
 }
