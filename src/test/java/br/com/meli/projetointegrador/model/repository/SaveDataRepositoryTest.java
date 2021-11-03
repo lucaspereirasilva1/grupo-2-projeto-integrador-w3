@@ -10,7 +10,9 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +39,12 @@ public class SaveDataRepositoryTest {
 
     @Autowired
     private BuyerRepository buyerRepository;
+
+    @Autowired
+    private InboundOrderRepository inboundOrderRepository;
+
+    @Autowired
+    private BatchStockRepository batchStockRepository;
 
     @Test
     void saveProduct() {
@@ -112,6 +120,8 @@ public class SaveDataRepositoryTest {
         warehouseRepository.deleteAll();
         sectionRepository.deleteAll();
         agentRepository.deleteAll();
+        inboundOrderRepository.deleteAll();
+        batchStockRepository.deleteAll();
 
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")
@@ -155,7 +165,7 @@ public class SaveDataRepositoryTest {
         productRepository.save(product);
 
         Product productDois = new Product()
-                .productId("DA")
+                .productId("LE")
                 .productName("danone")
                 .section(section)
                 .category(new SectionCategory().name(ESectionCategory.FF))
@@ -171,6 +181,43 @@ public class SaveDataRepositoryTest {
 
         agentRepository.save(agent);
 
+        BatchStock batchStock = new BatchStock()
+                .batchNumber(1)
+                .productId("LE")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .agent(agent)
+                .section(section)
+                .build();
+        batchStockRepository.save(batchStock);
+
+        BatchStock batchStockDois = new BatchStock()
+                .batchNumber(2)
+                .productId("LE")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .agent(agent)
+                .section(section)
+                .build();
+        batchStockRepository.save(batchStockDois);
+
+        InboundOrder inboundOrder = new InboundOrder()
+                .orderNumber(1)
+                .orderDate(LocalDate.now())
+                .section(section)
+                .listBatchStock(Collections.singletonList(batchStock))
+                .build();
+        inboundOrderRepository.save(inboundOrder);
     }
 
     @Test
