@@ -101,6 +101,7 @@ public class BatchStockService {
             listBatchStockProductDTO.add(batchStockListProductDTO);
         }
         return listBatchStockProductDTO;
+    }
 
     public void updateBatchStock(List<ProductPurchaseOrderDTO> productList) {
         productList.forEach(p -> {
