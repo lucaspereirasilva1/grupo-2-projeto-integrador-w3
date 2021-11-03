@@ -95,4 +95,7 @@ public class ProductService {
         return productDTOList;
     }
 
+    public List<ProductDTO> findAllProducts() {
+        return converteProductlist(productRepository.findAll());
+    }
 }

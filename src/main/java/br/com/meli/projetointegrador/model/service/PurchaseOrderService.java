@@ -1,6 +1,5 @@
 package br.com.meli.projetointegrador.model.service;
 
-import br.com.meli.projetointegrador.exception.ProductException;
 import br.com.meli.projetointegrador.exception.PurchaseOrderException;
 import br.com.meli.projetointegrador.model.dto.ProductDTO;
 import br.com.meli.projetointegrador.model.dto.ProductPurchaseOrderDTO;
@@ -88,7 +87,7 @@ public class PurchaseOrderService {
             if (p.getProductId().equals(product.getProductId())) {
                 total = total.add(product.getProductPrice().multiply(new BigDecimal(p.getQuantity())));
             } else {
-                throw new ProductException("Produto nao encontrado");
+                throw new PurchaseOrderException("Produto nao encontrado");
             }
             productList.add(product);
         }
