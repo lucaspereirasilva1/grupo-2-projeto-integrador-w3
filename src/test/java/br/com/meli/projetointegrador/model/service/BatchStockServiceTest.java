@@ -177,6 +177,91 @@ public class BatchStockServiceTest {
 
 
     @Test
+    void validListProductId(){
+        List<BatchStock> batchStockList = new ArrayList<>();
+        List<BatchStockListProductDTO> batchStockListProductDTOList = new ArrayList<>();
+
+        BatchStockListProductDTO batchStockListProductDTO = new BatchStockListProductDTO()
+                .batchNumber(1)
+                .currentQuantity(5)
+                .dueDate(LocalDate.now())
+                .build();
+
+        batchStockListProductDTOList.add(batchStockListProductDTO);
+
+        SectionDTO sectionDTO = new SectionDTO()
+                .sectionCode("LA")
+                .warehouseCode("SP")
+                .build();
+
+        BatchStockResponseDTO batchStockResponseDTO = new BatchStockResponseDTO()
+                .sectionDTO(sectionDTO)
+                .productId("QJ")
+                .batchStock(batchStockListProductDTOList)
+                .build();
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("laticinios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+
+        Agent agent = new Agent().
+                cpf("11122233344").
+                name("lucas").
+                build();
+
+        BatchStock batchStockUm = new BatchStock()
+                .batchNumber(1)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .agent(agent)
+                .section(section)
+                .build();
+
+        batchStockList.add(batchStockUm);
+
+//        BatchStock batchStockDois = new BatchStock()
+//                .batchNumber(2)
+//                .productId("QJ")
+//                .currentTemperature(10.0F)
+//                .minimumTemperature(5.0F)
+//                .initialQuantity(1)
+//                .currentQuantity(5)
+//                .manufacturingDate(LocalDate.now())
+//                .manufacturingTime(LocalDateTime.now())
+//                .dueDate(LocalDate.now())
+//                .agent(agent)
+//                .section(section)
+//                .build();
+//        batchStockList.add(batchStockDois);
+
+        Product product = new Product()
+                .productId("QJ")
+                .productName("Queijo")
+                .section(section)
+                .category(new SectionCategory().name(ESectionCategory.FF))
+                .build();
+
+        when(mockBatchStockRepository.findAllByProductId(anyString())).thenReturn(batchStockList);
+        when(mockProductService.find(anyString())).thenReturn(product);
+
+        Assertions.assertEquals(batchStockResponseDTO, batchStockService.listProductId(batchStockResponseDTO.getProductId()));
+    }
+
+    @Test
     void validListProductIdNotExist(){
 
         ProductExceptionNotFound productException = assertThrows
@@ -186,6 +271,5 @@ public class BatchStockServiceTest {
         String menssagemEsperada = "Nao existe produto para esse codigo, por favor verifique o codigo inserido!";
 
         assertTrue(menssagemEsperada.contains(productException.getMessage()));
-
     }
 }
