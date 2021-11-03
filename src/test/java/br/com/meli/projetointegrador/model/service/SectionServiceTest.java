@@ -76,10 +76,6 @@ public class SectionServiceTest {
         assertTrue(expectedMessage.contains(sectionException.getMessage()));
     }
 
-    /**
-     * @author Edemilson Nobre
-     * Teste para validar se uma section tem espaco livre
-     */
     @Test
     void validSectionFullTest() {
         List<BatchStock> listBatchStock = new ArrayList<>();
@@ -150,10 +146,6 @@ public class SectionServiceTest {
         assertTrue(mensagemEsperada.contains(mensagemRecebida));
     }
 
-    /**
-     * @author Edemilson Nobre
-     * Teste para validar se uma section tem espaco livre
-     */
     @Test
     void validSectionNotFullTest() {
         List<BatchStock> listBatchStock = new ArrayList<>();
@@ -205,10 +197,6 @@ public class SectionServiceTest {
         assertTrue(sectionService.validSectionLength(section));
     }
 
-    /**
-     * @author Edemilson Nobre
-     * Teste quando a section é passada no batchStock
-     */
     @Test
     void validSectionInformedTeste() {
         Section section = new Section()
@@ -233,10 +221,6 @@ public class SectionServiceTest {
         assertTrue(sectionService.validSectionInformed(batchStock));
     }
 
-    /**
-     * @author Edemilson Nobre
-     * Teste quando a section nao passada no batchStock
-     */
     @Test
     void validSectionNotInformedTeste() {
         BatchStock batchStock = new BatchStock()

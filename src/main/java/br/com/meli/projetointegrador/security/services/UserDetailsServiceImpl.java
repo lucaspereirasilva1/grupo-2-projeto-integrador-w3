@@ -9,6 +9,13 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Camada JWT responsavel pela regra de negocio de validacao de acesso
+ */
+
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 

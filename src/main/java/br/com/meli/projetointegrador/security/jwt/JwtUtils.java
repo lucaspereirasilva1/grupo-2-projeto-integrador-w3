@@ -10,6 +10,13 @@ import org.springframework.stereotype.Component;
 
 import java.util.Date;
 
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Camada JWT responsavel pela regra de validacao de acesso
+ */
+
 @Component
 public class JwtUtils {
 
