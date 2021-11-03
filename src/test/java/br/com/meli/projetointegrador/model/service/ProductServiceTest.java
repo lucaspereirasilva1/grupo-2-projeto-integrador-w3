@@ -47,8 +47,10 @@ public class ProductServiceTest {
                 .warehouse(warehouse)
                 .build();
 
-        when(mockProductRepository.existsProductBySection_SectionCode(anyString()))
+        when(mockProductRepository.existsProductBySection(any(Section.class)))
                 .thenReturn(true);
+        when(mockSectionService.find(anyString()))
+                .thenReturn(section);
         assertTrue(productService.validProductSection(section.getSectionCode()));
     }
 
@@ -70,7 +72,7 @@ public class ProductServiceTest {
                 .maxLength(10)
                 .build();
 
-        when(mockProductRepository.existsProductBySection_SectionCode(anyString()))
+        when(mockProductRepository.existsProductBySection(any(Section.class)))
                 .thenReturn(false);
 
         ProductException productException = assertThrows(ProductException.class, () ->
