@@ -1,6 +1,8 @@
 package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.ProductException;
+import br.com.meli.projetointegrador.exception.ProductExceptionNotFound;
+import br.com.meli.projetointegrador.exception.ValidInputException;
 import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.entity.SectionCategory;
@@ -9,6 +11,7 @@ import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -183,4 +186,31 @@ public class ProductServiceTest {
         assertEquals(productService.listProdutcByCategory(ESectionCategory.FF.toString()).size(), 2);
 
     }
+
+    @Test
+    void validListProductByCategoryTestEmpty(){
+        when(mockProductRepository.findProductByCategory(any(SectionCategory.class)))
+                .thenReturn(new ArrayList<>());
+
+        ProductExceptionNotFound productExceptionNotFound = assertThrows
+                (ProductExceptionNotFound.class,() -> productService.listProdutcByCategory(ESectionCategory.FF.toString()));
+
+        String mensagemEsperada = "Nao temos o produtos nessa categoria, por favor informar a categoria correta!";
+        String mensagemRecebida = productExceptionNotFound.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
+    void dueDataProduct() {
+        ProductException productException = assertThrows
+                (ProductException.class,() -> productService.dueDataProduct(LocalDate.now()));
+
+        String mensagemEsperada = "Produto Vencido";
+        String mensagemRecebida = productException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+
 }
