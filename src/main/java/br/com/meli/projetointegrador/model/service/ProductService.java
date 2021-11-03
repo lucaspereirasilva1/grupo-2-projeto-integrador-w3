@@ -25,7 +25,7 @@ import java.util.Optional;
 @Service
 public class ProductService {
 
-    private final ProductRepository productRepository;
+    private ProductRepository productRepository;
     private final SectionService sectionService;
 
     public ProductService(ProductRepository productRepository, SectionService sectionService) {
