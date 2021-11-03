@@ -1,16 +1,15 @@
 package br.com.meli.projetointegrador.model.service;
 
+import br.com.meli.projetointegrador.exception.ProductExceptionNotFound;
+import br.com.meli.projetointegrador.model.dto.*;
 import br.com.meli.projetointegrador.exception.BatchStockException;
-import br.com.meli.projetointegrador.model.dto.AgentDTO;
-import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
-import br.com.meli.projetointegrador.model.dto.ProductPurchaseOrderDTO;
-import br.com.meli.projetointegrador.model.dto.SectionDTO;
 import br.com.meli.projetointegrador.model.entity.Agent;
 import br.com.meli.projetointegrador.model.entity.BatchStock;
 import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -71,6 +70,37 @@ public class BatchStockService {
             batchStockRepository.save(listBatchStock.get(i));
         }
     }
+
+    public BatchStockResponseDTO listProductId(String productId) {
+        BatchStockResponseDTO batchStockResponseDTO = new BatchStockResponseDTO();
+        List<BatchStock> batchStockList = batchStockRepository.findAllByProductId(productId);
+        Product product = productService.find(productId);
+        if(!batchStockList.isEmpty()){
+            List<BatchStockListProductDTO> listBatchStockProductDTO = convertDTO(batchStockList);
+            SectionDTO sectionDTO = new SectionDTO()
+                    .sectionCode(product.getSection().getSectionCode())
+                    .warehouseCode(product.getSection().getWarehouse().getWarehouseCode())
+                    .build();
+            batchStockResponseDTO.sectionDTO(sectionDTO);
+            batchStockResponseDTO.productId(product.getProductId());
+            batchStockResponseDTO.batchStock(listBatchStockProductDTO);
+            return batchStockResponseDTO;
+        } else {
+            throw new ProductExceptionNotFound("Nao existe produto para esse codigo, por favor verifique o codigo inserido!");
+        }
+    }
+
+    public List<BatchStockListProductDTO> convertDTO(List<BatchStock> batchStockList) {
+        List<BatchStockListProductDTO> listBatchStockProductDTO = new ArrayList<>();
+        for (BatchStock b : batchStockList) {
+            BatchStockListProductDTO batchStockListProductDTO = new BatchStockListProductDTO()
+                    .batchNumber(b.getBatchNumber())
+                    .currentQuantity(b.getCurrentQuantity())
+                    .dueDate(b.getDueDate())
+                    .build();
+            listBatchStockProductDTO.add(batchStockListProductDTO);
+        }
+        return listBatchStockProductDTO;
 
     public void updateBatchStock(List<ProductPurchaseOrderDTO> productList) {
         productList.forEach(p -> {
