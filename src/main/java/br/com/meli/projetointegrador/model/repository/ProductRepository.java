@@ -19,7 +19,6 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends MongoRepository<Product, String> {
 
-    Boolean existsProductBySection_SectionCode(String sectionCode);
     Boolean existsProductBySection(Section section);
     Optional<Product> findDistinctFirstByProductId(String productId);
     List<Product> findProductByCategory(SectionCategory sectionCategory);
