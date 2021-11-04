@@ -2,12 +2,12 @@ package br.com.meli.projetointegrador.model.repository;
 
 import br.com.meli.projetointegrador.model.entity.*;
 import br.com.meli.projetointegrador.model.enums.EOrderStatus;
+import br.com.meli.projetointegrador.model.enums.ERole;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.data.mongodb.core.aggregation.DateOperators;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -50,6 +50,9 @@ public class SaveDataRepositoryTest {
 
     @Autowired
     private BatchStockRepository batchStockRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Test
     void saveProduct() {
@@ -120,15 +123,25 @@ public class SaveDataRepositoryTest {
     }
 
     @Test
-    void saveTotal() {
+    void scriptCarregamentoBanco() {
         productRepository.deleteAll();
         warehouseRepository.deleteAll();
         sectionRepository.deleteAll();
         agentRepository.deleteAll();
         inboundOrderRepository.deleteAll();
         batchStockRepository.deleteAll();
+        roleRepository.deleteAll();
 
         BigDecimal bigDecimal = new BigDecimal(45.00);
+
+        Role roleUser = new Role(ERole.ROLE_USER);
+        roleRepository.save(roleUser);
+
+        Role roleModerator = new Role(ERole.ROLE_MODERATOR);
+        roleRepository.save(roleModerator);
+
+        Role roleAdmin = new Role(ERole.ROLE_ADMIN);
+        roleRepository.save(roleAdmin);
 
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")
