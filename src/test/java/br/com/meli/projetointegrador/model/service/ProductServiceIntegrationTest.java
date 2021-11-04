@@ -1,6 +1,7 @@
 package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.ProductException;
+import br.com.meli.projetointegrador.exception.ProductExceptionNotFound;
 import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.entity.SectionCategory;
@@ -74,6 +75,11 @@ public class ProductServiceIntegrationTest {
                 .name(ESectionCategory.FF)
                 .build();
         sectionCategoryRepository.save(sectionCategory);
+
+        SectionCategory sectionCategoryRF = new SectionCategory()
+                .name(ESectionCategory.RF)
+                .build();
+        sectionCategoryRepository.save(sectionCategoryRF);
 
         Product product = new Product()
                 .productId("LE")
@@ -149,9 +155,37 @@ public class ProductServiceIntegrationTest {
         assertEquals(productService.listProdutcByCategory(ESectionCategory.FF.toString()).size(), 1);
     }
 
+    @Test
+    void validListProductByCategoryTestEmpty(){
+        ProductExceptionNotFound productExceptionNotFound = assertThrows
+                (ProductExceptionNotFound.class,() -> productService.listProdutcByCategory(ESectionCategory.RF.toString()));
+
+        String mensagemEsperada = "Nao temos o produtos nessa categoria " + ESectionCategory.RF.toString() + ", por favor informar a categoria correta!";
+        String mensagemRecebida = productExceptionNotFound.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
+    void dueDataProduct() {
+        ProductException productException = assertThrows
+                (ProductException.class,() -> productService.dueDataProduct(LocalDate.now()));
+
+        String mensagemEsperada = "Produto Vencido";
+        String mensagemRecebida = productException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
+    void findAllProducts() {
+        assertFalse(productService.findAllProducts().isEmpty());
+    }
+
     void clearBase() {
         sectionRepository.deleteAll();
         productRepository.deleteAll();
         warehouseRepository.deleteAll();
+        sectionCategoryRepository.deleteAll();
     }
 }

@@ -56,7 +56,7 @@ public class PurchaseOrderService {
 
     public BigDecimal total(PurchaseOrderDTO purchaseOrderDTO){
         PurchaseOrder purchaseOrder = new PurchaseOrder();
-        total =  total.add(new BigDecimal(0));
+        total =  new BigDecimal(0);
         if (ObjectUtils.isEmpty(purchaseOrderDTO.getId())) {
             final List<Product> productListPost = calculeTotal(purchaseOrderDTO);
             purchaseOrder.productList(productListPost);

@@ -54,6 +54,8 @@ public class PurchaseOrderServiceIntegrationTest {
 
     @Test
     void showOrderProduct() {
+        clearBase();
+
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("MG")
                 .warehouseName("Minas Gerais")
@@ -111,7 +113,8 @@ public class PurchaseOrderServiceIntegrationTest {
     }
 
     @Test
-    void totalIntegrationTest() {
+    void postIntegrationTest() {
+        clearBase();
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")
                 .warehouseName("Sao Paulo")
@@ -216,15 +219,17 @@ public class PurchaseOrderServiceIntegrationTest {
 
     @Test
     void putIntegrationTest() {
+        clearBase();
+
         Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("Sao Paulo")
+                .warehouseCode("MG")
+                .warehouseName("Minas Gerais")
                 .build();
         warehouseRepository.save(warehouse);
 
         Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("Laticionios")
+                .sectionCode("FR")
+                .sectionName("Frios")
                 .warehouse(warehouse)
                 .maxLength(10)
                 .build();
@@ -237,13 +242,13 @@ public class PurchaseOrderServiceIntegrationTest {
         buyerRepository.save(buyer);
 
         SectionCategory sectionCategory = new SectionCategory()
-                .name(ESectionCategory.FF)
+                .name(ESectionCategory.RF)
                 .build();
         sectionCategoryRepository.save(sectionCategory);
 
         Product product = new Product()
-                .productId("LE")
-                .productName("leite")
+                .productId("MU")
+                .productName("mussarela")
                 .section(section)
                 .productPrice(new BigDecimal(2))
                 .dueDate(LocalDate.of(2021,11,30))
@@ -251,8 +256,8 @@ public class PurchaseOrderServiceIntegrationTest {
                 .build();
 
         Product productUm = new Product()
-                .productId("QJ")
-                .productName("queijo")
+                .productId("CA")
+                .productName("carne")
                 .section(section)
                 .productPrice(new BigDecimal(3))
                 .dueDate(LocalDate.of(2021,11,30))
@@ -268,8 +273,8 @@ public class PurchaseOrderServiceIntegrationTest {
         agentRepository.save(agent);
 
         BatchStock batchStock = new BatchStock()
-                .batchNumber(1)
-                .productId("LE")
+                .batchNumber(20)
+                .productId("MU")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
                 .initialQuantity(1)
@@ -282,8 +287,8 @@ public class PurchaseOrderServiceIntegrationTest {
                 .build();
 
         BatchStock batchStockDois = new BatchStock()
-                .batchNumber(1)
-                .productId("QJ")
+                .batchNumber(21)
+                .productId("CA")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
                 .initialQuantity(1)
@@ -305,11 +310,11 @@ public class PurchaseOrderServiceIntegrationTest {
         purchaseOrderRepository.save(purchaseOrder);
 
         ProductPurchaseOrderDTO productPurchaseOrderDTO1 = new ProductPurchaseOrderDTO()
-                .productId("LE")
+                .productId("MU")
                 .quantity(5)
                 .build();
         ProductPurchaseOrderDTO productPurchaseOrderDTO2 = new ProductPurchaseOrderDTO()
-                .productId("QJ")
+                .productId("CA")
                 .quantity(3)
                 .build();
 
@@ -329,6 +334,17 @@ public class PurchaseOrderServiceIntegrationTest {
         assertEquals(purchaseOrderPutDTO.getBuyerId(), purchaseOrder.getBuyer().getId());
         assertEquals(purchaseOrderPutDTO.getData(), purchaseOrder.getDate());
         assertEquals(purchaseOrderPutDTO.getOrderStatus().getStatusCode(), purchaseOrder.getOrderStatus());
+    }
+
+    void clearBase() {
+        warehouseRepository.deleteAll();
+        sectionRepository.deleteAll();
+        buyerRepository.deleteAll();
+        sectionCategoryRepository.deleteAll();
+        productRepository.deleteAll();
+        agentRepository.deleteAll();
+        batchStockRepository.deleteAll();
+        purchaseOrderRepository.deleteAll();
     }
 
 
