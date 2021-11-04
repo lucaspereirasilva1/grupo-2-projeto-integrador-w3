@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
  * @since 15/10/2021
  * Repository de teste para trabalhar como uma porta ou janela de acesso a camada do banco da entity batchStock
  */
+
 @DataMongoTest
 public class BatchStockRepositoryTest {
 

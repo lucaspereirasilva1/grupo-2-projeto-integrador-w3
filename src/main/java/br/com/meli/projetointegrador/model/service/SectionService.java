@@ -19,8 +19,10 @@ import java.util.Optional;
 
 @Service
 public class SectionService {
+
     private final SectionRepository sectionRepository;
     private final BatchStockRepository batchStockRepository;
+
     public SectionService(BatchStockRepository batchStockRepository,
                           SectionRepository sectionRepository) {
         this.batchStockRepository = batchStockRepository;
@@ -28,7 +30,6 @@ public class SectionService {
     }
 
     /**
-     * @author Jhony Zuim
      * @param sectionCode recebe um section para validar se ele existe
      * @return true ou exception personalizada
      */
@@ -41,8 +42,8 @@ public class SectionService {
     }
 
     /**
-     * @author Edemilson Nobre
-     * Teste para validar se uma section tem espaco livre
+     * @param section recebe uma section;
+     * @return verdadeiro ou exception.
      */
     public Boolean validSectionLength(Section section) {
         if (batchStockRepository.countBySection(section) < section.getMaxLength())
@@ -52,8 +53,8 @@ public class SectionService {
     }
 
     /**
-     * @author Edemilson Nobre
-     * Teste para validar se uma section existe
+     * @param batchStock recebe um batchStock;
+     * @return verdadeiro ou exception.
      */
     public Boolean validSectionInformed(BatchStock batchStock) {
         if(!(batchStock.getSection()==null))
@@ -62,6 +63,10 @@ public class SectionService {
             throw new ValidInputException("Sessao nao informada!!! Reenviar com uma sessao  existente!");
     }
 
+    /**
+     * @param sectionCode recebe um codigo de section;
+     * @return section ou exception caso nao exista.
+     */
     public Section find(String sectionCode) {
         Optional<Section> section = sectionRepository.findBySectionCode(sectionCode);
         if (section.isEmpty()) {

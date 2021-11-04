@@ -39,6 +39,11 @@ public class InboundOrderService {
         this.warehouseService = warehouseService;
     }
 
+    /**
+     * @param inboundOrderDTO recebe uma ordem de entrada;
+     * @param agentDTO recebe um agenteDTO;
+     * @return faz o post e retorna a lista salva.
+     */
     public List<BatchStockDTO> post(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
         InboundOrder inboundOrder = modelMapper.map(inboundOrderDTO, InboundOrder.class);
         inboundOrder.section(sectionService.find(inboundOrderDTO.getSectionDTO().getSectionCode()));
@@ -47,6 +52,11 @@ public class InboundOrderService {
         return inboundOrderDTO.getListBatchStockDTO();
     }
 
+    /**
+     * @param inboundOrderDTO recebe uma ordem de entrada;
+     * @param agentDTO recebe um agenteDTO;
+     * @return faz o put e retorna a lista alterada.
+     */
     public List<BatchStockDTO> put(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
         Optional<InboundOrder> inboundOrderCheck = inboundOrderRepository.findByOrderNumber(inboundOrderDTO.getOrderNumber());
         if (inboundOrderCheck.isPresent()) {
@@ -63,6 +73,11 @@ public class InboundOrderService {
         return inboundOrderDTO.getListBatchStockDTO();
     }
 
+    /**
+     * @param inboundOrderDTO recebe uma ordem de entrada;
+     * @param agentDTO recebe um agenteDTO
+     * @return valida os dados se invalido retorna exception.
+     */
     public void inputValid(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
         if (!warehouseService.validWarehouse(inboundOrderDTO.getSectionDTO().getWarehouseCode()) |
             !inboundOrderDTO.getSectionDTO().getWarehouseCode().equals(agentDTO.getWarehouseCode()) |
@@ -70,5 +85,4 @@ public class InboundOrderService {
             throw new ValidInputException("Problema na validacao dos dados de entrada!!!");
         }
     }
-
 }

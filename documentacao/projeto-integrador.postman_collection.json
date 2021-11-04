@@ -1,0 +1,445 @@
+{
+	"info": {
+		"_postman_id": "f9ffa60e-5830-44ce-b742-2a3ad9f96274",
+		"name": "projeto-integrador",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "inbounorder-post",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqaG9ueSIsImlhdCI6MTYzNjAzMzM5NiwiZXhwIjoxNjM2MTE5Nzk2fQ.Y8bnN6L62yJkub8XjGfrJrtc5QhXFzxaYImOfEgCM6LcEwUSAJKyx7Xk9_Ii5EA5yGPmICXXIOZfQ29MQjp6-A",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"orderNumber\" : 1,\n  \"orderDate\" : \"21/10/2021\",\n  \"section\" : {\n    \"sectionCode\" : \"LA\",\n    \"warehouseCode\" : \"SP\"\n  },\n  \"listBatchStock\" : [ {\n    \"batchNumber\" : 1,\n    \"productId\" : \"LE\",\n    \"currentTemperature\" : 10.0,\n    \"minimumTemperature\" : 5.0,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 5,\n    \"manufacturingDate\" : \"2021-10-21\",\n    \"manufacturingTime\" : \"2021-10-21T18:27:04.808669\",\n    \"dueDate\" : \"2021-10-21\"\n  }, {\n    \"batchNumber\" : 2,\n    \"productId\" : \"LE\",\n    \"currentTemperature\" : 20.0,\n    \"minimumTemperature\" : 15.0,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 5,\n    \"manufacturingDate\" : \"2021-10-21\",\n    \"manufacturingTime\" : \"2021-10-21T18:27:04.808706\",\n    \"dueDate\" : \"2021-10-21\"\n  } ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"fresh-products",
+						"inboundorder"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "inboundorder-put",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqaG9ueSIsImlhdCI6MTYzNjAzMzM5NiwiZXhwIjoxNjM2MTE5Nzk2fQ.Y8bnN6L62yJkub8XjGfrJrtc5QhXFzxaYImOfEgCM6LcEwUSAJKyx7Xk9_Ii5EA5yGPmICXXIOZfQ29MQjp6-A",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"orderNumber\" : 1,\n  \"orderDate\" : \"21/10/2021\",\n  \"section\" : {\n    \"sectionCode\" : \"LA\",\n    \"warehouseCode\" : \"SP\"\n  },\n  \"listBatchStock\" : [ {\n    \"batchNumber\" : 1,\n    \"productId\" : \"LE\",\n    \"currentTemperature\" : 10.0,\n    \"minimumTemperature\" : 5.0,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 5,\n    \"manufacturingDate\" : \"2021-10-21\",\n    \"manufacturingTime\" : \"2021-10-21T18:27:04.808669\",\n    \"dueDate\" : \"2021-10-21\"\n  }, {\n    \"batchNumber\" : 2,\n    \"productId\" : \"LE\",\n    \"currentTemperature\" : 20.0,\n    \"minimumTemperature\" : 15.0,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 5,\n    \"manufacturingDate\" : \"2021-10-21\",\n    \"manufacturingTime\" : \"2021-10-21T18:27:04.808706\",\n    \"dueDate\" : \"2021-10-21\"\n  } ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"fresh-products",
+						"inboundorder"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "auth-sigup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"jhony\",\n  \"email\": \"jhony@gmail.com\",\n  \"password\": \"12345678\",\n  \"roles\": [\"user\", \"mod\", \"admin\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/auth/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "productList-get",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqaG9ueSIsImlhdCI6MTYzNjAyOTQ2NywiZXhwIjoxNjM2MTE1ODY3fQ.wBcTL40n3LOUU0-FA6UK8OrtdrXmCMyO-DsenSKfrTXEqPLnLT3_39hIUm5SkIrzHolexhxuJhPL0FWT8c7IjA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/fresh-products/list?sectionCategory=FF",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"fresh-products",
+						"list"
+					],
+					"query": [
+						{
+							"key": "sectionCategory",
+							"value": "FF"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "productListById-get",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqaG9ueSIsImlhdCI6MTYzNjAyOTQ2NywiZXhwIjoxNjM2MTE1ODY3fQ.wBcTL40n3LOUU0-FA6UK8OrtdrXmCMyO-DsenSKfrTXEqPLnLT3_39hIUm5SkIrzHolexhxuJhPL0FWT8c7IjA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/fresh-products/lists?productId=LE",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"fresh-products",
+						"lists"
+					],
+					"query": [
+						{
+							"key": "productId",
+							"value": "LE"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "productListByIdOrdenada-get",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqaG9ueSIsImlhdCI6MTYzNjAyOTQ2NywiZXhwIjoxNjM2MTE1ODY3fQ.wBcTL40n3LOUU0-FA6UK8OrtdrXmCMyO-DsenSKfrTXEqPLnLT3_39hIUm5SkIrzHolexhxuJhPL0FWT8c7IjA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/fresh-products/listsorder?productId=LE&order=L",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"fresh-products",
+						"listsorder"
+					],
+					"query": [
+						{
+							"key": "productId",
+							"value": "LE"
+						},
+						{
+							"key": "order",
+							"value": "L"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "auth-test-all",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/test/all",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"test",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "auth-test-user",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqaG9ueSIsImlhdCI6MTYzNTk0NjM1NiwiZXhwIjoxNjM2MDMyNzU2fQ.iIyZTD7Y--7MoN6HI2yL_7wzdsFth7gNI9Wy59kblMbz0CO5O19mIYAM2UBxfU3DMtnifn6vIRW1k98nQp3rdw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/test/user",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"test",
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "auth-test-mod",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqaG9ueSIsImlhdCI6MTYzNTk0NjM1NiwiZXhwIjoxNjM2MDMyNzU2fQ.iIyZTD7Y--7MoN6HI2yL_7wzdsFth7gNI9Wy59kblMbz0CO5O19mIYAM2UBxfU3DMtnifn6vIRW1k98nQp3rdw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/test/mod",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"test",
+						"mod"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "auth-test-admin",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqaG9ueSIsImlhdCI6MTYzNTk0NjM1NiwiZXhwIjoxNjM2MDMyNzU2fQ.iIyZTD7Y--7MoN6HI2yL_7wzdsFth7gNI9Wy59kblMbz0CO5O19mIYAM2UBxfU3DMtnifn6vIRW1k98nQp3rdw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/test/admin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"test",
+						"admin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "auth-signin",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"jhony\",\n  \"password\": \"12345678\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/auth/signin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

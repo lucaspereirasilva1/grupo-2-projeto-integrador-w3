@@ -38,9 +38,8 @@ public class ProductService {
     }
 
     /**
-     * @author Jhony Zuim
-     * @param sectionCode, recebe um produto para validar se esta na section correta
-     * @return true ou exception personalizada
+     * @param sectionCode, recebe um codigo de section para validar se o produto esta na section correta;
+     * @return true ou exception.
      */
     public Boolean validProductSection(String sectionCode){
         final Section section = sectionService.find(sectionCode);
@@ -51,15 +50,23 @@ public class ProductService {
         }
     }
 
+    /**
+     * @param productId, recebe um Id de produto;
+     * @return produto ou exception.
+     */
     public Product find(String productId) {
         Optional<Product> product = productRepository.findDistinctFirstByProductId(productId);
         if (product.isPresent()){
             return product.get();
         } else {
-            throw new ProductException("Produto nao cadastrado!!! Por gentileza cadastrar");
+            throw new ProductException("Produto (" + productId + ") nao cadastrado!!! Por gentileza cadastrar");
         }
     }
 
+    /**
+     * @param category, recebe uma categoria de section;
+     * @return uma lista por categoria.
+     */
     public List<ProductDTO> listProdutcByCategory(String category) {
         List<ProductDTO> productListDTO = new ArrayList<>();
         final SectionCategory sectionCategory = sectionCategoryService.find(ESectionCategory.valueOf(category));
@@ -69,7 +76,10 @@ public class ProductService {
                 ProductDTO productDTO = new ProductDTO()
                         .productId(p.getProductId())
                         .productName(p.getProductName())
+                        .sectionName(p.getSection().getSectionName())
                         .category(p.getCategory().getName())
+                        .productPrice(p.getProductPrice())
+                        .dueDate(p.getDueDate())
                         .build();
                 productListDTO.add(productDTO);
             }
@@ -79,11 +89,19 @@ public class ProductService {
         }
     }
 
+    /**
+     * @param dueDate, recebe uma data de vencimento;
+     * @return valida se esta vencido.
+     */
     public void dueDataProduct(LocalDate dueDate){
         if (!dueDate.isAfter(LocalDate.now().plusWeeks(+3)))
             throw new ProductException("Produto Vencido");
     }
 
+    /**
+     * @param productList, recebe uma lista de produto;
+     * @return uma lista de produtoDTO.
+     */
     public List <ProductDTO> converteProductlist  (List<Product> productList) {
         List <ProductDTO> productDTOList = new ArrayList<>();
         for (Product p : productList) {
@@ -103,4 +121,5 @@ public class ProductService {
     public List<ProductDTO> findAllProducts() {
         return converteProductlist(productRepository.findAll());
     }
+
 }

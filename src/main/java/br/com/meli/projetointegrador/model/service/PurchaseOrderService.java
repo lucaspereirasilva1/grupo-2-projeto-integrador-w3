@@ -17,6 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Camada service responsavel pela regra de negocio relacionada a PurchaseOrderService
+ */
+
 @Service
 public class PurchaseOrderService {
 
@@ -35,6 +42,10 @@ public class PurchaseOrderService {
         this.batchStockService = batchStockService;
     }
 
+    /**
+     * @param id recebe um Id de produto;
+     * @return adiciona o produto a uma lista ou exception.
+     */
     public List<ProductDTO> showOrderProduct(String id) {
         List<ProductDTO> listProductDTO = new ArrayList<>();
         final Optional<PurchaseOrder> purchaseOrder = purchaseOrderRepository.findById(id);
@@ -54,6 +65,10 @@ public class PurchaseOrderService {
         return listProductDTO;
     }
 
+    /**
+     * @param purchaseOrderDTO recebe uma purchaseOrder;
+     * @return se existente faz o update caso nao exista e salva uma nova.
+     */
     public BigDecimal total(PurchaseOrderDTO purchaseOrderDTO){
         PurchaseOrder purchaseOrder = new PurchaseOrder();
         total =  new BigDecimal(0);
@@ -79,6 +94,10 @@ public class PurchaseOrderService {
         return total;
     }
 
+    /**
+     * @param purchaseOrderDTO recebe uma purchaseOrderDTO;
+     * @return adiciona o produto a lista ou retorna a exception.
+     */
     private List<Product> calculeTotal(PurchaseOrderDTO purchaseOrderDTO) {
         List<Product> productList = new ArrayList<>();
         for (ProductPurchaseOrderDTO p : purchaseOrderDTO.getListProductPurchaseOrderDTO()) {
@@ -91,8 +110,6 @@ public class PurchaseOrderService {
             }
             productList.add(product);
         }
-
         return productList;
     }
-
 }
