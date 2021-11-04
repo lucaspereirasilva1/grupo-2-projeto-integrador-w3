@@ -29,7 +29,8 @@ public class ProductServiceTest {
 
     private final ProductRepository mockProductRepository = mock(ProductRepository.class);
     private final SectionService mockSectionService = mock(SectionService.class);
-    private final ProductService productService = new ProductService(mockProductRepository, mockSectionService);
+    private final SectionCategoryService mockSectionCategoryService = mock(SectionCategoryService.class);
+    private final ProductService productService = new ProductService(mockProductRepository, mockSectionService, mockSectionCategoryService);
 
     /**
      * @author Jhony Zuim
@@ -146,7 +147,6 @@ public class ProductServiceTest {
 
     @Test
     void validListProductByCategoryTest(){
-
         List<Product> productList = new ArrayList<>();
 
         Warehouse warehouse = new Warehouse()
@@ -181,20 +181,23 @@ public class ProductServiceTest {
 
         when(mockProductRepository.findProductByCategory(any(SectionCategory.class)))
                 .thenReturn(productList);
+        when(mockSectionCategoryService.find(any(ESectionCategory.class)))
+                .thenReturn(new SectionCategory().name(ESectionCategory.FF).build());
 
         assertEquals(productService.listProdutcByCategory(ESectionCategory.FF.toString()).size(), 2);
-
     }
 
     @Test
     void validListProductByCategoryTestEmpty(){
         when(mockProductRepository.findProductByCategory(any(SectionCategory.class)))
                 .thenReturn(new ArrayList<>());
+        when(mockSectionCategoryService.find(any(ESectionCategory.class)))
+                .thenReturn(new SectionCategory().name(ESectionCategory.FF).build());
 
         ProductExceptionNotFound productExceptionNotFound = assertThrows
                 (ProductExceptionNotFound.class,() -> productService.listProdutcByCategory(ESectionCategory.FF.toString()));
 
-        String mensagemEsperada = "Nao temos o produtos nessa categoria, por favor informar a categoria correta!";
+        String mensagemEsperada = "Nao temos o produtos nessa categoria " + ESectionCategory.FF.toString() + ", por favor informar a categoria correta!";
         String mensagemRecebida = productExceptionNotFound.getMessage();
 
         assertTrue(mensagemEsperada.contains(mensagemRecebida));

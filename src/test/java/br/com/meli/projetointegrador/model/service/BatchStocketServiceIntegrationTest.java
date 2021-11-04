@@ -1,8 +1,6 @@
 package br.com.meli.projetointegrador.model.service;
 
-import br.com.meli.projetointegrador.model.dto.AgentDTO;
-import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
-import br.com.meli.projetointegrador.model.dto.SectionDTO;
+import br.com.meli.projetointegrador.model.dto.*;
 import br.com.meli.projetointegrador.model.entity.*;
 import br.com.meli.projetointegrador.model.repository.*;
 import org.junit.jupiter.api.AfterEach;
@@ -10,14 +8,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
@@ -76,6 +76,28 @@ public class BatchStocketServiceIntegrationTest {
                 .section(section)
                 .build();
         productRepository.save(product);
+
+        Product productDois = new Product()
+                .productId("QJ")
+                .productName("queijo")
+                .section(section)
+                .build();
+        productRepository.save(productDois);
+
+        BatchStock batchStock = new BatchStock()
+                .batchNumber(1)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .agent(agent)
+                .section(section)
+                .build();
+        batchStockRepository.saveAll(Collections.singletonList(batchStock));
     }
 
     @AfterEach
@@ -162,6 +184,28 @@ public class BatchStocketServiceIntegrationTest {
         final Optional<BatchStock> batchStockOptional = batchStockRepository.findById(batchStock.getId());
         assertEquals(2, batchStockOptional.orElse(new BatchStock()).getCurrentQuantity());
         assertEquals(2, batchStockOptional.orElse(new BatchStock()).getInitialQuantity());
+    }
+
+    @Test
+    void updateBatchStockIntegration() {
+        List<ProductPurchaseOrderDTO> listProductPurchaseOrderDTO = new ArrayList<>();
+        ProductPurchaseOrderDTO productPurchaseOrderDTO2 = new ProductPurchaseOrderDTO()
+                .productId("QJ")
+                .quantity(3)
+                .build();
+        listProductPurchaseOrderDTO.add(productPurchaseOrderDTO2);
+
+        batchStockService.updateBatchStock(listProductPurchaseOrderDTO);
+
+        batchStockRepository.findAllByProductId(productPurchaseOrderDTO2.getProductId()).forEach(b ->
+                assertEquals(2, b.getCurrentQuantity()));
+    }
+
+    @Test
+    void listProductId() {
+        final BatchStockResponseDTO productResponseDTO = batchStockService.listProductId("QJ");
+        assertFalse(ObjectUtils.isEmpty(productResponseDTO));
+        assertEquals("QJ", productResponseDTO.getProductId());
     }
 
 }
