@@ -13,6 +13,13 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edemilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Camada de controller responsavel pela regra de negocio relacionada ao purchaseOrderController
+ */
+
 @Controller
 @RestController
 @RequestMapping("/api/v1/fresh-products")

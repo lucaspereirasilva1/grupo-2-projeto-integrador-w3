@@ -39,6 +39,12 @@ public class BatchStockService {
         this.productService = productService;
     }
 
+    /**
+     * @param listBatchStock recebe uma lista bqaqtchStock;
+     * @param agentDTO recebe um agenteDTO;
+     * @param sectionDTO recebe uma sectionDTO;
+     * @return valida os parametros acima e faz o post.
+     */
     public void postAll(List<BatchStock> listBatchStock, AgentDTO agentDTO, SectionDTO sectionDTO) {
         listBatchStock.forEach(b -> {
             Product product = productService.find(b.getProductId());
@@ -50,6 +56,12 @@ public class BatchStockService {
         batchStockRepository.saveAll(listBatchStock);
     }
 
+    /**
+     * @param listBatchStock recebe uma lista bqaqtchStock;
+     * @param agentDTO recebe um agenteDTO;
+     * @param sectionDTO recebe uma sectionDTO;
+     * @return valida os parametros acima e faz o put.
+     */
     public void putAll(List<BatchStock> listBatchStock, List<BatchStockDTO> listBatchStockDTO, AgentDTO agentDTO, SectionDTO sectionDTO) {
         for (int i = 0; i < listBatchStock.size(); i++) {
             for (int x = i; x < listBatchStockDTO.size(); x++) {
@@ -74,6 +86,10 @@ public class BatchStockService {
         }
     }
 
+    /**
+     * @param productId recebe um Id de produto;
+     * @return uma lista de de produtos baseado no Id.
+     */
     public BatchStockResponseDTO listProductId(String productId, String order) {
         BatchStockResponseDTO batchStockResponseDTO = new BatchStockResponseDTO();
         List<BatchStock> batchStockList = batchStockRepository.findAllByProductId(productId);
@@ -96,6 +112,10 @@ public class BatchStockService {
         }
     }
 
+    /**
+     * @param batchStockList recebe uma lista batchStock;
+     * @return uma lista convertida para batchStockDTO.
+     */
     public List<BatchStockListProductDTO> convertDTO(List<BatchStock> batchStockList) {
         List<BatchStockListProductDTO> listBatchStockProductDTO = new ArrayList<>();
         for (BatchStock b : batchStockList) {
@@ -109,6 +129,10 @@ public class BatchStockService {
         return listBatchStockProductDTO;
     }
 
+    /**
+     * @param productList recebe uma lista de ProductPurchaseOrder;
+     * @return salva o update na lista ou exception.
+     */
     public void updateBatchStock(List<ProductPurchaseOrderDTO> productList) {
         productList.forEach(p -> {
             final List<BatchStock> listBatchStock = batchStockRepository.findAllByProductId(p.getProductId());

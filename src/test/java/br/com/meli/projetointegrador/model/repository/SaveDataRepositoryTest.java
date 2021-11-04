@@ -14,6 +14,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Repository de teste para trabalhar como uma porta ou janela de acesso a camada do banco
+ */
+
 @DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
 public class SaveDataRepositoryTest {
 

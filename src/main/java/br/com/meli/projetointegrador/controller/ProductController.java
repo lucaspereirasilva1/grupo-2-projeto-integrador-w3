@@ -1,7 +1,6 @@
 package br.com.meli.projetointegrador.controller;
 
 import br.com.meli.projetointegrador.model.dto.ProductDTO;
-import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
 import br.com.meli.projetointegrador.model.service.ProductService;

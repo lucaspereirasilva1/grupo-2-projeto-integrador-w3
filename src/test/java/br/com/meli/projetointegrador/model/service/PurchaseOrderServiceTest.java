@@ -17,6 +17,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Camada de testes unitarios do service responsavel pela regra de negocio relacionada ao section
+ */
+
 public class PurchaseOrderServiceTest {
 
     private final PurchaseOrderRepository mockPurchaseOrderRepository = mock(PurchaseOrderRepository.class);
