@@ -55,7 +55,7 @@ public class ProductService {
         if (product.isPresent()){
             return product.get();
         } else {
-            throw new ProductException("Produto nao cadastrado!!! Por gentileza cadastrar");
+            throw new ProductException("Produto (" + productId + ") nao cadastrado!!! Por gentileza cadastrar");
         }
     }
 
