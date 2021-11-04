@@ -10,7 +10,10 @@ import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
@@ -87,7 +90,7 @@ public class BatchStockService {
      * @param productId recebe um Id de produto;
      * @return uma lista de de produtos baseado no Id.
      */
-    public BatchStockResponseDTO listProductId(String productId) {
+    public BatchStockResponseDTO listProductId(String productId, String order) {
         BatchStockResponseDTO batchStockResponseDTO = new BatchStockResponseDTO();
         List<BatchStock> batchStockList = batchStockRepository.findAllByProductId(productId);
         Product product = productService.find(productId);
@@ -99,7 +102,10 @@ public class BatchStockService {
                     .build();
             batchStockResponseDTO.sectionDTO(sectionDTO);
             batchStockResponseDTO.productId(product.getProductId());
-            batchStockResponseDTO.batchStock(listBatchStockProductDTO);
+            if (!order.equals("")){
+                batchStockResponseDTO.batchStock(ordenar(order,listBatchStockProductDTO));
+            }else
+                batchStockResponseDTO.batchStock(listBatchStockProductDTO);
             return batchStockResponseDTO;
         } else {
             throw new ProductExceptionNotFound("Nao existe produto para esse codigo, por favor verifique o codigo inserido!");
@@ -139,4 +145,24 @@ public class BatchStockService {
             });
         });
     }
+
+    public List<BatchStockListProductDTO> ordenar(String order, List<BatchStockListProductDTO> listBatchStockProductDTO) {
+        switch (order) {
+            case ("L"): {//ordenar por lote
+                return listBatchStockProductDTO.stream()
+                        .sorted(Comparator.comparing(BatchStockListProductDTO::getBatchNumber)).collect(toList());
+            }
+            case ("C"): {//ordenar por quantidade
+                return listBatchStockProductDTO.stream()
+                        .sorted(Comparator.comparing(BatchStockListProductDTO::getCurrentQuantity)).collect(toList());
+            }
+            case ("F"): {//ordenar por vencimento
+                return listBatchStockProductDTO.stream()
+                        .sorted(Comparator.comparing(BatchStockListProductDTO::getDueDate)).collect(toList());
+            }
+            default:
+                throw new ProductExceptionNotFound("Codigo do filtro nao existe!");
+        }
+    }
+
 }
