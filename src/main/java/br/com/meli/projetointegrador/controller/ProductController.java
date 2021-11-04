@@ -40,9 +40,7 @@ public class ProductController {
                 return ResponseEntity.ok(productList);
             }
         }
-        return ResponseHandler.generateResponse("Categoria invalida!!!",
-                HttpStatus.BAD_REQUEST,
-                "");
+        return ResponseHandler.generateResponse("Categoria invalida!!!", HttpStatus.BAD_REQUEST, "");
     }
 
     @GetMapping(value = "/products")
@@ -51,9 +49,7 @@ public class ProductController {
         if (!productsListDTO.isEmpty()) {
             return ResponseEntity.ok(productsListDTO);
         } else {
-            return ResponseHandler.generateResponse("Nao foi encontrado nenhum produto na base",
-                    HttpStatus.NOT_FOUND,
-                    "");
+            return ResponseHandler.generateResponse("Nao foi encontrado nenhum produto na base", HttpStatus.NOT_FOUND, "");
         }
     }
 

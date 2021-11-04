@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/fresh-products")
 public class BatchStockController {
 
-    BatchStockService batchStockService;
+    private final BatchStockService batchStockService;
 
     public BatchStockController(BatchStockService batchStockService) {
         this.batchStockService = batchStockService;
