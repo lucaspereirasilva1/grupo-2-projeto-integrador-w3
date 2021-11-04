@@ -160,7 +160,7 @@ public class ProductServiceIntegrationTest {
         ProductExceptionNotFound productExceptionNotFound = assertThrows
                 (ProductExceptionNotFound.class,() -> productService.listProdutcByCategory(ESectionCategory.RF.toString()));
 
-        String mensagemEsperada = "Nao temos o produtos nessa categoria " + ESectionCategory.RF.toString() + ", por favor informar a categoria correta!";
+        String mensagemEsperada = "Nao temos produtos nessa categoria " + ESectionCategory.RF.toString() + ", por favor informar a categoria correta!";
         String mensagemRecebida = productExceptionNotFound.getMessage();
 
         assertTrue(mensagemEsperada.contains(mensagemRecebida));

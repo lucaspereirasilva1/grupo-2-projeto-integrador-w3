@@ -31,6 +31,9 @@ public class SectionRepositoryTest {
 
     @BeforeEach
     void setUp() {
+        sectionRepository.deleteAll();
+        warehouseRepository.deleteAll();
+
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")
                 .warehouseName("sao paulo")

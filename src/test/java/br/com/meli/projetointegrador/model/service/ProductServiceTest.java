@@ -54,6 +54,7 @@ public class ProductServiceTest {
                 .thenReturn(true);
         when(mockSectionService.find(anyString()))
                 .thenReturn(section);
+
         assertTrue(productService.validProductSection(section.getSectionCode()));
     }
 
@@ -197,7 +198,7 @@ public class ProductServiceTest {
         ProductExceptionNotFound productExceptionNotFound = assertThrows
                 (ProductExceptionNotFound.class,() -> productService.listProdutcByCategory(ESectionCategory.FF.toString()));
 
-        String mensagemEsperada = "Nao temos o produtos nessa categoria " + ESectionCategory.FF.toString() + ", por favor informar a categoria correta!";
+        String mensagemEsperada = "Nao temos produtos nessa categoria " + ESectionCategory.FF.toString() + ", por favor informar a categoria correta!";
         String mensagemRecebida = productExceptionNotFound.getMessage();
 
         assertTrue(mensagemEsperada.contains(mensagemRecebida));

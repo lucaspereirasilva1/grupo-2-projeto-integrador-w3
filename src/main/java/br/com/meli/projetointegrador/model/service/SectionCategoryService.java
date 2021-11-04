@@ -20,7 +20,7 @@ public class SectionCategoryService {
     public SectionCategory find(ESectionCategory eSectionCategory) {
         final Optional<SectionCategory> sectionCategory = sectionCategoryRepository.findByName(eSectionCategory);
         if (sectionCategory.isEmpty()) {
-            throw new SectionCategoryException("Categoria " + eSectionCategory.toString() + " encontrada!!!");
+            throw new SectionCategoryException("Categoria " + eSectionCategory.toString() + " nao encontrada!!!");
         }
         return sectionCategory.get();
     }

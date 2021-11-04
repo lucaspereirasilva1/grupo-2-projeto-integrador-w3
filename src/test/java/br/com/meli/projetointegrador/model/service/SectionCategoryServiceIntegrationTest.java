@@ -49,7 +49,7 @@ class SectionCategoryServiceIntegrationTest {
         SectionCategoryException sectionCategoryException = assertThrows
                 (SectionCategoryException.class,() -> sectionCategoryService.find(ESectionCategory.RF));
 
-        String mensagemEsperada = "Categoria " + ESectionCategory.RF.toString() + " encontrada!!!";
+        String mensagemEsperada = "Categoria " + ESectionCategory.RF.toString() + " nao encontrada!!!";
         String mensagemRecebida = sectionCategoryException.getMessage();
 
         assertTrue(mensagemEsperada.contains(mensagemRecebida));

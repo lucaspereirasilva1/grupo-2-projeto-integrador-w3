@@ -75,7 +75,7 @@ public class ProductService {
             }
             return productListDTO;
         } else {
-            throw new ProductExceptionNotFound("Nao temos o produtos nessa categoria " + category + ", por favor informar a categoria correta!");
+            throw new ProductExceptionNotFound("Nao temos produtos nessa categoria " + category + ", por favor informar a categoria correta!");
         }
     }
 
