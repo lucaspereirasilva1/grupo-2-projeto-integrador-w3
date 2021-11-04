@@ -1,8 +1,8 @@
 package br.com.meli.projetointegrador.model.service;
 
+import br.com.meli.projetointegrador.exception.BatchStockException;
 import br.com.meli.projetointegrador.exception.ProductExceptionNotFound;
 import br.com.meli.projetointegrador.model.dto.*;
-import br.com.meli.projetointegrador.exception.BatchStockException;
 import br.com.meli.projetointegrador.model.entity.Agent;
 import br.com.meli.projetointegrador.model.entity.BatchStock;
 import br.com.meli.projetointegrador.model.entity.Product;
@@ -87,7 +87,7 @@ public class BatchStockService {
     }
 
     /**
-     * @param productId recebe um Id de produto;
+     * @param productId recebe um Id de produto e codigo da ordenacao;
      * @return uma lista de de produtos baseado no Id.
      */
     public BatchStockResponseDTO listProductId(String productId, String order) {
