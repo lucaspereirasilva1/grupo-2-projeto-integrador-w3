@@ -128,6 +128,8 @@ public class SaveDataRepositoryTest {
         inboundOrderRepository.deleteAll();
         batchStockRepository.deleteAll();
 
+        BigDecimal bigDecimal = new BigDecimal(45.00);
+
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")
                 .warehouseName("sao paulo")
@@ -165,6 +167,8 @@ public class SaveDataRepositoryTest {
                 .productName("leite")
                 .section(section)
                 .category(new SectionCategory().name(ESectionCategory.FF))
+                .productPrice(bigDecimal)
+                .dueDate(LocalDate.now())
                 .build();
 
         productRepository.save(product);
@@ -174,6 +178,8 @@ public class SaveDataRepositoryTest {
                 .productName("danone")
                 .section(section)
                 .category(new SectionCategory().name(ESectionCategory.FF))
+                .productPrice(bigDecimal)
+                .dueDate(LocalDate.now())
                 .build();
 
         productRepository.save(productDois);
