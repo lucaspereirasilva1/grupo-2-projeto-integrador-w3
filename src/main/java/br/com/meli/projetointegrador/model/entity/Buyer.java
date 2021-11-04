@@ -25,6 +25,7 @@ public class Buyer {
     private String name;
     private String cpf;
 
+
     public Buyer name(String name) {
         this.name = name;
         return this;

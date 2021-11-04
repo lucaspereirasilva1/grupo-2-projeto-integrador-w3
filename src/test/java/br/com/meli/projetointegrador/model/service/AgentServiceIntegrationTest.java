@@ -34,6 +34,9 @@ public class AgentServiceIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        warehouseRepository.deleteAll();
+        agentRepository.deleteAll();
+
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")
                 .warehouseName("sao paulo")

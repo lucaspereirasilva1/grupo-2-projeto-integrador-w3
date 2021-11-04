@@ -1,9 +1,12 @@
 package br.com.meli.projetointegrador.model.repository;
 
 import br.com.meli.projetointegrador.model.entity.SectionCategory;
+import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+=======
 /**
  * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
  * @version 1.0.0
@@ -13,4 +16,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SectionCategoryRepository extends MongoRepository<SectionCategory, String> {
+
+    Optional<SectionCategory> findByName(ESectionCategory eSectionCategory);
+
 }

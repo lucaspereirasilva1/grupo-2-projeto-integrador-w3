@@ -1,21 +1,24 @@
 package br.com.meli.projetointegrador.model.service;
 
+import br.com.meli.projetointegrador.exception.InboundOrderException;
 import br.com.meli.projetointegrador.exception.ValidInputException;
 import br.com.meli.projetointegrador.model.dto.AgentDTO;
 import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
 import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;
 import br.com.meli.projetointegrador.model.dto.SectionDTO;
 import br.com.meli.projetointegrador.model.entity.*;
+import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.*;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -49,39 +52,57 @@ public class InboundOrderServiceIntegrationTest {
     @Autowired
     private ProductRepository productRepository;
 
-    @BeforeEach
-    void setUp() {
-        clearBase();
-        createData();
-    }
-
-    @AfterEach
-    void cleanUpDatabase() {
-        clearBase();
-    }
+    @Autowired
+    private SectionCategoryRepository sectionCategoryRepository;
 
     @Test
     void postIntegrationTest() {
+        clearBase();
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+        warehouseRepository.save(warehouse);
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("laticinios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+        sectionRepository.save(section);
+
+        Agent agent = new Agent().
+                cpf("11122233344").
+                name("lucas").
+                warehouse(warehouse).
+                build();
+        agentRepository.save(agent);
+
+        SectionCategory sectionCategory = new SectionCategory()
+                .name(ESectionCategory.FF)
+                .build();
+        sectionCategoryRepository.save(sectionCategory);
+
+        Product product = new Product()
+                .productId("QJ")
+                .productName("Leite")
+                .section(section)
+                .productPrice(new BigDecimal("2.0"))
+                .dueDate(LocalDate.now())
+                .category(sectionCategory)
+                .build();
+        productRepository.save(product);
+
         SectionDTO sectionDTO = new SectionDTO()
                 .sectionCode("LA")
                 .warehouseCode("SP")
                 .build();
 
         BatchStockDTO batchStockDTO = new BatchStockDTO()
-                .batchNumber(1)
-                .productId("QJ")
-                .currentTemperature(10.0F)
-                .minimumTemperature(5.0F)
-                .initialQuantity(1)
-                .currentQuantity(5)
-                .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
-                .dueDate(LocalDate.now())
-                .build();
-
-        BatchStockDTO batchStockDTOUm = new BatchStockDTO()
                 .batchNumber(2)
-                .productId("LE")
+                .productId("QJ")
                 .currentTemperature(20.0F)
                 .minimumTemperature(15.0F)
                 .initialQuantity(1)
@@ -95,12 +116,14 @@ public class InboundOrderServiceIntegrationTest {
                 .orderNumber(1)
                 .orderDate(LocalDate.now())
                 .sectionDTO(sectionDTO)
-                .batchStockDTO(Arrays.asList(batchStockDTO, batchStockDTOUm))
+                .batchStockDTO(Collections.singletonList(batchStockDTO))
                 .build();
 
         AgentDTO agentDTO = new AgentDTO().
                 name("lucas").
-                cpf("11122233344");
+                cpf("11122233344")
+                .warehouseCode("SP")
+                .build();
 
         List<BatchStockDTO> listBatchStockDTO = inboundOrderService.post(inboundOrderDTO, agentDTO);
         Optional<InboundOrder> inboudOrder = inboundOrderRepository.findByOrderNumber(inboundOrderDTO.getOrderNumber());
@@ -110,10 +133,49 @@ public class InboundOrderServiceIntegrationTest {
         assertEquals(inboundOrderDTO.getOrderNumber(), inboudOrder.orElse(new InboundOrder()).getOrderNumber());
         assertEquals(inboundOrderDTO.getOrderDate(), inboudOrder.orElse(new InboundOrder()).getOrderDate());
         assertEquals(inboundOrderDTO.getSectionDTO().getSectionCode(), inboudOrder.orElse(new InboundOrder()).getSection().getSectionCode());
+
     }
 
     @Test
     void putTest() {
+        clearBase();
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+        warehouseRepository.save(warehouse);
+
+        Section sectionBase = new Section()
+                .sectionCode("LA")
+                .sectionName("laticinios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+        sectionRepository.save(sectionBase);
+
+        Agent agentBase = new Agent().
+                cpf("11122233344").
+                name("lucas").
+                warehouse(warehouse).
+                build();
+        agentRepository.save(agentBase);
+
+        SectionCategory sectionCategory = new SectionCategory()
+                .name(ESectionCategory.FF)
+                .build();
+        sectionCategoryRepository.save(sectionCategory);
+
+        Product product = new Product()
+                .productId("LE")
+                .productName("Leite")
+                .section(sectionBase)
+                .productPrice(new BigDecimal("2.0"))
+                .dueDate(LocalDate.now())
+                .category(sectionCategory)
+                .build();
+        productRepository.save(product);
+
         SectionDTO sectionDTO = new SectionDTO()
                 .sectionCode("LA")
                 .warehouseCode("SP")
@@ -121,21 +183,9 @@ public class InboundOrderServiceIntegrationTest {
 
         BatchStockDTO batchStockDTO = new BatchStockDTO()
                 .batchNumber(1)
-                .productId("QJ")
+                .productId("LE")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
-                .initialQuantity(1)
-                .currentQuantity(5)
-                .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
-                .dueDate(LocalDate.now())
-                .build();
-
-        BatchStockDTO batchStockDTOUm = new BatchStockDTO()
-                .batchNumber(2)
-                .productId("LE")
-                .currentTemperature(20.0F)
-                .minimumTemperature(15.0F)
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
@@ -147,7 +197,7 @@ public class InboundOrderServiceIntegrationTest {
                 .orderNumber(1)
                 .orderDate(LocalDate.now())
                 .sectionDTO(sectionDTO)
-                .batchStockDTO(Arrays.asList(batchStockDTO, batchStockDTOUm))
+                .batchStockDTO(Collections.singletonList(batchStockDTO))
                 .build();
 
         AgentDTO agentDTO = new AgentDTO().
@@ -161,7 +211,7 @@ public class InboundOrderServiceIntegrationTest {
 
         BatchStock batchStock = new BatchStock()
                 .batchNumber(1)
-                .productId("QJ")
+                .productId("LE")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
                 .initialQuantity(1)
@@ -172,26 +222,13 @@ public class InboundOrderServiceIntegrationTest {
                 .section(section.orElse(new Section()))
                 .agent(agent.orElse(new Agent()))
                 .build();
-        BatchStock batchStockUm = new BatchStock()
-                .batchNumber(2)
-                .productId("LE")
-                .currentTemperature(20.0F)
-                .minimumTemperature(15.0F)
-                .initialQuantity(1)
-                .currentQuantity(5)
-                .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
-                .dueDate(LocalDate.now())
-                .section(section.orElse(new Section()))
-                .agent(agent.orElse(new Agent()))
-                .build();
-        batchStockRepository.saveAll(Arrays.asList(batchStock, batchStockUm));
+        batchStockRepository.saveAll(Collections.singletonList(batchStock));
 
         InboundOrder inboundOrder = new InboundOrder()
                 .orderNumber(1)
                 .orderDate(LocalDate.now())
                 .section(section.orElse(new Section()))
-                .listBatchStock(Arrays.asList(batchStock, batchStockUm))
+                .listBatchStock(Collections.singletonList(batchStock))
                 .build();
         inboundOrderRepository.save(inboundOrder);
 
@@ -208,7 +245,64 @@ public class InboundOrderServiceIntegrationTest {
     }
 
     @Test
+    void putNotTest() {
+        clearBase();
+
+        InboundOrderDTO inboundOrderDTO = new InboundOrderDTO();
+
+        AgentDTO agentDTO = new AgentDTO();
+
+        InboundOrderException inboundOrderException = assertThrows
+                (InboundOrderException.class, () -> inboundOrderService.put(inboundOrderDTO, agentDTO));
+
+        String mensagemEsperada = "Ordem de entrada nao existe!!! Por gentileza realizar o cadastro antes de atualizar";
+        String mensagemRecebida = inboundOrderException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
     void inputValidIntegrationTest() {
+        clearBase();
+
+        clearBase();
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+        warehouseRepository.save(warehouse);
+
+        Section sectionBase = new Section()
+                .sectionCode("LA")
+                .sectionName("laticinios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+        sectionRepository.save(sectionBase);
+
+        Agent agentBase = new Agent().
+                cpf("11122233344").
+                name("lucas").
+                warehouse(warehouse).
+                build();
+        agentRepository.save(agentBase);
+
+        SectionCategory sectionCategory = new SectionCategory()
+                .name(ESectionCategory.FF)
+                .build();
+        sectionCategoryRepository.save(sectionCategory);
+
+        Product product = new Product()
+                .productId("LE")
+                .productName("Leite")
+                .section(sectionBase)
+                .productPrice(new BigDecimal("2.0"))
+                .dueDate(LocalDate.now())
+                .category(sectionCategory)
+                .build();
+        productRepository.save(product);
+
         SectionDTO sectionDTO = new SectionDTO()
                 .sectionCode("LA")
                 .warehouseCode("SP")
@@ -216,7 +310,7 @@ public class InboundOrderServiceIntegrationTest {
 
         BatchStockDTO batchStockDTO = new BatchStockDTO()
                 .batchNumber(1)
-                .productId("QJ")
+                .productId("LE")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
                 .initialQuantity(2)
@@ -254,46 +348,6 @@ public class InboundOrderServiceIntegrationTest {
         agentRepository.deleteAll();
         batchStockRepository.deleteAll();
         warehouseRepository.deleteAll();
-    }
-
-    void createData() {
-        List<Product> listProduct = new ArrayList<>();
-
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("sao paulo")
-                .build();
-        warehouseRepository.save(warehouse);
-
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("laticinios")
-                .maxLength(10)
-                .warehouse(warehouse)
-                .build();
-        sectionRepository.save(section);
-
-        Agent agent = new Agent().
-                cpf("11122233344").
-                name("lucas").
-                warehouse(warehouse).
-                build();
-        agentRepository.save(agent);
-
-        Product product = new Product()
-                .productId("LE")
-                .productName("leite")
-                .section(section)
-                .build();
-
-        Product productUm = new Product()
-                .productId("QJ")
-                .productName("queijo")
-                .section(section)
-                .build();
-        listProduct.add(product);
-        listProduct.add(productUm);
-        productRepository.saveAll(listProduct);
     }
 
 }

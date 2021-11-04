@@ -1,10 +1,14 @@
 package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.ProductException;
+import br.com.meli.projetointegrador.exception.ProductExceptionNotFound;
 import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.entity.Section;
+import br.com.meli.projetointegrador.model.entity.SectionCategory;
 import br.com.meli.projetointegrador.model.entity.Warehouse;
+import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
+import br.com.meli.projetointegrador.model.repository.SectionCategoryRepository;
 import br.com.meli.projetointegrador.model.repository.SectionRepository;
 import br.com.meli.projetointegrador.model.repository.WarehouseRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -13,8 +17,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
@@ -38,6 +45,9 @@ public class ProductServiceIntegrationTest {
     @Autowired
     private WarehouseRepository warehouseRepository;
 
+    @Autowired
+    private SectionCategoryRepository sectionCategoryRepository;
+
     @BeforeEach
     void setUp(){
         clearBase();
@@ -54,13 +64,33 @@ public class ProductServiceIntegrationTest {
                 .maxLength(10)
                 .build();
 
-        Product product = new Product()
-                .productId("LEI")
-                .productName("Leite")
-                .section(section)
+        Section sectionDois = new Section()
+                .sectionCode("FR")
+                .sectionName("Frios")
+                .warehouse(warehouse)
+                .maxLength(10)
                 .build();
 
-        sectionRepository.save(section);
+        SectionCategory sectionCategory = new SectionCategory()
+                .name(ESectionCategory.FF)
+                .build();
+        sectionCategoryRepository.save(sectionCategory);
+
+        SectionCategory sectionCategoryRF = new SectionCategory()
+                .name(ESectionCategory.RF)
+                .build();
+        sectionCategoryRepository.save(sectionCategoryRF);
+
+        Product product = new Product()
+                .productId("LE")
+                .productName("Leite")
+                .section(section)
+                .productPrice(new BigDecimal("2.0"))
+                .dueDate(LocalDate.now())
+                .category(sectionCategory)
+                .build();
+
+        sectionRepository.saveAll(Arrays.asList(section, sectionDois));
         productRepository.save(product);
         warehouseRepository.save(warehouse);
     }
@@ -77,15 +107,85 @@ public class ProductServiceIntegrationTest {
     @Test
     void validProductNotExistTest(){
         ProductException productException = assertThrows(ProductException.class, () ->
-                productService.validProductSection("XX"));
+                productService.validProductSection("FR"));
 
         String expectedMessage = "Produto nao faz parte do setor, por favor verifique o setor correto!";
         assertTrue(expectedMessage.contains(productException.getMessage()));
+    }
+
+    @Test
+    void findExistTest() {
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("Sao Paulo")
+                .build();
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("Laticionios")
+                .warehouse(warehouse)
+                .maxLength(10)
+                .build();
+
+        Product product = new Product()
+                .productId("LE")
+                .productName("leite")
+                .section(section)
+                .build();
+
+        Product productReturn = productService.find(product.getProductId());
+
+        assertEquals("LE", productReturn.getProductId());
+    }
+
+    @Test
+    void findNotExistTest() {
+        Product product = new Product();
+
+        ProductException productException = assertThrows(ProductException.class, () ->
+                productService.find(product.getProductId()));
+
+        String expectedMessage = "Produto nao cadastrado!!! Por gentileza cadastrar";
+
+        assertTrue(expectedMessage.contains(productException.getMessage()));
+    }
+
+    @Test
+    void validListProductByCategoryTest(){
+        assertEquals(productService.listProdutcByCategory(ESectionCategory.FF.toString()).size(), 1);
+    }
+
+    @Test
+    void validListProductByCategoryTestEmpty(){
+        ProductExceptionNotFound productExceptionNotFound = assertThrows
+                (ProductExceptionNotFound.class,() -> productService.listProdutcByCategory(ESectionCategory.RF.toString()));
+
+        String mensagemEsperada = "Nao temos produtos nessa categoria " + ESectionCategory.RF.toString() + ", por favor informar a categoria correta!";
+        String mensagemRecebida = productExceptionNotFound.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
+    void dueDataProduct() {
+        ProductException productException = assertThrows
+                (ProductException.class,() -> productService.dueDataProduct(LocalDate.now()));
+
+        String mensagemEsperada = "Produto Vencido";
+        String mensagemRecebida = productException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
+    void findAllProducts() {
+        assertFalse(productService.findAllProducts().isEmpty());
     }
 
     void clearBase() {
         sectionRepository.deleteAll();
         productRepository.deleteAll();
         warehouseRepository.deleteAll();
+        sectionCategoryRepository.deleteAll();
     }
 }

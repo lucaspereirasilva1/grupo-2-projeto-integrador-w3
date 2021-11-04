@@ -25,12 +25,16 @@ import java.util.Optional;
 @Service
 public class ProductService {
 
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
     private final SectionService sectionService;
+    private final SectionCategoryService sectionCategoryService;
 
-    public ProductService(ProductRepository productRepository, SectionService sectionService) {
+    public ProductService(ProductRepository productRepository,
+                          SectionService sectionService,
+                          SectionCategoryService sectionCategoryService) {
         this.productRepository = productRepository;
         this.sectionService = sectionService;
+        this.sectionCategoryService = sectionCategoryService;
     }
 
     /**
@@ -65,7 +69,8 @@ public class ProductService {
      */
     public List<ProductDTO> listProdutcByCategory(String category) {
         List<ProductDTO> productListDTO = new ArrayList<>();
-        List<Product> productList = productRepository.findProductByCategory(new SectionCategory().name(ESectionCategory.valueOf(category)));
+        final SectionCategory sectionCategory = sectionCategoryService.find(ESectionCategory.valueOf(category));
+        List<Product> productList = productRepository.findProductByCategory(sectionCategory);
         if (!productList.isEmpty()){
             for (Product p: productList) {
                 ProductDTO productDTO = new ProductDTO()
@@ -80,7 +85,7 @@ public class ProductService {
             }
             return productListDTO;
         } else {
-            throw new ProductExceptionNotFound("Nao temos o produtos nessa categoria, por favor informar a categoria correta!");
+            throw new ProductExceptionNotFound("Nao temos produtos nessa categoria " + category + ", por favor informar a categoria correta!");
         }
     }
 
@@ -112,4 +117,9 @@ public class ProductService {
         }
         return productDTOList;
     }
+
+    public List<ProductDTO> findAllProducts() {
+        return converteProductlist(productRepository.findAll());
+    }
+
 }
