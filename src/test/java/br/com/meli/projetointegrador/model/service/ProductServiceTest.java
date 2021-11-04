@@ -2,7 +2,6 @@ package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.ProductException;
 import br.com.meli.projetointegrador.exception.ProductExceptionNotFound;
-import br.com.meli.projetointegrador.exception.ValidInputException;
 import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.entity.SectionCategory;
