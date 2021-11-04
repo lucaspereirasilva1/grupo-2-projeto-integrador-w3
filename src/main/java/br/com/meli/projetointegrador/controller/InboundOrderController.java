@@ -37,7 +37,7 @@ public class InboundOrderController {
     }
 
     @PutMapping(value = "/inboundorder", produces = "application/json")
-    public ResponseEntity<List<BatchStockDTO>> put(@RequestBody InboundOrderDTO inboundOrderDTO,
+    public ResponseEntity<List<BatchStockDTO>> put(@Valid @RequestBody InboundOrderDTO inboundOrderDTO,
                                                    UriComponentsBuilder uriComponentsBuilder) {
         AgentDTO agentDTO = new AgentDTO()
                 .name("lucas")

@@ -7,14 +7,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.data.mongodb.core.aggregation.DateOperators;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
 public class SaveDataRepositoryTest {
@@ -181,41 +179,56 @@ public class SaveDataRepositoryTest {
 
         agentRepository.save(agent);
 
-        BatchStock batchStock = new BatchStock()
-                .batchNumber(1)
-                .productId("LE")
-                .currentTemperature(10.0F)
-                .minimumTemperature(5.0F)
-                .initialQuantity(1)
-                .currentQuantity(5)
-                .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
-                .dueDate(LocalDate.now())
-                .agent(agent)
-                .section(section)
-                .build();
-        batchStockRepository.save(batchStock);
-
         BatchStock batchStockDois = new BatchStock()
                 .batchNumber(2)
                 .productId("LE")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
                 .initialQuantity(1)
-                .currentQuantity(5)
+                .currentQuantity(7)
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())
-                .dueDate(LocalDate.now())
+                .dueDate(LocalDate.of(2021,12,04))
                 .agent(agent)
                 .section(section)
                 .build();
         batchStockRepository.save(batchStockDois);
 
+        BatchStock batchStockTres= new BatchStock()
+                .batchNumber(3)
+                .productId("LE")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.of(2021,11,23))
+                .agent(agent)
+                .section(section)
+                .build();
+        batchStockRepository.save(batchStockTres);
+
+        BatchStock batchStockUm = new BatchStock()
+                .batchNumber(1)
+                .productId("LE")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(2)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.of(2021,12,13))
+                .agent(agent)
+                .section(section)
+                .build();
+        batchStockRepository.save(batchStockUm);
+
         InboundOrder inboundOrder = new InboundOrder()
                 .orderNumber(1)
                 .orderDate(LocalDate.now())
                 .section(section)
-                .listBatchStock(Collections.singletonList(batchStock))
+                .listBatchStock(Collections.singletonList(batchStockDois))
                 .build();
         inboundOrderRepository.save(inboundOrder);
     }
