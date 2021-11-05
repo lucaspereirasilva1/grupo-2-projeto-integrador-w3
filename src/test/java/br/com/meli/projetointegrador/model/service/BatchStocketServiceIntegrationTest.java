@@ -203,7 +203,7 @@ public class BatchStocketServiceIntegrationTest {
 
     @Test
     void listProductId() {
-        final BatchStockResponseDTO productResponseDTO = batchStockService.listProductId("QJ");
+        final BatchStockResponseDTO productResponseDTO = batchStockService.listProductId("QJ", "");
         assertFalse(ObjectUtils.isEmpty(productResponseDTO));
         assertEquals("QJ", productResponseDTO.getProductId());
     }
