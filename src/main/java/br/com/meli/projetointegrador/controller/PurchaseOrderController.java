@@ -40,7 +40,7 @@ public class PurchaseOrderController {
     @PostMapping(value = "/order", produces = "application/json")
     public ResponseEntity<BigDecimal> post(@Valid @RequestBody PurchaseOrderDTO purchaseOrderDTO,
                                                           UriComponentsBuilder uriComponentsBuilder) {
-        BigDecimal total = purchaseOrderService.total(purchaseOrderDTO);
+        BigDecimal total = purchaseOrderService.save(purchaseOrderDTO);
         URI uri = uriComponentsBuilder.path("/order/1").buildAndExpand(1).toUri();
         return ResponseEntity.created(uri).body(total);
     }
@@ -48,7 +48,7 @@ public class PurchaseOrderController {
     @PutMapping(value = "/order", produces = "application/json")
     public ResponseEntity<BigDecimal> put(@Valid @RequestBody PurchaseOrderDTO purchaseOrderDTO,
                                                           UriComponentsBuilder uriComponentsBuilder) {
-        BigDecimal total = purchaseOrderService.total(purchaseOrderDTO);
+        BigDecimal total = purchaseOrderService.save(purchaseOrderDTO);
         URI uri = uriComponentsBuilder.path("/order/1").buildAndExpand(1).toUri();
         return ResponseEntity.created(uri).body(total);
     }

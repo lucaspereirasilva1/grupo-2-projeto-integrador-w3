@@ -10,7 +10,6 @@ import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -68,34 +67,13 @@ public class ProductService {
      * @return uma lista por categoria.
      */
     public List<ProductDTO> listProdutcByCategory(String category) {
-        List<ProductDTO> productListDTO = new ArrayList<>();
         final SectionCategory sectionCategory = sectionCategoryService.find(ESectionCategory.valueOf(category));
         List<Product> productList = productRepository.findProductByCategory(sectionCategory);
         if (!productList.isEmpty()){
-            for (Product p: productList) {
-                ProductDTO productDTO = new ProductDTO()
-                        .productId(p.getProductId())
-                        .productName(p.getProductName())
-                        .sectionName(p.getSection().getSectionName())
-                        .category(p.getCategory().getName())
-                        .productPrice(p.getProductPrice())
-                        .dueDate(p.getDueDate())
-                        .build();
-                productListDTO.add(productDTO);
-            }
-            return productListDTO;
+            return converteProductlist(productList);
         } else {
             throw new ProductExceptionNotFound("Nao temos produtos nessa categoria " + category + ", por favor informar a categoria correta!");
         }
-    }
-
-    /**
-     * @param dueDate, recebe uma data de vencimento;
-     * @return valida se esta vencido.
-     */
-    public void dueDataProduct(LocalDate dueDate){
-        if (!dueDate.isAfter(LocalDate.now().plusWeeks(+3)))
-            throw new ProductException("Produto Vencido");
     }
 
     /**

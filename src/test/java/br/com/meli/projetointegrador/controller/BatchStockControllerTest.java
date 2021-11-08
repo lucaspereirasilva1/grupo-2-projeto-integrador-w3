@@ -18,6 +18,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
@@ -30,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
+@ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureDataMongo
@@ -160,7 +162,7 @@ class BatchStockControllerTest {
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())
-                .dueDate(LocalDate.now())
+                .dueDate(LocalDate.of(2022,  12,  1))
                 .section(section)
                 .agent(agent)
                 .build();

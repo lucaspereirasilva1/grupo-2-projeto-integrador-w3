@@ -9,6 +9,7 @@ import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -40,10 +41,9 @@ public class BatchStockService {
     }
 
     /**
-     * @param listBatchStock recebe uma lista bqaqtchStock;
+     * @param listBatchStock recebe uma lista batchStock;
      * @param agentDTO recebe um agenteDTO;
      * @param sectionDTO recebe uma sectionDTO;
-     * @return valida os parametros acima e faz o post.
      */
     public void postAll(List<BatchStock> listBatchStock, AgentDTO agentDTO, SectionDTO sectionDTO) {
         listBatchStock.forEach(b -> {
@@ -60,7 +60,6 @@ public class BatchStockService {
      * @param listBatchStock recebe uma lista bqaqtchStock;
      * @param agentDTO recebe um agenteDTO;
      * @param sectionDTO recebe uma sectionDTO;
-     * @return valida os parametros acima e faz o put.
      */
     public void putAll(List<BatchStock> listBatchStock, List<BatchStockDTO> listBatchStockDTO, AgentDTO agentDTO, SectionDTO sectionDTO) {
         for (int i = 0; i < listBatchStock.size(); i++) {
@@ -92,10 +91,13 @@ public class BatchStockService {
      */
     public BatchStockResponseDTO listProductId(String productId, String order) {
         BatchStockResponseDTO batchStockResponseDTO = new BatchStockResponseDTO();
-        List<BatchStock> batchStockList = batchStockRepository.findAllByProductId(productId);
-        Product product = productService.find(productId);
-        if(!batchStockList.isEmpty()){
-            List<BatchStockListProductDTO> listBatchStockProductDTO = convertDTO(batchStockList);
+        List<BatchStock> batchStockList = findBatchStock(productId);
+        final List<BatchStock> batchStockListNotExpired = batchStockList.stream()
+                .filter(b -> dueDataProduct(b.getDueDate()))
+                .collect(toList());
+        if(!batchStockListNotExpired.isEmpty()){
+            Product product = productService.find(productId);
+            List<BatchStockListProductDTO> listBatchStockProductDTO = convertDTO(batchStockListNotExpired);
             SectionDTO sectionDTO = new SectionDTO()
                     .sectionCode(product.getSection().getSectionCode())
                     .warehouseCode(product.getSection().getWarehouse().getWarehouseCode())
@@ -104,11 +106,12 @@ public class BatchStockService {
             batchStockResponseDTO.productId(product.getProductId());
             if (!order.equals("")){
                 batchStockResponseDTO.batchStock(ordenar(order,listBatchStockProductDTO));
-            }else
+            }else {
                 batchStockResponseDTO.batchStock(listBatchStockProductDTO);
+            }
             return batchStockResponseDTO;
         } else {
-            throw new ProductExceptionNotFound("Nao existe produto para esse codigo, por favor verifique o codigo inserido!");
+            throw new ProductExceptionNotFound("Nao existe estoques vigentes para esse produto, por favor verifique os dados inseridos!!!");
         }
     }
 
@@ -131,7 +134,6 @@ public class BatchStockService {
 
     /**
      * @param productList recebe uma lista de ProductPurchaseOrder;
-     * @return salva o update na lista ou exception.
      */
     public void updateBatchStock(List<ProductPurchaseOrderDTO> productList) {
         productList.forEach(p -> {
@@ -146,6 +148,11 @@ public class BatchStockService {
         });
     }
 
+    /**
+     * @param order tipo de ordenacao;
+     * @param listBatchStockProductDTO lista de estoques;
+     * @return lista convertida para DTO.
+     */
     public List<BatchStockListProductDTO> ordenar(String order, List<BatchStockListProductDTO> listBatchStockProductDTO) {
         switch (order) {
             case ("L"): {//ordenar por lote
@@ -163,6 +170,26 @@ public class BatchStockService {
             default:
                 throw new ProductExceptionNotFound("Codigo do filtro nao existe!");
         }
+    }
+
+    /**
+     * @param dueDate, recebe uma data de vencimento;
+     * @return retorna verdadeiro se o vencimento for maior que 3 semanas e falso caso menor
+     */
+    public Boolean dueDataProduct(LocalDate dueDate){
+        return dueDate.isAfter(LocalDate.now().plusWeeks(+3));
+    }
+
+    /**
+     * @param productId, id do produto;
+     * @return lista de batchstock
+     */
+    public List<BatchStock> findBatchStock(String productId) {
+        List<BatchStock> batchStockList = batchStockRepository.findAllByProductId(productId);
+        if (batchStockList.isEmpty()) {
+            throw new BatchStockException("Nao existe estoques para esse produto!!!");
+        }
+        return batchStockList;
     }
 
 }

@@ -34,12 +34,6 @@ public class BatchStockResponseDTO {
         return this;
     }
 
-    public BatchStockResponseDTO productId(String productId,String order) {
-        this.productId = productId;
-        order = order;
-        return this;
-    }
-
     public BatchStockResponseDTO batchStock(List<BatchStockListProductDTO> batchStock) {
         this.batchStock = batchStock;
         return this;

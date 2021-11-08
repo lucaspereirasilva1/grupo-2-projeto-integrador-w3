@@ -218,7 +218,7 @@ public class PurchaseOrderServiceIntegrationTest {
                 .build();
         batchStockRepository.saveAll(Arrays.asList(batchStock, batchStockDois));
 
-        final BigDecimal total = purchaseOrderService.total(purchaseOrderDTO);
+        final BigDecimal total = purchaseOrderService.save(purchaseOrderDTO);
 
         assertFalse(ObjectUtils.isEmpty(total));
         assertEquals(new BigDecimal(19), total);
@@ -334,7 +334,7 @@ public class PurchaseOrderServiceIntegrationTest {
                         productPurchaseOrderDTO2));
 
 
-        final BigDecimal total = purchaseOrderService.total(purchaseOrderPutDTO);
+        final BigDecimal total = purchaseOrderService.save(purchaseOrderPutDTO);
 
         assertFalse(ObjectUtils.isEmpty(total));
         assertEquals(new BigDecimal(19), total);
