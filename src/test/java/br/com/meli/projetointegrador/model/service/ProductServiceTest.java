@@ -10,7 +10,6 @@ import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -133,7 +132,7 @@ public class ProductServiceTest {
         ProductException productException = assertThrows(ProductException.class, () ->
                 productService.find(product.getProductId()));
 
-        String expectedMessage = "Produto nao cadastrado!!! Por gentileza cadastrar";
+        String expectedMessage = "Produto (" + product.getProductId() + ") nao cadastrado!!! Por gentileza cadastrar";
 
         assertTrue(expectedMessage.contains(productException.getMessage()));
     }
@@ -192,17 +191,6 @@ public class ProductServiceTest {
 
         String mensagemEsperada = "Nao temos produtos nessa categoria " + ESectionCategory.FF.toString() + ", por favor informar a categoria correta!";
         String mensagemRecebida = productExceptionNotFound.getMessage();
-
-        assertTrue(mensagemEsperada.contains(mensagemRecebida));
-    }
-
-    @Test
-    void dueDataProduct() {
-        ProductException productException = assertThrows
-                (ProductException.class,() -> productService.dueDataProduct(LocalDate.now()));
-
-        String mensagemEsperada = "Produto Vencido";
-        String mensagemRecebida = productException.getMessage();
 
         assertTrue(mensagemEsperada.contains(mensagemRecebida));
     }

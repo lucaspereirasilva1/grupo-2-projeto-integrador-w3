@@ -77,7 +77,7 @@ public class PurchaseOrderServiceTest {
                         .productPrice(new BigDecimal(2))
                         .category(new SectionCategory().name(ESectionCategory.FF))
                         .section(section)
-                        .dueDate(LocalDate.of(2021,11,30)));
+                        .dueDate(LocalDate.of(2022,11,30)));
         when(mockProductService.find(productPurchaseOrderDTO2.getProductId()))
                 .thenReturn(new Product()
                         .productId("QJ")
@@ -85,7 +85,7 @@ public class PurchaseOrderServiceTest {
                         .productPrice(new BigDecimal(3))
                         .category(new SectionCategory().name(ESectionCategory.FF))
                         .section(section)
-                        .dueDate(LocalDate.of(2021,11,30)));
+                        .dueDate(LocalDate.of(2022,11,30)));
         when(mockBuyerService.find(anyString()))
                 .thenReturn(new Buyer()
                         .name("lucas")
@@ -94,7 +94,10 @@ public class PurchaseOrderServiceTest {
         when(mockPurchaseOrderRepository.save(any(PurchaseOrder.class)))
                 .thenReturn(new PurchaseOrder());
 
-        BigDecimal total = purchaseOrderService.total(purchaseOrderDTO);
+        when(mockBatchStockService.dueDataProduct(any(LocalDate.class)))
+                .thenReturn(true);
+
+        BigDecimal total = purchaseOrderService.save(purchaseOrderDTO);
         assertEquals(new BigDecimal(19),total);
     }
 
@@ -142,11 +145,11 @@ public class PurchaseOrderServiceTest {
         when(mockProductService.find(productPurchaseOrderDTO2.getProductId()))
                 .thenReturn(new Product()
                         .productId("QJ")
-                        .productName("QUEIJO")
+                        .productName("Queijo")
                         .productPrice(new BigDecimal(3))
                         .category(new SectionCategory().name(ESectionCategory.FF))
                         .section(section)
-                        .dueDate(LocalDate.of(2021,11,30)));
+                        .dueDate(LocalDate.of(2022,11,30)));
         when(mockBuyerService.find(anyString()))
                 .thenReturn(new Buyer()
                         .name("lucas")
@@ -155,7 +158,10 @@ public class PurchaseOrderServiceTest {
         when(mockPurchaseOrderRepository.save(any(PurchaseOrder.class)))
                 .thenReturn(new PurchaseOrder());
 
-        BigDecimal total = purchaseOrderService.total(purchaseOrderDTO);
+        when(mockBatchStockService.dueDataProduct(any(LocalDate.class)))
+                .thenReturn(true);
+
+        BigDecimal total = purchaseOrderService.save(purchaseOrderDTO);
         assertEquals(new BigDecimal(19),total);
     }
 
@@ -163,7 +169,7 @@ public class PurchaseOrderServiceTest {
     void productPriceNoProductTest(){
         List<ProductPurchaseOrderDTO> listProductPurchaseOrderDTO = new ArrayList<>();
         ProductPurchaseOrderDTO productPurchaseOrderDTO1 = new ProductPurchaseOrderDTO()
-                .productId("LE")
+                .productId("FR")
                 .quantity(5)
                 .build();
         ProductPurchaseOrderDTO productPurchaseOrderDTO2 = new ProductPurchaseOrderDTO()
@@ -194,13 +200,12 @@ public class PurchaseOrderServiceTest {
         when(mockProductService.find(productPurchaseOrderDTO1.getProductId()))
                 .thenReturn(new Product()
                         .productId("LE")
-                        .productName("LEITE")
+                        .productName("Leite")
                         .productPrice(new BigDecimal(2))
                         .category(new SectionCategory().name(ESectionCategory.FF))
                         .section(section)
-                        .dueDate(LocalDate.of(2021,11,30)));
-        when(mockProductService.find(productPurchaseOrderDTO2.getProductId()))
-                .thenReturn(new Product());
+                        .dueDate(LocalDate.of(2021, 1, 3)));
+
         when(mockBuyerService.find(anyString()))
                 .thenReturn(new Buyer()
                         .name("lucas")
@@ -208,9 +213,11 @@ public class PurchaseOrderServiceTest {
                         .build());
         when(mockPurchaseOrderRepository.save(any(PurchaseOrder.class)))
                 .thenReturn(new PurchaseOrder());
+        when(mockBatchStockService.dueDataProduct(any(LocalDate.class)))
+                .thenReturn(true);
 
         PurchaseOrderException purchaseOrderException = assertThrows
-                (PurchaseOrderException.class,() -> purchaseOrderService.total(purchaseOrderDTO));
+                (PurchaseOrderException.class,() -> purchaseOrderService.save(purchaseOrderDTO));
 
         String mensagemEsperada = "Produto nao encontrado";
         String mensagemRecebida = purchaseOrderException.getMessage();

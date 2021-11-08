@@ -69,7 +69,7 @@ public class PurchaseOrderService {
      * @param purchaseOrderDTO recebe uma purchaseOrder;
      * @return se existente faz o update caso nao exista e salva uma nova.
      */
-    public BigDecimal total(PurchaseOrderDTO purchaseOrderDTO){
+    public BigDecimal save(PurchaseOrderDTO purchaseOrderDTO){
         PurchaseOrder purchaseOrder = new PurchaseOrder();
         total =  new BigDecimal(0);
         if (ObjectUtils.isEmpty(purchaseOrderDTO.getId())) {
@@ -90,7 +90,6 @@ public class PurchaseOrderService {
             purchaseOrderRepository.save(purchaseOrder);
             batchStockService.updateBatchStock(purchaseOrderDTO.getListProductPurchaseOrderDTO());
         }
-
         return total;
     }
 
@@ -102,7 +101,9 @@ public class PurchaseOrderService {
         List<Product> productList = new ArrayList<>();
         for (ProductPurchaseOrderDTO p : purchaseOrderDTO.getListProductPurchaseOrderDTO()) {
             Product product = productService.find(p.getProductId());
-            productService.dueDataProduct(product.getDueDate());
+            if (!batchStockService.dueDataProduct(product.getDueDate())) {
+                throw new PurchaseOrderException("Vencimento inferior a 3 semanas!!! Produto: " + product.getProductName() + " Vencimento: " + product.getDueDate());
+            }
             if (p.getProductId().equals(product.getProductId())) {
                 total = total.add(product.getProductPrice().multiply(new BigDecimal(p.getQuantity())));
             } else {
