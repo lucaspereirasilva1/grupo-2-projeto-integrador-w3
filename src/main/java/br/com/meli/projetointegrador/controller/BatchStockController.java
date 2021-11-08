@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Jhony Zuim / Lucas Pereira / Edemilson Nobre / Rafael Vicente
  * @version 1.0.0
  * @since 15/10/2021
- * Camada de controller responsavel pela regra de negocio relacionada ao productController
+ * Camada de controller responsavel pela regra de negocio relacionada ao batchStockController
  */
 
 @RestController
 @RequestMapping("/api/v1/fresh-products")
 public class BatchStockController {
 
-    BatchStockService batchStockService;
+    private final BatchStockService batchStockService;
 
     public BatchStockController(BatchStockService batchStockService) {
         this.batchStockService = batchStockService;
@@ -27,7 +27,15 @@ public class BatchStockController {
 
     @GetMapping(value = "/lists") // Chamada do endpoint: /lists?productId=LE ou DA
     public ResponseEntity<BatchStockResponseDTO> getProductById(@RequestParam("productId") String productId){
-        BatchStockResponseDTO batchStockResponseDTO = batchStockService.listProductId(productId);
+        BatchStockResponseDTO batchStockResponseDTO = batchStockService.listProductId(productId,"");
         return ResponseEntity.ok(batchStockResponseDTO);
     }
+
+    @GetMapping(value = "/listsorder") // Chamada do endpoint: /lists?productId=LE&L, C ou F
+    public ResponseEntity<BatchStockResponseDTO> getProductB(@RequestParam("productId") String productId,
+                                                             @RequestParam("order") String order){
+        BatchStockResponseDTO batchStockResponseDTO = batchStockService.listProductId(productId,order);
+        return ResponseEntity.ok(batchStockResponseDTO);
+    }
+
 }

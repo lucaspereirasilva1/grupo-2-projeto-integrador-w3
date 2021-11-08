@@ -10,6 +10,7 @@ import br.com.meli.projetointegrador.model.repository.InboundOrderRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,7 +40,17 @@ public class InboundOrderService {
         this.warehouseService = warehouseService;
     }
 
+    /**
+     * @param inboundOrderDTO recebe uma ordem de entrada;
+     * @param agentDTO recebe um agenteDTO;
+     * @return faz o post e retorna a lista salva.
+     */
     public List<BatchStockDTO> post(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
+        inboundOrderDTO.getListBatchStockDTO().forEach(b -> {
+            if (b.getDueDate().isBefore(LocalDate.now())) {
+                throw new InboundOrderException("Estoque com data retroativa: " + b.getDueDate());
+            }
+        });
         InboundOrder inboundOrder = modelMapper.map(inboundOrderDTO, InboundOrder.class);
         inboundOrder.section(sectionService.find(inboundOrderDTO.getSectionDTO().getSectionCode()));
         batchStockService.postAll(inboundOrder.getListBatchStock(), agentDTO, inboundOrderDTO.getSectionDTO());
@@ -47,6 +58,11 @@ public class InboundOrderService {
         return inboundOrderDTO.getListBatchStockDTO();
     }
 
+    /**
+     * @param inboundOrderDTO recebe uma ordem de entrada;
+     * @param agentDTO recebe um agenteDTO;
+     * @return faz o put e retorna a lista alterada.
+     */
     public List<BatchStockDTO> put(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
         Optional<InboundOrder> inboundOrderCheck = inboundOrderRepository.findByOrderNumber(inboundOrderDTO.getOrderNumber());
         if (inboundOrderCheck.isPresent()) {
@@ -63,6 +79,10 @@ public class InboundOrderService {
         return inboundOrderDTO.getListBatchStockDTO();
     }
 
+    /**
+     * @param inboundOrderDTO recebe uma ordem de entrada;
+     * @param agentDTO recebe um agenteDTO
+     */
     public void inputValid(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
         if (!warehouseService.validWarehouse(inboundOrderDTO.getSectionDTO().getWarehouseCode()) |
             !inboundOrderDTO.getSectionDTO().getWarehouseCode().equals(agentDTO.getWarehouseCode()) |

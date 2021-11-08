@@ -1,13 +1,13 @@
 package br.com.meli.projetointegrador.exception;
 
-public class ValidInputException extends RuntimeException {
-
 /**
- * @author Edemilson Nobre
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
  * @version 1.0.0
  * @since 15/10/2021
- * Exception personalizada para entrada de dados
+ * Exception personalizada para validInput
  */
+
+public class ValidInputException extends RuntimeException {
 
     public ValidInputException(String message) {
         super(message);

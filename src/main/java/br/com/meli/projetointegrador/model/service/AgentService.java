@@ -23,6 +23,10 @@ public class AgentService {
         this.agentRepository = agentRepository;
     }
 
+    /**
+     * @param cpf, recebe um CPF de um agente;
+     * @return retorna o agente ou exception.
+     */
     public Agent find(String cpf) {
         Optional<Agent> agent = agentRepository.findByCpf(cpf);
         if (agent.isEmpty()) {

@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 /**
- * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @author Jhony Zuim / Lucas Pereira / Edemilson Nobre / Rafael Vicente
  * @version 1.0.0
  * @since 15/10/2021
  * Objeto criado para o section/setor e seus atributos
@@ -26,11 +26,6 @@ public class Section {
     private String sectionName;
     private Integer maxLength;
     private Warehouse warehouse;
-
-    /**
-     * @author Jhony Zuim
-     * Construcao de construtores fluentes para a classe Section
-     */
 
     public Section id(String id) {
         this.id = id;

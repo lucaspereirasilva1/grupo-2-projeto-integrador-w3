@@ -1,16 +1,16 @@
 package br.com.meli.projetointegrador.model.dto;
 
-        import lombok.Data;
+import lombok.Data;
 
-        import javax.validation.constraints.*;
-        import java.time.LocalDate;
-        import java.time.LocalDateTime;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDate;
 
 /**
  * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
  * @version 1.0.0
  * @since 15/10/2021
- * Objeto de Transferência de Dados do BatchStock
+ * Objeto de Transferência de Dados do BatchStockListProductDTO
  */
 
 @Data

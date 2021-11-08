@@ -2,15 +2,20 @@ package br.com.meli.projetointegrador.model.repository;
 
 import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.entity.Section;
+import br.com.meli.projetointegrador.model.entity.SectionCategory;
 import br.com.meli.projetointegrador.model.entity.Warehouse;
+import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -32,8 +37,20 @@ public class ProductRepositoryTest {
     @Autowired
     private WarehouseRepository warehouseRepository;
 
+    @Autowired
+    private SectionCategoryRepository sectionCategoryRepository;
+
     @BeforeEach
     void setUp() {
+        sectionRepository.deleteAll();
+        productRepository.deleteAll();
+        warehouseRepository.deleteAll();
+        sectionCategoryRepository.deleteAll();
+
+        SectionCategory sectionCategory = new SectionCategory()
+                .name(ESectionCategory.FF)
+                .build();
+
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")
                 .warehouseName("Sao Paulo")
@@ -50,11 +67,15 @@ public class ProductRepositoryTest {
                 .productId("LE")
                 .productName("Leite")
                 .section(section)
+                .productPrice(new BigDecimal("2.0"))
+                .category(sectionCategory)
+                .dueDate(LocalDate.now())
                 .build();
 
         sectionRepository.save(section);
         productRepository.save(product);
         warehouseRepository.save(warehouse);
+        sectionCategoryRepository.save(sectionCategory);
     }
 
     @AfterEach
@@ -62,6 +83,7 @@ public class ProductRepositoryTest {
         sectionRepository.deleteAll();
         productRepository.deleteAll();
         warehouseRepository.deleteAll();
+        sectionCategoryRepository.deleteAll();
     }
 
     @Test
@@ -75,4 +97,10 @@ public class ProductRepositoryTest {
         final Optional<Section> section = sectionRepository.findBySectionCode("LA");
         assertTrue(productRepository.existsProductBySection(section.orElse(null)));
     }
+
+    @Test
+    void findProductByCategory() {
+        assertFalse(productRepository.findProductByCategory(new SectionCategory().name(ESectionCategory.FF)).isEmpty());
+    }
+
 }

@@ -13,6 +13,13 @@ import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edemilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Camada de controller responsavel pela regra de negocio relacionada ao purchaseOrderController
+ */
+
 @Controller
 @RestController
 @RequestMapping("/api/v1/fresh-products")
@@ -33,7 +40,7 @@ public class PurchaseOrderController {
     @PostMapping(value = "/order", produces = "application/json")
     public ResponseEntity<BigDecimal> post(@Valid @RequestBody PurchaseOrderDTO purchaseOrderDTO,
                                                           UriComponentsBuilder uriComponentsBuilder) {
-        BigDecimal total = purchaseOrderService.total(purchaseOrderDTO);
+        BigDecimal total = purchaseOrderService.save(purchaseOrderDTO);
         URI uri = uriComponentsBuilder.path("/order/1").buildAndExpand(1).toUri();
         return ResponseEntity.created(uri).body(total);
     }
@@ -41,7 +48,7 @@ public class PurchaseOrderController {
     @PutMapping(value = "/order", produces = "application/json")
     public ResponseEntity<BigDecimal> put(@Valid @RequestBody PurchaseOrderDTO purchaseOrderDTO,
                                                           UriComponentsBuilder uriComponentsBuilder) {
-        BigDecimal total = purchaseOrderService.total(purchaseOrderDTO);
+        BigDecimal total = purchaseOrderService.save(purchaseOrderDTO);
         URI uri = uriComponentsBuilder.path("/order/1").buildAndExpand(1).toUri();
         return ResponseEntity.created(uri).body(total);
     }

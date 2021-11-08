@@ -1,6 +1,7 @@
 package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.ProductException;
+import br.com.meli.projetointegrador.exception.ProductExceptionNotFound;
 import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.entity.SectionCategory;
@@ -27,12 +28,9 @@ public class ProductServiceTest {
 
     private final ProductRepository mockProductRepository = mock(ProductRepository.class);
     private final SectionService mockSectionService = mock(SectionService.class);
-    private final ProductService productService = new ProductService(mockProductRepository, mockSectionService);
+    private final SectionCategoryService mockSectionCategoryService = mock(SectionCategoryService.class);
+    private final ProductService productService = new ProductService(mockProductRepository, mockSectionService, mockSectionCategoryService);
 
-    /**
-     * @author Jhony Zuim
-     *  Teste unitario para validar se um produto corresponde a section
-     */
     @Test
     void validProductSectionExistTest(){
         Warehouse warehouse = new Warehouse()
@@ -51,13 +49,10 @@ public class ProductServiceTest {
                 .thenReturn(true);
         when(mockSectionService.find(anyString()))
                 .thenReturn(section);
+
         assertTrue(productService.validProductSection(section.getSectionCode()));
     }
 
-    /**
-     * @author Jhony Zuim
-     *  Teste para validar se uma produto nao corresponde a section
-     */
     @Test
     void validProductSectionNotExistTest() {
         Warehouse warehouse = new Warehouse()
@@ -137,14 +132,13 @@ public class ProductServiceTest {
         ProductException productException = assertThrows(ProductException.class, () ->
                 productService.find(product.getProductId()));
 
-        String expectedMessage = "Produto nao cadastrado!!! Por gentileza cadastrar";
+        String expectedMessage = "Produto (" + product.getProductId() + ") nao cadastrado!!! Por gentileza cadastrar";
 
         assertTrue(expectedMessage.contains(productException.getMessage()));
     }
 
     @Test
     void validListProductByCategoryTest(){
-
         List<Product> productList = new ArrayList<>();
 
         Warehouse warehouse = new Warehouse()
@@ -179,8 +173,65 @@ public class ProductServiceTest {
 
         when(mockProductRepository.findProductByCategory(any(SectionCategory.class)))
                 .thenReturn(productList);
+        when(mockSectionCategoryService.find(any(ESectionCategory.class)))
+                .thenReturn(new SectionCategory().name(ESectionCategory.FF).build());
 
         assertEquals(productService.listProdutcByCategory(ESectionCategory.FF.toString()).size(), 2);
-
     }
+
+    @Test
+    void validListProductByCategoryTestEmpty(){
+        when(mockProductRepository.findProductByCategory(any(SectionCategory.class)))
+                .thenReturn(new ArrayList<>());
+        when(mockSectionCategoryService.find(any(ESectionCategory.class)))
+                .thenReturn(new SectionCategory().name(ESectionCategory.FF).build());
+
+        ProductExceptionNotFound productExceptionNotFound = assertThrows
+                (ProductExceptionNotFound.class,() -> productService.listProdutcByCategory(ESectionCategory.FF.toString()));
+
+        String mensagemEsperada = "Nao temos produtos nessa categoria " + ESectionCategory.FF.toString() + ", por favor informar a categoria correta!";
+        String mensagemRecebida = productExceptionNotFound.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
+    void findAllProducts() {
+        List<Product> productList = new ArrayList<>();
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("Sao Paulo")
+                .build();
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("Laticionios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+        Product productUm = new Product()
+                .productId("LE")
+                .productName("leite")
+                .section(section)
+                .category(new SectionCategory().name(ESectionCategory.FF))
+                .build();
+
+        productList.add(productUm);
+
+        Product productDois = new Product()
+                .productId("LE")
+                .productName("leite")
+                .section(section)
+                .category(new SectionCategory().name(ESectionCategory.FF))
+                .build();
+
+        productList.add(productDois);
+        when(mockProductRepository.findAll())
+                .thenReturn(productList);
+
+        assertFalse(productService.findAllProducts().isEmpty());
+    }
+
+
 }

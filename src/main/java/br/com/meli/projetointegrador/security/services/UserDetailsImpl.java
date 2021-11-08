@@ -11,6 +11,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Camada JWT responsavel pela regra de negocio de validacao de acesso
+ */
+
 public class UserDetailsImpl implements UserDetails {
 
     private static final long serialVersionUID = 1L;

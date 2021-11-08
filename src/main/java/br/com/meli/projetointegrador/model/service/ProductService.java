@@ -10,7 +10,6 @@ import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,18 +24,21 @@ import java.util.Optional;
 @Service
 public class ProductService {
 
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
     private final SectionService sectionService;
+    private final SectionCategoryService sectionCategoryService;
 
-    public ProductService(ProductRepository productRepository, SectionService sectionService) {
+    public ProductService(ProductRepository productRepository,
+                          SectionService sectionService,
+                          SectionCategoryService sectionCategoryService) {
         this.productRepository = productRepository;
         this.sectionService = sectionService;
+        this.sectionCategoryService = sectionCategoryService;
     }
 
     /**
-     * @author Jhony Zuim
-     * @param sectionCode, recebe um produto para validar se esta na section correta
-     * @return true ou exception personalizada
+     * @param sectionCode, recebe um codigo de section para validar se o produto esta na section correta;
+     * @return true ou exception.
      */
     public Boolean validProductSection(String sectionCode){
         final Section section = sectionService.find(sectionCode);
@@ -47,38 +49,37 @@ public class ProductService {
         }
     }
 
+    /**
+     * @param productId, recebe um Id de produto;
+     * @return produto ou exception.
+     */
     public Product find(String productId) {
         Optional<Product> product = productRepository.findDistinctFirstByProductId(productId);
         if (product.isPresent()){
             return product.get();
         } else {
-            throw new ProductException("Produto nao cadastrado!!! Por gentileza cadastrar");
+            throw new ProductException("Produto (" + productId + ") nao cadastrado!!! Por gentileza cadastrar");
         }
     }
 
+    /**
+     * @param category, recebe uma categoria de section;
+     * @return uma lista por categoria.
+     */
     public List<ProductDTO> listProdutcByCategory(String category) {
-        List<ProductDTO> productListDTO = new ArrayList<>();
-        List<Product> productList = productRepository.findProductByCategory(new SectionCategory().name(ESectionCategory.valueOf(category)));
+        final SectionCategory sectionCategory = sectionCategoryService.find(ESectionCategory.valueOf(category));
+        List<Product> productList = productRepository.findProductByCategory(sectionCategory);
         if (!productList.isEmpty()){
-            for (Product p: productList) {
-                ProductDTO productDTO = new ProductDTO()
-                        .productId(p.getProductId())
-                        .productName(p.getProductName())
-                        .category(p.getCategory().getName())
-                        .build();
-                productListDTO.add(productDTO);
-            }
-            return productListDTO;
+            return converteProductlist(productList);
         } else {
-            throw new ProductExceptionNotFound("Nao temos o produtos nessa categoria, por favor informar a categoria correta!");
+            throw new ProductExceptionNotFound("Nao temos produtos nessa categoria " + category + ", por favor informar a categoria correta!");
         }
     }
 
-    public void dueDataProduct(LocalDate dueDate){
-        if (!dueDate.isAfter(LocalDate.now().plusWeeks(+3)))
-            throw new ProductException("Produto Vencido");
-    }
-
+    /**
+     * @param productList, recebe uma lista de produto;
+     * @return uma lista de produtoDTO.
+     */
     public List <ProductDTO> converteProductlist  (List<Product> productList) {
         List <ProductDTO> productDTOList = new ArrayList<>();
         for (Product p : productList) {
@@ -93,6 +94,10 @@ public class ProductService {
             productDTOList.add(productDTO);
         }
         return productDTOList;
+    }
+
+    public List<ProductDTO> findAllProducts() {
+        return converteProductlist(productRepository.findAll());
     }
 
 }
