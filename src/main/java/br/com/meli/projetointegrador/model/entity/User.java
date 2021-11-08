@@ -14,6 +14,13 @@ import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Objeto criado para o User e seus atributos
+ */
+
 @Data
 @Document(collection = "users")
 public class User {

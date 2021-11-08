@@ -5,6 +5,13 @@ import lombok.Data;
 
 import javax.validation.constraints.*;
 
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Objeto de Transferência de Dados do ProductPurchaseOrderDTO
+ */
+
 @Data
 public class ProductPurchaseOrderDTO {
 

@@ -2,6 +2,7 @@ package br.com.meli.projetointegrador.model.repository;
 
 import br.com.meli.projetointegrador.model.entity.*;
 import br.com.meli.projetointegrador.model.enums.EOrderStatus;
+import br.com.meli.projetointegrador.model.enums.ERole;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,18 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Repository de teste para trabalhar como uma porta ou janela de acesso a camada do banco
+ */
 
 @DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
 public class SaveDataRepositoryTest {
@@ -37,6 +47,15 @@ public class SaveDataRepositoryTest {
 
     @Autowired
     private BuyerRepository buyerRepository;
+
+    @Autowired
+    private InboundOrderRepository inboundOrderRepository;
+
+    @Autowired
+    private BatchStockRepository batchStockRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Test
     void saveProduct() {
@@ -107,11 +126,25 @@ public class SaveDataRepositoryTest {
     }
 
     @Test
-    void saveTotal() {
+    void scriptCarregamentoBanco() {
         productRepository.deleteAll();
         warehouseRepository.deleteAll();
         sectionRepository.deleteAll();
         agentRepository.deleteAll();
+        inboundOrderRepository.deleteAll();
+        batchStockRepository.deleteAll();
+        roleRepository.deleteAll();
+
+        BigDecimal bigDecimal = new BigDecimal(45.00);
+
+        Role roleUser = new Role(ERole.ROLE_USER);
+        roleRepository.save(roleUser);
+
+        Role roleModerator = new Role(ERole.ROLE_MODERATOR);
+        roleRepository.save(roleModerator);
+
+        Role roleAdmin = new Role(ERole.ROLE_ADMIN);
+        roleRepository.save(roleAdmin);
 
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")
@@ -150,15 +183,19 @@ public class SaveDataRepositoryTest {
                 .productName("leite")
                 .section(section)
                 .category(new SectionCategory().name(ESectionCategory.FF))
+                .productPrice(bigDecimal)
+                .dueDate(LocalDate.now())
                 .build();
 
         productRepository.save(product);
 
         Product productDois = new Product()
-                .productId("DA")
+                .productId("LE")
                 .productName("danone")
                 .section(section)
                 .category(new SectionCategory().name(ESectionCategory.FF))
+                .productPrice(bigDecimal)
+                .dueDate(LocalDate.now())
                 .build();
 
         productRepository.save(productDois);
@@ -171,6 +208,58 @@ public class SaveDataRepositoryTest {
 
         agentRepository.save(agent);
 
+        BatchStock batchStockDois = new BatchStock()
+                .batchNumber(2)
+                .productId("LE")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(7)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.of(2021,12,04))
+                .agent(agent)
+                .section(section)
+                .build();
+        batchStockRepository.save(batchStockDois);
+
+        BatchStock batchStockTres= new BatchStock()
+                .batchNumber(3)
+                .productId("LE")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.of(2021,11,23))
+                .agent(agent)
+                .section(section)
+                .build();
+        batchStockRepository.save(batchStockTres);
+
+        BatchStock batchStockUm = new BatchStock()
+                .batchNumber(1)
+                .productId("LE")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(2)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.of(2021,12,13))
+                .agent(agent)
+                .section(section)
+                .build();
+        batchStockRepository.save(batchStockUm);
+
+        InboundOrder inboundOrder = new InboundOrder()
+                .orderNumber(1)
+                .orderDate(LocalDate.now())
+                .section(section)
+                .listBatchStock(Collections.singletonList(batchStockDois))
+                .build();
+        inboundOrderRepository.save(inboundOrder);
     }
 
     @Test

@@ -12,6 +12,13 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Repository de teste para trabalhar como uma porta ou janela de acesso a camada do banco da entity warehouse
+ */
+
 @DataMongoTest
 public class WarahouseRepositoryTest {
 

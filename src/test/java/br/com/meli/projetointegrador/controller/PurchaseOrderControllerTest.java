@@ -22,13 +22,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Camada de teste do controller responsavel pela regra de negocio relacionada ao PurchaseOrderControllerTest
+ */
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -70,8 +74,14 @@ public class PurchaseOrderControllerTest {
     @Autowired
     private PurchaseOrderRepository purchaseOrderRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @BeforeEach
     void setup() throws Exception {
+        clearBase();
+        createData();
+
         Role role = new Role();
         role.setName(ERole.ROLE_USER);
         roleRepository.save(role);
@@ -112,50 +122,7 @@ public class PurchaseOrderControllerTest {
 
     @Test
     void postControllerTest() throws Exception {
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("Sao Paulo")
-                .build();
-        warehouseRepository.save(warehouse);
-
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("Laticionios")
-                .warehouse(warehouse)
-                .maxLength(10)
-                .build();
-        sectionRepository.save(section);
-
-        Buyer buyer = new Buyer()
-                .name("lucas")
-                .cpf("22233344411")
-                .build();
-        buyerRepository.save(buyer);
-
-        SectionCategory sectionCategory = new SectionCategory()
-                .name(ESectionCategory.FF)
-                .build();
-        sectionCategoryRepository.save(sectionCategory);
-
-        Product product = new Product()
-                .productId("LE")
-                .productName("leite")
-                .section(section)
-                .productPrice(new BigDecimal(2))
-                .dueDate(LocalDate.of(2021,11,30))
-                .category(sectionCategory)
-                .build();
-
-        Product productUm = new Product()
-                .productId("QJ")
-                .productName("queijo")
-                .section(section)
-                .productPrice(new BigDecimal(3))
-                .dueDate(LocalDate.of(2021,11,30))
-                .category(sectionCategory)
-                .build();
-        productRepository.saveAll(Arrays.asList(product, productUm));
-
+        final Optional<Buyer> buyer = buyerRepository.findByCpf("22233344411");
         ProductPurchaseOrderDTO productPurchaseOrderDTO1 = new ProductPurchaseOrderDTO()
                 .productId("LE")
                 .quantity(5)
@@ -167,46 +134,10 @@ public class PurchaseOrderControllerTest {
 
         PurchaseOrderDTO purchaseOrderDTO = new PurchaseOrderDTO()
                 .data(LocalDate.now())
-                .buyerId(buyer.getId())
+                .buyerId(buyer.orElse(new Buyer()).getId())
                 .orderStatus(new OrderStatusDTO().statusCode(EOrderStatus.IN_PROGRESS))
                 .listProductPurchaseOrderDTO(Arrays.asList(productPurchaseOrderDTO1,
                         productPurchaseOrderDTO2));
-
-        Agent agent = new Agent()
-                .name("lucas")
-                .cpf("11122233344")
-                .warehouse(warehouse)
-                .build();
-        agentRepository.save(agent);
-
-        BatchStock batchStock = new BatchStock()
-                .batchNumber(1)
-                .productId("LE")
-                .currentTemperature(10.0F)
-                .minimumTemperature(5.0F)
-                .initialQuantity(1)
-                .currentQuantity(5)
-                .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
-                .dueDate(LocalDate.now())
-                .agent(agent)
-                .section(section)
-                .build();
-
-        BatchStock batchStockDois = new BatchStock()
-                .batchNumber(1)
-                .productId("QJ")
-                .currentTemperature(10.0F)
-                .minimumTemperature(5.0F)
-                .initialQuantity(1)
-                .currentQuantity(10)
-                .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
-                .dueDate(LocalDate.now())
-                .agent(agent)
-                .section(section)
-                .build();
-        batchStockRepository.saveAll(Arrays.asList(batchStock, batchStockDois));
 
         MockHttpServletResponse response = mockMvc.perform(post("http://localhost:8080/api/v1/fresh-products/order")
                 .header("Authorization", "Bearer " + tokenTest.getAccessToken())
@@ -218,7 +149,63 @@ public class PurchaseOrderControllerTest {
     }
 
     @Test
+    void putControllerTest() throws Exception {
+        final Optional<Buyer> buyer = buyerRepository.findByCpf("22233344411");
+        ProductPurchaseOrderDTO productPurchaseOrderDTO1 = new ProductPurchaseOrderDTO()
+                .productId("LE")
+                .quantity(5)
+                .build();
+        ProductPurchaseOrderDTO productPurchaseOrderDTO2 = new ProductPurchaseOrderDTO()
+                .productId("QJ")
+                .quantity(3)
+                .build();
+
+        PurchaseOrderDTO purchaseOrderDTO = new PurchaseOrderDTO()
+                .id(purchaseOrderRepository.findAll().get(0).getId())
+                .data(LocalDate.now())
+                .buyerId(buyer.orElse(new Buyer()).getId())
+                .orderStatus(new OrderStatusDTO().statusCode(EOrderStatus.IN_PROGRESS))
+                .listProductPurchaseOrderDTO(Arrays.asList(productPurchaseOrderDTO1,
+                        productPurchaseOrderDTO2));
+
+        MockHttpServletResponse response = mockMvc.perform(put("http://localhost:8080/api/v1/fresh-products/order")
+                .header("Authorization", "Bearer " + tokenTest.getAccessToken())
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(purchaseOrderDTO)))
+                .andReturn().getResponse();
+
+        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+    }
+
+    @Test
     void getControllerTest() throws Exception {
+        final List<PurchaseOrder> purchaseOrderList = purchaseOrderRepository.findAll();
+        MockHttpServletResponse response = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/order/")
+                .param("id", purchaseOrderList.get(0).getId())
+                .header("Authorization", "Bearer " + tokenTest.getAccessToken())
+                .contentType("application/json"))
+                .andReturn().getResponse();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+    }
+
+
+    void clearBase() {
+        purchaseOrderRepository.deleteAll();
+        batchStockRepository.deleteAll();
+        warehouseRepository.deleteAll();
+        sectionRepository.deleteAll();
+        sectionCategoryRepository.deleteAll();
+        productRepository.deleteAll();
+        buyerRepository.deleteAll();
+        agentRepository.deleteAll();
+        roleRepository.deleteAll();
+        purchaseOrderRepository.deleteAll();
+        userRepository.deleteAll();
+    }
+
+    void createData() {
+        clearBase();
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")
                 .warehouseName("Sao Paulo")
@@ -306,14 +293,6 @@ public class PurchaseOrderControllerTest {
                 .productList(Arrays.asList(product,
                         productUm));
         purchaseOrderRepository.save(purchaseOrder);
-
-        MockHttpServletResponse response = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/order/")
-                .param("id", purchaseOrder.getId())
-                .header("Authorization", "Bearer " + tokenTest.getAccessToken())
-                .contentType("application/json"))
-                .andReturn().getResponse();
-
-        assertEquals(HttpStatus.OK.value(), response.getStatus());
     }
 
 }

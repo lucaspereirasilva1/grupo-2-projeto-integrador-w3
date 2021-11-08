@@ -1,6 +1,5 @@
 package br.com.meli.projetointegrador.model.service;
 
-import br.com.meli.projetointegrador.exception.ProductException;
 import br.com.meli.projetointegrador.exception.PurchaseOrderException;
 import br.com.meli.projetointegrador.model.dto.ProductDTO;
 import br.com.meli.projetointegrador.model.dto.ProductPurchaseOrderDTO;
@@ -17,6 +16,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Camada service responsavel pela regra de negocio relacionada a PurchaseOrderService
+ */
 
 @Service
 public class PurchaseOrderService {
@@ -36,6 +42,10 @@ public class PurchaseOrderService {
         this.batchStockService = batchStockService;
     }
 
+    /**
+     * @param id recebe um Id de produto;
+     * @return adiciona o produto a uma lista ou exception.
+     */
     public List<ProductDTO> showOrderProduct(String id) {
         List<ProductDTO> listProductDTO = new ArrayList<>();
         final Optional<PurchaseOrder> purchaseOrder = purchaseOrderRepository.findById(id);
@@ -55,9 +65,13 @@ public class PurchaseOrderService {
         return listProductDTO;
     }
 
-    public BigDecimal total(PurchaseOrderDTO purchaseOrderDTO){
+    /**
+     * @param purchaseOrderDTO recebe uma purchaseOrder;
+     * @return se existente faz o update caso nao exista e salva uma nova.
+     */
+    public BigDecimal save(PurchaseOrderDTO purchaseOrderDTO){
         PurchaseOrder purchaseOrder = new PurchaseOrder();
-        total =  total.add(new BigDecimal(0));
+        total =  new BigDecimal(0);
         if (ObjectUtils.isEmpty(purchaseOrderDTO.getId())) {
             final List<Product> productListPost = calculeTotal(purchaseOrderDTO);
             purchaseOrder.productList(productListPost);
@@ -76,24 +90,27 @@ public class PurchaseOrderService {
             purchaseOrderRepository.save(purchaseOrder);
             batchStockService.updateBatchStock(purchaseOrderDTO.getListProductPurchaseOrderDTO());
         }
-
         return total;
     }
 
+    /**
+     * @param purchaseOrderDTO recebe uma purchaseOrderDTO;
+     * @return adiciona o produto a lista ou retorna a exception.
+     */
     private List<Product> calculeTotal(PurchaseOrderDTO purchaseOrderDTO) {
         List<Product> productList = new ArrayList<>();
         for (ProductPurchaseOrderDTO p : purchaseOrderDTO.getListProductPurchaseOrderDTO()) {
             Product product = productService.find(p.getProductId());
-            productService.dueDataProduct(product.getDueDate());
+            if (!batchStockService.dueDataProduct(product.getDueDate())) {
+                throw new PurchaseOrderException("Vencimento inferior a 3 semanas!!! Produto: " + product.getProductName() + " Vencimento: " + product.getDueDate());
+            }
             if (p.getProductId().equals(product.getProductId())) {
                 total = total.add(product.getProductPrice().multiply(new BigDecimal(p.getQuantity())));
             } else {
-                throw new ProductException("Produto nao encontrado");
+                throw new PurchaseOrderException("Produto nao encontrado");
             }
             productList.add(product);
         }
-
         return productList;
     }
-
 }

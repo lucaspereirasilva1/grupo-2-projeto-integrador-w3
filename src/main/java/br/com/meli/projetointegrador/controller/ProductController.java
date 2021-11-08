@@ -1,11 +1,10 @@
 package br.com.meli.projetointegrador.controller;
 
+import br.com.meli.projetointegrador.advisor.ResponseHandler;
 import br.com.meli.projetointegrador.model.dto.ProductDTO;
-import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
-import br.com.meli.projetointegrador.model.repository.ProductRepository;
 import br.com.meli.projetointegrador.model.service.ProductService;
-
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,15 +25,13 @@ import java.util.List;
 public class ProductController {
 
     private final ProductService productService;
-    private final ProductRepository productRepository;
 
-    public ProductController(ProductService productService, ProductRepository productRepository) {
+    public ProductController(ProductService productService) {
         this.productService = productService;
-        this.productRepository = productRepository;
     }
 
     @GetMapping(value = "/list") // Chamada do endpoint: /list?sectionCategory=FF ou FS ou RF ou um que nao existe.
-    public ResponseEntity<List<ProductDTO>> getProductByCategory(@RequestParam("sectionCategory") String category){
+    public ResponseEntity<Object> getProductByCategory(@RequestParam("sectionCategory") String category){
         if (category.equals(ESectionCategory.FS.toString()) |
                 category.equals(ESectionCategory.FF.toString()) |
                 category.equals(ESectionCategory.RF.toString())) {
@@ -43,6 +40,17 @@ public class ProductController {
                 return ResponseEntity.ok(productList);
             }
         }
-    return ResponseEntity.badRequest().build();
+        return ResponseHandler.generateResponse("Categoria invalida!!!", HttpStatus.BAD_REQUEST, "");
     }
+
+    @GetMapping(value = "/products")
+    public ResponseEntity<Object> getlistProductBylist() {
+        List<ProductDTO> productsListDTO = productService.findAllProducts();
+        if (!productsListDTO.isEmpty()) {
+            return ResponseEntity.ok(productsListDTO);
+        } else {
+            return ResponseHandler.generateResponse("Nao foi encontrado nenhum produto na base", HttpStatus.NOT_FOUND, "");
+        }
+    }
+
 }

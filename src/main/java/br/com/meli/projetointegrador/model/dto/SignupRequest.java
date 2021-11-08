@@ -5,6 +5,13 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.util.Set;
 
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Objeto de Transferência de Dados do SignupRequest
+ */
+
 public class SignupRequest {
 
     @NotBlank

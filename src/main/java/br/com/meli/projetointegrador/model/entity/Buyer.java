@@ -7,6 +7,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+/**
+ * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @version 1.0.0
+ * @since 15/10/2021
+ * Objeto criado para o Buyer e seus atributos
+ */
+
 @Data
 @Document(collection = "buyer")
 public class Buyer {
@@ -17,6 +24,7 @@ public class Buyer {
 
     private String name;
     private String cpf;
+
 
     public Buyer name(String name) {
         this.name = name;

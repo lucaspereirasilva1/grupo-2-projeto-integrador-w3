@@ -14,32 +14,32 @@ import javax.validation.constraints.Size;
  * Objeto de Transferência de Dados do warehouse
  */
 
-    @Data
-    public class WarehouseDTO {
+@Data
+public class WarehouseDTO {
 
-        @NotNull(message = "warehouseName cannot be null")
-        @NotEmpty(message = "warehouseName cannot be empty")
-        @NotBlank(message = "warehouseName cannot be blank")
-        @Size(min = 1, message = "warehouseName most be minimum size 1")
-        private String warehouseName;
+    @NotNull(message = "warehouseName cannot be null")
+    @NotEmpty(message = "warehouseName cannot be empty")
+    @NotBlank(message = "warehouseName cannot be blank")
+    @Size(min = 1, message = "warehouseName most be minimum size 1")
+    private String warehouseName;
 
-        @NotNull(message = "warehouseCode cannot be null")
-        @NotEmpty(message = "warehouseCode cannot be empty")
-        @NotBlank(message = "warehouseCode cannot be blank")
-        @Size(min = 1, message = "warehouseCode most be minimum size 1")
-        private String warehouseCode;
+    @NotNull(message = "warehouseCode cannot be null")
+    @NotEmpty(message = "warehouseCode cannot be empty")
+    @NotBlank(message = "warehouseCode cannot be blank")
+    @Size(min = 1, message = "warehouseCode most be minimum size 1")
+    private String warehouseCode;
 
-        public WarehouseDTO warehouseCode(String warehouseCode) {
-            this.warehouseCode = warehouseCode;
-            return this;
-        }
+    public WarehouseDTO warehouseCode(String warehouseCode) {
+        this.warehouseCode = warehouseCode;
+        return this;
+    }
 
-        public WarehouseDTO warehouseName(String warehouseName) {
-            this.warehouseName = warehouseName;
-            return this;
-        }
+    public WarehouseDTO warehouseName(String warehouseName) {
+        this.warehouseName = warehouseName;
+        return this;
+    }
 
-        public WarehouseDTO build() {
+    public WarehouseDTO build() {
             return this;
         }
 
