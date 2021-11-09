@@ -100,4 +100,7 @@ public class ProductService {
         return converteProductlist(productRepository.findAll());
     }
 
+    public Integer quantityProduct(String warehouseCode){
+        return productRepository.countAllBySectionWarehouseWarehouseCode(warehouseCode);
+    }
 }

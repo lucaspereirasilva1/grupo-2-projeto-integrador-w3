@@ -1,10 +1,16 @@
 package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.WarehouseException;
+import br.com.meli.projetointegrador.model.dto.BatchStockResponseWarehousesDTO;
+import br.com.meli.projetointegrador.model.dto.WarehouseQuantityDTO;
 import br.com.meli.projetointegrador.model.entity.Warehouse;
+import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
+import br.com.meli.projetointegrador.model.repository.ProductRepository;
 import br.com.meli.projetointegrador.model.repository.WarehouseRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -18,6 +24,7 @@ import java.util.Optional;
 public class WarehouseService {
 
     private final WarehouseRepository warehouseRepository;
+    private ProductService productService;
 
     public WarehouseService(WarehouseRepository warehouseRepository) {
         this.warehouseRepository = warehouseRepository;
@@ -45,5 +52,22 @@ public class WarehouseService {
             throw new WarehouseException("Armazem nao encontrado!!! Por gentileza reenviar com um armazem valido");
         }
         return warehouseOptional.get();
+    }
+
+    public BatchStockResponseWarehousesDTO listQuantityProduct(String productId) {
+        BatchStockResponseWarehousesDTO batchStockResponseWarehousesDTO = new BatchStockResponseWarehousesDTO();
+        batchStockResponseWarehousesDTO.productId(productId);
+        List<WarehouseQuantityDTO> warehouseQuantityDTOList = warehouseRepository.findWarehouseBy(productId);
+        List<WarehouseQuantityDTO> warehousesList = new ArrayList<>();
+        for (WarehouseQuantityDTO w: warehouseQuantityDTOList){
+            WarehouseQuantityDTO warehouseQuantityDTO = new WarehouseQuantityDTO()
+                    .warehouseCode(w.getWarehouseCode())
+                    // local onde preciso de ajuda para trazer quantidade total
+                    .totalQuantity(productService.quantityProduct(w.getWarehouseCode()))
+                    .build();
+            warehousesList.add(warehouseQuantityDTO);
+            batchStockResponseWarehousesDTO.warehouses(warehousesList);
+        }
+        return batchStockResponseWarehousesDTO;
     }
 }
