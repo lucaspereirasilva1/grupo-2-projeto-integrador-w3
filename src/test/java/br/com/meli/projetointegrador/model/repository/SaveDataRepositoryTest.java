@@ -190,15 +190,26 @@ public class SaveDataRepositoryTest {
         productRepository.save(product);
 
         Product productDois = new Product()
-                .productId("LE")
+                .productId("DA")
                 .productName("danone")
+                .section(section)
+                .category(new SectionCategory().name(ESectionCategory.FS))
+                .productPrice(bigDecimal)
+                .dueDate(LocalDate.now())
+                .build();
+
+        productRepository.save(productDois);
+
+        Product productTres = new Product()
+                .productId("LE")
+                .productName("leite")
                 .section(section)
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .productPrice(bigDecimal)
                 .dueDate(LocalDate.now())
                 .build();
 
-        productRepository.save(productDois);
+        productRepository.save(productTres);
 
         Agent agent = new Agent().
                 cpf("11122233344").
@@ -252,6 +263,21 @@ public class SaveDataRepositoryTest {
                 .section(section)
                 .build();
         batchStockRepository.save(batchStockUm);
+
+        BatchStock batchStockQuatro = new BatchStock()
+                .batchNumber(4)
+                .productId("DA")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(2)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.of(2021,12,01))
+                .agent(agent)
+                .section(section)
+                .build();
+        batchStockRepository.save(batchStockQuatro);
 
         InboundOrder inboundOrder = new InboundOrder()
                 .orderNumber(1)

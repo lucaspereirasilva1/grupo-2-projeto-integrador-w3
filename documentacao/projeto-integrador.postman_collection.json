@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "f9ffa60e-5830-44ce-b742-2a3ad9f96274",
+		"_postman_id": "73dc36d1-d766-4eae-8a86-680767d12fb7",
 		"name": "projeto-integrador",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -213,7 +213,7 @@
 			"response": []
 		},
 		{
-			"name": "productListByIdOrdenada-get",
+			"name": "productListByIdOrdenada-get Copy",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -436,6 +436,116 @@
 						"api",
 						"auth",
 						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "product dias",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqaG9ueSIsImlhdCI6MTYzNjQ3MDYwMywiZXhwIjoxNjM2NTU3MDAzfQ.9OoEAUVG3aQrCuy_10KlepT6cmP3cJ1vV1qsdCAGpOX-9CYtdthsU602H9Q1PKs2h_UZgN1hRUlcv3AmnmzjIA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/fresh-products/due-date/list?days=30",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"fresh-products",
+						"due-date",
+						"list"
+					],
+					"query": [
+						{
+							"key": "days",
+							"value": "30"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "product dias e cat",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqaG9ueSIsImlhdCI6MTYzNjQ3MDYwMywiZXhwIjoxNjM2NTU3MDAzfQ.9OoEAUVG3aQrCuy_10KlepT6cmP3cJ1vV1qsdCAGpOX-9CYtdthsU602H9Q1PKs2h_UZgN1hRUlcv3AmnmzjIA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/fresh-products/due-date/lists?days=25&category=FF&order=desc",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"fresh-products",
+						"due-date",
+						"lists"
+					],
+					"query": [
+						{
+							"key": "days",
+							"value": "25"
+						},
+						{
+							"key": "category",
+							"value": "FF"
+						},
+						{
+							"key": "order",
+							"value": "desc"
+						}
 					]
 				}
 			},
