@@ -218,6 +218,58 @@ public class BatchStockService {
     }
 
     /**
+     * @param days, periodo de dias;
+     * @param category, categoria do produto;
+     * @param order, orem do retorno, asc/desc;
+     * @return lista de BatchStockListDueDateDTO ordenado pela data;
+     * @return ProductExceptionNotFound(Nao existe esta categoria);
+     */
+    public BatchStockListDueDateDTO listBatchStockDueDate(Integer days, String category, String order) {
+        BatchStockListDueDateDTO batchStockListDueDateDTO = listDueDateDays(days);
+        List<BatchStock> batchStockList = batchStockRepository.findAll();
+        List<BatchStockServiceDueDateDTO>  batchStockServiceDueDateList = new ArrayList<>();
+        if (category.equals("FF")||category.equals("FS")||category.equals("RF")){
+            batchStockList.forEach(b -> {
+                 if (LocalDate.now().plusDays(days).isAfter(b.getDueDate()) &&
+                         productService.find(b.getProductId()).getCategory().getName().equals(ESectionCategory.valueOf(category))) {
+                     newList(batchStockServiceDueDateList,b.getBatchNumber(),b.getProductId(),b.getDueDate(),b.getCurrentQuantity());
+                }
+            });
+            if (!batchStockServiceDueDateList.isEmpty()) {
+                listAscDesc(order,batchStockListDueDateDTO,batchStockServiceDueDateList);
+            }
+                return batchStockListDueDateDTO;
+        }else
+            throw new ProductExceptionNotFound("Nao existe esta categoria!!!");
+
+    }
+
+    /**
+     * @param order, orem do retorno, asc/desc;
+     * @param batchStockListDueDateDTO;
+     * @param batchStockServiceDueDateList ;
+     * @return lista de BatchStockListDueDateDTO ordenado pela data asc/desc;
+     * @return ProductExceptionNotFound(Nao existe esta categoria);
+     */
+    public void listAscDesc(String order,BatchStockListDueDateDTO batchStockListDueDateDTO,List<BatchStockServiceDueDateDTO> batchStockServiceDueDateList){
+        switch (order) {
+            case "desc":
+            {
+                batchStockListDueDateDTO.setBatchStock(batchStockServiceDueDateList.stream()
+                        .sorted(Comparator.comparing(BatchStockServiceDueDateDTO::getDueDate).reversed()).collect(toList()));
+                break;
+            }
+            case "asc": {
+                batchStockListDueDateDTO.setBatchStock(batchStockServiceDueDateList.stream()
+                        .sorted(Comparator.comparing(BatchStockServiceDueDateDTO::getDueDate)).collect(toList()));
+                break;
+            }
+            default:
+                throw new ProductExceptionNotFound("Nao existe esta categoria!!!");
+        }
+    }
+
+    /**
      * @param batchStockServiceDueDateList;
      * @param number, batchNumber;
      * @param productId, id do produto;
