@@ -20,7 +20,8 @@ import static org.mockito.Mockito.*;
 public class WarehouseServiceTest {
 
     private final WarehouseRepository mockWarehouseRepository = mock(WarehouseRepository.class);
-    private final WarehouseService warehouseService = new WarehouseService(mockWarehouseRepository);
+    private final BatchStockService mockbatchStockService = mock(BatchStockService.class);
+    private final WarehouseService warehouseService = new WarehouseService(mockWarehouseRepository, mockbatchStockService);
 
     @Test
     void validWarehouseExist(){
