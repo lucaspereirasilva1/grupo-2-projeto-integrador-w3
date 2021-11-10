@@ -20,5 +20,5 @@ public interface WarehouseRepository  extends MongoRepository <Warehouse, String
 
     Optional<Warehouse> findByWarehouseCode(String warehouseCode);
     Boolean existsByWarehouseCode(String warehouseCode);
-    List<WarehouseQuantityDTO> findWarehouseBy(String productId);
+    List<Warehouse> findWarehouseBy(String productId);
 }

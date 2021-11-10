@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
@@ -100,7 +101,4 @@ public class ProductService {
         return converteProductlist(productRepository.findAll());
     }
 
-    public Integer quantityProduct(String warehouseCode){
-        return productRepository.countAllBySectionWarehouseWarehouseCode(warehouseCode);
-    }
 }

@@ -3,7 +3,6 @@ package br.com.meli.projetointegrador.model.repository;
 import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.entity.SectionCategory;
-import br.com.meli.projetointegrador.model.entity.Warehouse;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
@@ -23,6 +22,5 @@ public interface ProductRepository extends MongoRepository<Product, String> {
     Boolean existsProductBySection(Section section);
     Optional<Product> findDistinctFirstByProductId(String productId);
     List<Product> findProductByCategory(SectionCategory sectionCategory);
-    Integer countAllBySectionWarehouseWarehouseCode(String warehouseCode);
 
 }

@@ -4,8 +4,6 @@ import br.com.meli.projetointegrador.exception.WarehouseException;
 import br.com.meli.projetointegrador.model.dto.BatchStockResponseWarehousesDTO;
 import br.com.meli.projetointegrador.model.dto.WarehouseQuantityDTO;
 import br.com.meli.projetointegrador.model.entity.Warehouse;
-import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
-import br.com.meli.projetointegrador.model.repository.ProductRepository;
 import br.com.meli.projetointegrador.model.repository.WarehouseRepository;
 import org.springframework.stereotype.Service;
 
@@ -24,10 +22,11 @@ import java.util.Optional;
 public class WarehouseService {
 
     private final WarehouseRepository warehouseRepository;
-    private ProductService productService;
+    private final BatchStockService batchStockService;
 
-    public WarehouseService(WarehouseRepository warehouseRepository) {
+    public WarehouseService(WarehouseRepository warehouseRepository, BatchStockService batchStockService) {
         this.warehouseRepository = warehouseRepository;
+        this.batchStockService = batchStockService;
     }
 
     /**
@@ -57,13 +56,12 @@ public class WarehouseService {
     public BatchStockResponseWarehousesDTO listQuantityProduct(String productId) {
         BatchStockResponseWarehousesDTO batchStockResponseWarehousesDTO = new BatchStockResponseWarehousesDTO();
         batchStockResponseWarehousesDTO.productId(productId);
-        List<WarehouseQuantityDTO> warehouseQuantityDTOList = warehouseRepository.findWarehouseBy(productId);
+        List<Warehouse> warehouseList = warehouseRepository.findWarehouseBy(productId);
         List<WarehouseQuantityDTO> warehousesList = new ArrayList<>();
-        for (WarehouseQuantityDTO w: warehouseQuantityDTOList){
+        for (Warehouse w: warehouseList){
             WarehouseQuantityDTO warehouseQuantityDTO = new WarehouseQuantityDTO()
                     .warehouseCode(w.getWarehouseCode())
-                    // local onde preciso de ajuda para trazer quantidade total
-                    .totalQuantity(productService.quantityProduct(w.getWarehouseCode()))
+                    .totalQuantity(batchStockService.quantityProductBatchStock(productId, w.getWarehouseCode()))
                     .build();
             warehousesList.add(warehouseQuantityDTO);
             batchStockResponseWarehousesDTO.warehouses(warehousesList);
