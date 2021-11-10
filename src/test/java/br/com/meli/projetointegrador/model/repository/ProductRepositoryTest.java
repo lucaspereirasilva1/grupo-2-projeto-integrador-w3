@@ -50,11 +50,13 @@ public class ProductRepositoryTest {
         SectionCategory sectionCategory = new SectionCategory()
                 .name(ESectionCategory.FF)
                 .build();
+        sectionCategoryRepository.save(sectionCategory);
 
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")
                 .warehouseName("Sao Paulo")
                 .build();
+        warehouseRepository.save(warehouse);
 
         Section section = new Section()
                 .sectionCode("LA")
@@ -62,6 +64,7 @@ public class ProductRepositoryTest {
                 .maxLength(10)
                 .warehouse(warehouse)
                 .build();
+        sectionRepository.save(section);
 
         Product product = new Product()
                 .productId("LE")
@@ -71,11 +74,7 @@ public class ProductRepositoryTest {
                 .category(sectionCategory)
                 .dueDate(LocalDate.now())
                 .build();
-
-        sectionRepository.save(section);
         productRepository.save(product);
-        warehouseRepository.save(warehouse);
-        sectionCategoryRepository.save(sectionCategory);
     }
 
     @AfterEach
@@ -102,5 +101,4 @@ public class ProductRepositoryTest {
     void findProductByCategory() {
         assertFalse(productRepository.findProductByCategory(new SectionCategory().name(ESectionCategory.FF)).isEmpty());
     }
-
 }

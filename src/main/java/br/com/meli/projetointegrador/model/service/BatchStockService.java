@@ -13,6 +13,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -190,6 +192,18 @@ public class BatchStockService {
             throw new BatchStockException("Nao existe estoques para esse produto!!!");
         }
         return batchStockList;
+    }
+
+    public Integer quantityProductBatchStock(String productId, String warehouseCode){
+        List<BatchStock> productList = batchStockRepository.findAllByProductId(productId);
+        List<BatchStock> productListWarehouseCode = productList.stream()
+                .filter(product -> product.getSection().getWarehouse().getWarehouseCode().equals(warehouseCode))
+                .collect(Collectors.toList());
+        AtomicReference<Integer> totalQuantity = new AtomicReference<>(0);
+        productListWarehouseCode.forEach(b -> {
+            totalQuantity.updateAndGet(v -> v + b.getCurrentQuantity());
+        });
+        return totalQuantity.get();
     }
 
 }

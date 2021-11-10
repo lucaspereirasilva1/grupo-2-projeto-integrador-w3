@@ -158,7 +158,7 @@ public class SaveDataRepositoryTest {
                 .warehouseName("Minas Gerais")
                 .build();
 
-        warehouseRepository.save(warehouse);
+        warehouseRepository.save(warehouseMG);
 
         Section section = new Section()
                 .sectionCode("LA")
