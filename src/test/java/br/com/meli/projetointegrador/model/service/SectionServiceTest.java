@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
  * Camada de testes unitarios do service responsavel pela regra de negocio relacionada ao section
  */
 
-public class SectionServiceTest {
+class SectionServiceTest {
 
     private final SectionRepository mockSectionRepository = mock(SectionRepository.class);
     private final BatchStockRepository mockBatchStockRepository=  mock(BatchStockRepository.class);

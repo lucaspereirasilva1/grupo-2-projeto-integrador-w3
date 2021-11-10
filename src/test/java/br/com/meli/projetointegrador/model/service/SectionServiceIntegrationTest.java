@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 
 @SpringBootTest
-public class SectionServiceIntegrationTest {
+class SectionServiceIntegrationTest {
 
     @Autowired
     private SectionService sectionService;

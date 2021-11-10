@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 
 @SpringBootTest
-public class AgentServiceIntegrationTest {
+class AgentServiceIntegrationTest {
 
     @Autowired
     private AgentService agentService;

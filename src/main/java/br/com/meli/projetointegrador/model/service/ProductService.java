@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
@@ -43,7 +42,8 @@ public class ProductService {
      */
     public Boolean validProductSection(String sectionCode){
         final Section section = sectionService.find(sectionCode);
-        if (productRepository.existsProductBySection(section)){
+        Boolean existsProductBySection = productRepository.existsProductBySection(section);
+        if (Boolean.TRUE.equals(existsProductBySection)){
             return true;
         } else {
             throw new ProductException("Produto nao faz parte do setor, por favor verifique o setor correto!");

@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 
 @DataMongoTest
-public class InboundOrderRepositoryTest {
+class InboundOrderRepositoryTest {
 
     @Autowired
     private InboundOrderRepository inboundOrderRepository;

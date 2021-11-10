@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 
 @SpringBootTest
-public class ProductServiceIntegrationTest {
+class ProductServiceIntegrationTest {
 
     @Autowired
     private ProductRepository productRepository;

@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 
 @DataMongoTest
-public class AgentRepositoryTest {
+class AgentRepositoryTest {
 
     @Autowired
     private AgentRepository agentRepository;

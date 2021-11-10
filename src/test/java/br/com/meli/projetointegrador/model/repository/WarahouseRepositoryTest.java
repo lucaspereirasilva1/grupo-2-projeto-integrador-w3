@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 
 @DataMongoTest
-public class WarahouseRepositoryTest {
+class WarahouseRepositoryTest {
 
     @Autowired
     private WarehouseRepository warehouseRepository;

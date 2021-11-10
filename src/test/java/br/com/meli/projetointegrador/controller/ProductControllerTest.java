@@ -2,6 +2,7 @@ package br.com.meli.projetointegrador.controller;
 
 import br.com.meli.projetointegrador.model.dto.LoginRequest;
 import br.com.meli.projetointegrador.model.dto.SignupRequest;
+import br.com.meli.projetointegrador.model.dto.TokenTest;
 import br.com.meli.projetointegrador.model.entity.*;
 import br.com.meli.projetointegrador.model.enums.ERole;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;

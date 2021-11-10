@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureDataMongo
-public class PurchaseOrderControllerTest {
+class PurchaseOrderControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

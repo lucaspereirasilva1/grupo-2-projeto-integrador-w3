@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
  */
 
 @SpringBootTest
-public class PurchaseOrderServiceIntegrationTest {
+class PurchaseOrderServiceIntegrationTest {
 
     @Autowired
     private PurchaseOrderService purchaseOrderService;

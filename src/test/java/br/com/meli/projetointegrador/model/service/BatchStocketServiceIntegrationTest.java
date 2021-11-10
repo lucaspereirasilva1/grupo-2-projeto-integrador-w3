@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 
 @SpringBootTest
-public class BatchStocketServiceIntegrationTest {
+class BatchStocketServiceIntegrationTest {
 
     @Autowired
     private BatchStockRepository batchStockRepository;

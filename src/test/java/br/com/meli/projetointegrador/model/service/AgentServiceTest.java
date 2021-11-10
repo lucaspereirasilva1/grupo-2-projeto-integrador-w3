@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
  * Camada de testes unitarios do service responsavel pela regra de negocio relacionada ao agent
  */
 
-public class AgentServiceTest {
+class AgentServiceTest {
 
     private final AgentRepository agentRepository = mock(AgentRepository.class);
     private final AgentService agentService = new AgentService(agentRepository);

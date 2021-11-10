@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 
 @SpringBootTest
-public class WarehouseServiceIntegrationTest {
+class WarehouseServiceIntegrationTest {
 
     @Autowired
     private WarehouseRepository warehouseRepository;

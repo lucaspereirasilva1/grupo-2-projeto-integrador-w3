@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Camada de teste integrado do service responsavel pela regra de negocio relacionada ao inboundOrder
  */
 @SpringBootTest
-public class InboundOrderServiceIntegrationTest {
+class InboundOrderServiceIntegrationTest {
 
     @Autowired
     private InboundOrderService inboundOrderService;

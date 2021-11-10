@@ -8,6 +8,7 @@ class ProjetoIntegradorApplicationTests {
 
     @Test
     void contextLoads() {
+        assert Integer.valueOf(1).equals(1);
     }
 
 }
