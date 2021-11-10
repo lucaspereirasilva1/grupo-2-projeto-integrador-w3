@@ -27,6 +27,7 @@ public class WarahouseRepositoryTest {
 
     @BeforeEach
     void setUp() {
+        warehouseRepository.deleteAll();
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")
                 .warehouseName("sao paulo")

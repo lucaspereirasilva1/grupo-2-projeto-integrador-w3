@@ -32,8 +32,8 @@ public class ProductController {
 
     @GetMapping(value = "/list") // Chamada do endpoint: /list?sectionCategory=FF ou FS ou RF ou um que nao existe.
     public ResponseEntity<Object> getProductByCategory(@RequestParam("sectionCategory") String category){
-        if (category.equals(ESectionCategory.FS.toString()) |
-                category.equals(ESectionCategory.FF.toString()) |
+        if (category.equals(ESectionCategory.FS.toString()) ||
+                category.equals(ESectionCategory.FF.toString()) ||
                 category.equals(ESectionCategory.RF.toString())) {
             List<ProductDTO> productList = productService.listProdutcByCategory(category);
             if(!productList.isEmpty()){

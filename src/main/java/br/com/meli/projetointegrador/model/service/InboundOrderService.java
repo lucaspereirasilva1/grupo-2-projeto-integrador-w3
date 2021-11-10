@@ -64,6 +64,11 @@ public class InboundOrderService {
      * @return faz o put e retorna a lista alterada.
      */
     public List<BatchStockDTO> put(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
+        inboundOrderDTO.getListBatchStockDTO().forEach(b -> {
+            if (b.getDueDate().isBefore(LocalDate.now())) {
+                throw new InboundOrderException("Estoque com data retroativa: " + b.getDueDate());
+            }
+        });
         Optional<InboundOrder> inboundOrderCheck = inboundOrderRepository.findByOrderNumber(inboundOrderDTO.getOrderNumber());
         if (inboundOrderCheck.isPresent()) {
             InboundOrder inboundOrder = inboundOrderCheck.get();

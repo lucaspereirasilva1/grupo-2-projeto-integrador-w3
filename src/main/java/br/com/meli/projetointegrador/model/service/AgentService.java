@@ -1,6 +1,7 @@
 package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.AgentException;
+import br.com.meli.projetointegrador.model.dto.AgentDTO;
 import br.com.meli.projetointegrador.model.entity.Agent;
 import br.com.meli.projetointegrador.model.repository.AgentRepository;
 import org.springframework.stereotype.Service;
@@ -18,9 +19,11 @@ import java.util.Optional;
 public class AgentService {
 
     private final AgentRepository agentRepository;
+    private final WarehouseService warehouseService;
 
-    public AgentService(AgentRepository agentRepository) {
+    public AgentService(AgentRepository agentRepository, WarehouseService warehouseService) {
         this.agentRepository = agentRepository;
+        this.warehouseService = warehouseService;
     }
 
     /**
@@ -33,6 +36,19 @@ public class AgentService {
             throw new AgentException("Representante nao cadastrado na base!!! Por gentileza realizar o cadastro");
         }
         return agent.get();
+    }
+
+    /**
+     * @param cpf, recebe o cpf de um agente;
+     * @return retorna o agente ou exception.
+     */
+    public AgentDTO findByCpf(String cpf) {
+        final Agent agent = find(cpf);
+        return new AgentDTO()
+                .name(agent.getName())
+                .cpf(agent.getCpf())
+                .warehouseCode(agent.getWarehouse().getWarehouseCode())
+                .build();
     }
 
 }

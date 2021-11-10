@@ -35,6 +35,8 @@ public class BatchStock {
     private LocalDate manufacturingDate;
     private LocalDateTime manufacturingTime;
     private LocalDate dueDate;
+
+    @DBRef
     private Agent agent;
 
     @DBRef

@@ -1,6 +1,7 @@
 package br.com.meli.projetointegrador.model.dto;
 
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -15,6 +16,7 @@ import javax.validation.constraints.Size;
  */
 
 @Data
+@RequiredArgsConstructor
 public class AgentDTO {
 
     @NotNull(message = "name cannot be null")
