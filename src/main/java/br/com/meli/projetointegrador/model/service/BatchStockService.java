@@ -265,7 +265,7 @@ public class BatchStockService {
                 break;
             }
             default:
-                throw new ProductExceptionNotFound("Nao existe esta categoria!!!");
+                throw new ProductExceptionNotFound("Codigo da ordenacao nao existe!!!");
         }
     }
 
