@@ -1,5 +1,7 @@
 package br.com.meli.projetointegrador.model.enums;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
  * @version 1.0.0
@@ -9,8 +11,13 @@ package br.com.meli.projetointegrador.model.enums;
 
 public enum ESectionCategory {
 
+    @JsonProperty("fresco")
     FS,
+
+    @JsonProperty("refrigerado")
     RF,
+
+    @JsonProperty("congelado")
     FF
 
 }

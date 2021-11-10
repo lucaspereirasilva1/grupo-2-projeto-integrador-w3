@@ -6,6 +6,7 @@ import br.com.meli.projetointegrador.model.dto.*;
 import br.com.meli.projetointegrador.model.entity.Agent;
 import br.com.meli.projetointegrador.model.entity.BatchStock;
 import br.com.meli.projetointegrador.model.entity.Product;
+import br.com.meli.projetointegrador.model.entity.Warehouse;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 
@@ -30,14 +32,16 @@ public class BatchStockService {
     private final SectionService sectionService;
     private final AgentService agentService;
     private final ProductService productService;
+    private final WarehouseService warehouseService;
 
     public BatchStockService(BatchStockRepository batchStockRepository,
                              SectionService sectionService,
-                             AgentService agentService, ProductService productService) {
+                             AgentService agentService, ProductService productService, WarehouseService warehouseService) {
         this.batchStockRepository = batchStockRepository;
         this.sectionService = sectionService;
         this.agentService = agentService;
         this.productService = productService;
+        this.warehouseService = warehouseService;
     }
 
     /**
@@ -49,9 +53,10 @@ public class BatchStockService {
         listBatchStock.forEach(b -> {
             Product product = productService.find(b.getProductId());
             if (productService.validProductSection(sectionDTO.getSectionCode()) &&
-                sectionService.validSectionLength(product.getSection()))
+                sectionService.validSectionLength(product.getSection())) {
                 b.agent(agentService.find(agentDTO.getCpf()));
                 b.section(sectionService.find(sectionDTO.getSectionCode()));
+            }
         });
         batchStockRepository.saveAll(listBatchStock);
     }
@@ -61,11 +66,11 @@ public class BatchStockService {
      * @param agentDTO recebe um agenteDTO;
      * @param sectionDTO recebe uma sectionDTO;
      */
-    public void putAll(List<BatchStock> listBatchStock, List<BatchStockDTO> listBatchStockDTO, AgentDTO agentDTO, SectionDTO sectionDTO) {
+    public void putAllNew(List<BatchStock> listBatchStock, List<BatchStockDTO> listBatchStockDTO, AgentDTO agentDTO, SectionDTO sectionDTO) {
         for (int i = 0; i < listBatchStock.size(); i++) {
             for (int x = i; x < listBatchStockDTO.size(); x++) {
                 if (productService.validProductSection(sectionDTO.getSectionCode()) &&
-                        sectionService.validSectionLength(listBatchStock.get(i).getSection()))
+                        sectionService.validSectionLength(listBatchStock.get(i).getSection())) {
                     listBatchStock.get(i).batchNumber(listBatchStockDTO.get(x).getBatchNumber());
                     listBatchStock.get(i).productId(listBatchStockDTO.get(x).getProductId());
                     listBatchStock.get(i).currentTemperature(listBatchStockDTO.get(x).getCurrentTemperature());
@@ -80,9 +85,48 @@ public class BatchStockService {
                     agent.name(agentDTO.getName());
                     listBatchStock.get(i).agent(agent);
                     x++;
+                }
             }
             batchStockRepository.save(listBatchStock.get(i));
         }
+    }
+
+    public void putAll(final List<BatchStock> listBatchStock, List<BatchStockDTO> listBatchStockDTO, AgentDTO agentDTO, SectionDTO sectionDTO) {
+        final List<BatchStock> batchStockList = new ArrayList<>();
+        listBatchStock.forEach(b -> {
+            if (productService.validProductSection(sectionDTO.getSectionCode()) &&
+                    sectionService.validSectionLength(b.getSection())) {
+                Optional<BatchStockDTO> batchStockDTO = listBatchStockDTO.stream()
+                        .filter(bd -> bd.getBatchNumber().equals(b.getBatchNumber()))
+                        .findFirst();
+                if (batchStockDTO.isEmpty()) {
+                    throw new BatchStockException("Divergencia entre dados de entrada e do banco!!!");
+                }
+                final BatchStock batchStock = fillBatchStock(batchStockDTO.get(), agentDTO, b);
+                batchStockList.add(batchStock);
+            }
+        });
+        batchStockRepository.saveAll(batchStockList);
+
+    }
+
+    public BatchStock fillBatchStock(BatchStockDTO batchStockDTO, AgentDTO agentDTO, BatchStock batchStock) {
+        batchStock.setBatchNumber(batchStockDTO.getBatchNumber());
+        batchStock.setProductId(batchStockDTO.getProductId());
+        batchStock.setCurrentTemperature(batchStockDTO.getCurrentTemperature());
+        batchStock.setMinimumTemperature(batchStockDTO.getMinimumTemperature());
+        batchStock.setInitialQuantity(batchStockDTO.getInitialQuantity());
+        batchStock.setCurrentQuantity(batchStockDTO.getCurrentQuantity());
+        batchStock.setManufacturingDate(batchStockDTO.getManufacturingDate());
+        batchStock.setManufacturingTime(batchStockDTO.getManufacturingTime());
+        batchStock.setDueDate(batchStockDTO.getDueDate());
+        Agent agent = agentService.find(agentDTO.getCpf());
+        agent.setName(agentDTO.getName());
+        agent.setCpf(agentDTO.getCpf());
+        Warehouse warehouse = warehouseService.find(agentDTO.getWarehouseCode());
+        agent.setWarehouse(warehouse);
+        batchStock.setAgent(agent);
+        return batchStock;
     }
 
     /**

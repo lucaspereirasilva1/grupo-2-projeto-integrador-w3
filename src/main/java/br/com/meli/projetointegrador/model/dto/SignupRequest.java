@@ -29,6 +29,14 @@ public class SignupRequest {
     @Size(min = 6, max = 40)
     private String password;
 
+    @NotBlank
+    @Size(min = 11, max = 11)
+    private String cpf;
+
+    @NotBlank
+    @Size(min = 1, max = 2)
+    private String warehouseCode;
+
     public String getUsername() {
         return username;
     }
@@ -59,6 +67,22 @@ public class SignupRequest {
 
     public void setRole(Set<String> roles) {
         this.roles = roles;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public String getWarehouseCode() {
+        return warehouseCode;
+    }
+
+    public void setWarehouseCode(String warehouseCode) {
+        this.warehouseCode = warehouseCode;
     }
 
 }

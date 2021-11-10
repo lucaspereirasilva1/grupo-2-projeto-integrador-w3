@@ -236,7 +236,7 @@ public class PurchaseOrderControllerTest {
                 .productName("leite")
                 .section(section)
                 .productPrice(new BigDecimal(2))
-                .dueDate(LocalDate.of(2021,11,30))
+                .dueDate(LocalDate.of(2022,11,30))
                 .category(sectionCategory)
                 .build();
 
@@ -245,7 +245,7 @@ public class PurchaseOrderControllerTest {
                 .productName("queijo")
                 .section(section)
                 .productPrice(new BigDecimal(3))
-                .dueDate(LocalDate.of(2021,11,30))
+                .dueDate(LocalDate.of(2022,11,30))
                 .category(sectionCategory)
                 .build();
         productRepository.saveAll(Arrays.asList(product, productUm));
@@ -266,7 +266,7 @@ public class PurchaseOrderControllerTest {
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())
-                .dueDate(LocalDate.now())
+                .dueDate(LocalDate.of(2022, 1, 3))
                 .agent(agent)
                 .section(section)
                 .build();
@@ -280,7 +280,7 @@ public class PurchaseOrderControllerTest {
                 .currentQuantity(10)
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())
-                .dueDate(LocalDate.now())
+                .dueDate(LocalDate.of(2022, 1, 3))
                 .agent(agent)
                 .section(section)
                 .build();
