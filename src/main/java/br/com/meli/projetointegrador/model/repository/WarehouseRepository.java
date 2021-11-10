@@ -1,6 +1,5 @@
 package br.com.meli.projetointegrador.model.repository;
 
-import br.com.meli.projetointegrador.model.dto.WarehouseQuantityDTO;
 import br.com.meli.projetointegrador.model.entity.Warehouse;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;

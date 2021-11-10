@@ -53,6 +53,10 @@ public class WarehouseService {
         return warehouseOptional.get();
     }
 
+    /**
+     * @param productId recebe um codigo de produto;
+     * @return batchResponseWarehouseDTO com totais de produtos por armazem.
+     */
     public BatchStockResponseWarehousesDTO listQuantityProduct(String productId) {
         BatchStockResponseWarehousesDTO batchStockResponseWarehousesDTO = new BatchStockResponseWarehousesDTO();
         batchStockResponseWarehousesDTO.productId(productId);
