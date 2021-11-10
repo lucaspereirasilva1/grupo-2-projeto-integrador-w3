@@ -6,7 +6,6 @@ import br.com.meli.projetointegrador.model.dto.*;
 import br.com.meli.projetointegrador.model.entity.Agent;
 import br.com.meli.projetointegrador.model.entity.BatchStock;
 import br.com.meli.projetointegrador.model.entity.Product;
-import br.com.meli.projetointegrador.model.entity.Warehouse;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import org.springframework.stereotype.Service;
 
@@ -34,16 +33,15 @@ public class BatchStockService {
     private final SectionService sectionService;
     private final AgentService agentService;
     private final ProductService productService;
-    private final WarehouseService warehouseService;
 
     public BatchStockService(BatchStockRepository batchStockRepository,
                              SectionService sectionService,
-                             AgentService agentService, ProductService productService, WarehouseService warehouseService) {
+                             AgentService agentService,
+                             ProductService productService) {
         this.batchStockRepository = batchStockRepository;
         this.sectionService = sectionService;
         this.agentService = agentService;
         this.productService = productService;
-        this.warehouseService = warehouseService;
     }
 
     /**
@@ -64,35 +62,11 @@ public class BatchStockService {
     }
 
     /**
-     * @param listBatchStock recebe uma lista bqaqtchStock;
-     * @param agentDTO recebe um agenteDTO;
-     * @param sectionDTO recebe uma sectionDTO;
+     * @param listBatchStock lista de batchstock enviada pela inboundorder;
+     * @param listBatchStockDTO lista de batchstock recebida do controller;
+     * @param agentDTO agente recebido do controller;
+     * @param sectionDTO section recebida do controller;
      */
-    public void putAllNew(List<BatchStock> listBatchStock, List<BatchStockDTO> listBatchStockDTO, AgentDTO agentDTO, SectionDTO sectionDTO) {
-        for (int i = 0; i < listBatchStock.size(); i++) {
-            for (int x = i; x < listBatchStockDTO.size(); x++) {
-                if (productService.validProductSection(sectionDTO.getSectionCode()) &&
-                        sectionService.validSectionLength(listBatchStock.get(i).getSection())) {
-                    listBatchStock.get(i).batchNumber(listBatchStockDTO.get(x).getBatchNumber());
-                    listBatchStock.get(i).productId(listBatchStockDTO.get(x).getProductId());
-                    listBatchStock.get(i).currentTemperature(listBatchStockDTO.get(x).getCurrentTemperature());
-                    listBatchStock.get(i).minimumTemperature(listBatchStockDTO.get(x).getMinimumTemperature());
-                    listBatchStock.get(i).initialQuantity(listBatchStockDTO.get(x).getInitialQuantity());
-                    listBatchStock.get(i).currentQuantity(listBatchStockDTO.get(x).getCurrentQuantity());
-                    listBatchStock.get(i).manufacturingDate(listBatchStockDTO.get(x).getManufacturingDate());
-                    listBatchStock.get(i).manufacturingTime(listBatchStockDTO.get(x).getManufacturingTime());
-                    listBatchStock.get(i).dueDate(listBatchStockDTO.get(x).getDueDate());
-                    Agent agent = listBatchStock.get(i).getAgent();
-                    agent.cpf(agentDTO.getCpf());
-                    agent.name(agentDTO.getName());
-                    listBatchStock.get(i).agent(agent);
-                    x++;
-                }
-            }
-            batchStockRepository.save(listBatchStock.get(i));
-        }
-    }
-
     public void putAll(final List<BatchStock> listBatchStock, List<BatchStockDTO> listBatchStockDTO, AgentDTO agentDTO, SectionDTO sectionDTO) {
         final List<BatchStock> batchStockList = new ArrayList<>();
         listBatchStock.forEach(b -> {
@@ -112,6 +86,13 @@ public class BatchStockService {
 
     }
 
+    /**
+     * Atualiza um objeto batchstock do banco com os dados recebidos pelo controller
+     * @param batchStockDTO lista de batchStockDTO
+     * @param agentDTO agentDTO
+     * @param batchStock batchstock enviado pela inbound order
+     * @return batchstock atualizado com os dados do DTO
+     */
     public BatchStock fillBatchStock(BatchStockDTO batchStockDTO, AgentDTO agentDTO, BatchStock batchStock) {
         batchStock.setBatchNumber(batchStockDTO.getBatchNumber());
         batchStock.setProductId(batchStockDTO.getProductId());
@@ -125,8 +106,6 @@ public class BatchStockService {
         Agent agent = agentService.find(agentDTO.getCpf());
         agent.setName(agentDTO.getName());
         agent.setCpf(agentDTO.getCpf());
-        Warehouse warehouse = warehouseService.find(agentDTO.getWarehouseCode());
-        agent.setWarehouse(warehouse);
         batchStock.setAgent(agent);
         return batchStock;
     }
@@ -249,9 +228,7 @@ public class BatchStockService {
                 .filter(product -> product.getSection().getWarehouse().getWarehouseCode().equals(warehouseCode))
                 .collect(Collectors.toList());
         AtomicReference<Integer> totalQuantity = new AtomicReference<>(0);
-        productListWarehouseCode.forEach(b -> {
-            totalQuantity.updateAndGet(v -> v + b.getCurrentQuantity());
-        });
+        productListWarehouseCode.forEach(b -> totalQuantity.updateAndGet(v -> v + b.getCurrentQuantity()));
         return totalQuantity.get();
     }
 
