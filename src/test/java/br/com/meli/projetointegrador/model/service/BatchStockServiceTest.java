@@ -8,6 +8,7 @@ import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -373,7 +375,7 @@ public class BatchStockServiceTest {
     }
 
     @Test
-    void validListProductIdByOrderStock(){
+    void validListProductIdByOrderStockTest(){
         List<BatchStock> batchStockList = new ArrayList<>();
         List<BatchStockListProductDTO> batchStockListProductDTOList = new ArrayList<>();
 
@@ -706,6 +708,7 @@ public class BatchStockServiceTest {
                 .agent(agent)
                 .section(section)
                 .build();
+
         BatchStock batchStockDois = new BatchStock()
                 .batchNumber(1)
                 .productId("QJ")
@@ -771,8 +774,102 @@ public class BatchStockServiceTest {
     }
 
     @Test
-    void dueDataProduct() {
+    void dueDataProductTest() {
         assertTrue(batchStockService.dueDataProduct(LocalDate.of(2022, 3, 21)));
+    }
+
+    @Test
+    void validListDueDateDaysTest(){
+
+        List<BatchStock> batchStockList = new ArrayList<>();
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("laticinios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+
+        Agent agent = new Agent().
+                cpf("11122233344").
+                name("lucas").
+                build();
+
+        BatchStock batchStockUm = new BatchStock()
+                .batchNumber(2)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now().plusWeeks(+2))
+                .agent(agent)
+                .section(section)
+                .build();
+
+        batchStockList.add(batchStockUm);
+        when(mockBatchStockRepository.findAll()).thenReturn(batchStockList);
+        BatchStockListDueDateDTO batchStockListDueDateDTO = batchStockService.listDueDateDays(30);
+
+        List<BatchStockServiceDueDateDTO> list = batchStockListDueDateDTO.getBatchStock().stream()
+                .filter(b -> (LocalDate.now().plusDays(30).isAfter(b.getDueDate())))
+                .collect(Collectors.toList());
+
+        assertFalse(list.isEmpty());
+        assertFalse(ObjectUtils.isEmpty(batchStockListDueDateDTO));
+    }
+
+    @Test
+    void validNoListDueDateDaysTest(){
+        List<BatchStock> batchStockList = new ArrayList<>();
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("laticinios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+
+        Agent agent = new Agent().
+                cpf("11122233344").
+                name("lucas").
+                build();
+
+        BatchStock batchStockUm = new BatchStock()
+                .batchNumber(2)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now().plusWeeks(+12))
+                .agent(agent)
+                .section(section)
+                .build();
+
+        batchStockList.add(batchStockUm);
+        when(mockBatchStockRepository.findAll()).thenReturn(batchStockList);
+
+        ProductExceptionNotFound productExceptionNotFound = assertThrows
+                (ProductExceptionNotFound.class,() -> batchStockService.listDueDateDays(30));
+
+        String menssagemEsperada = "Nao existe estoque com este filtro!!!";
+
+        assertTrue(menssagemEsperada.contains(productExceptionNotFound.getMessage()));
     }
 
 }
