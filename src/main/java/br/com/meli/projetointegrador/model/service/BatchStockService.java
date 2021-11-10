@@ -194,6 +194,11 @@ public class BatchStockService {
         return batchStockList;
     }
 
+    /**
+     * @param productId, recebe um codigo de produto;
+     * @param warehouseCode, recebe um codigo de armazem;
+     * @return totalQuantity de produtos.
+     */
     public Integer quantityProductBatchStock(String productId, String warehouseCode){
         List<BatchStock> productList = batchStockRepository.findAllByProductId(productId);
         List<BatchStock> productListWarehouseCode = productList.stream()
