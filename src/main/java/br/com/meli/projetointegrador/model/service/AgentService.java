@@ -19,11 +19,9 @@ import java.util.Optional;
 public class AgentService {
 
     private final AgentRepository agentRepository;
-    private final WarehouseService warehouseService;
 
-    public AgentService(AgentRepository agentRepository, WarehouseService warehouseService) {
+    public AgentService(AgentRepository agentRepository) {
         this.agentRepository = agentRepository;
-        this.warehouseService = warehouseService;
     }
 
     /**

@@ -33,9 +33,8 @@ public class BatchStockServiceTest {
     private final SectionService mockSectionService = mock(SectionService.class);
     private final AgentService mockAgentService = mock(AgentService.class);
     private final ProductService mockProductService = mock(ProductService.class);
-    private final WarehouseService mockWarehouseService = mock(WarehouseService.class);
     private final BatchStockService batchStockService = new BatchStockService(mockBatchStockRepository,
-            mockSectionService, mockAgentService, mockProductService, mockWarehouseService);
+            mockSectionService, mockAgentService, mockProductService);
 
     @BeforeEach
     void setUp() {

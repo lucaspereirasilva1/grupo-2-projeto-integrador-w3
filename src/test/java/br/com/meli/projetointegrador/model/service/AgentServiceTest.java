@@ -22,8 +22,7 @@ import static org.mockito.Mockito.when;
 public class AgentServiceTest {
 
     private final AgentRepository agentRepository = mock(AgentRepository.class);
-    private final WarehouseService mockWarehouseService = mock(WarehouseService.class);
-    private final AgentService agentService = new AgentService(agentRepository, mockWarehouseService);
+    private final AgentService agentService = new AgentService(agentRepository);
 
     @Test
     void findTest() {

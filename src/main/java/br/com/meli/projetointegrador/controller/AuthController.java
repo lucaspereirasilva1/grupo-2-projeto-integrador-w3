@@ -7,7 +7,6 @@ import br.com.meli.projetointegrador.model.dto.SignupRequest;
 import br.com.meli.projetointegrador.model.entity.Agent;
 import br.com.meli.projetointegrador.model.entity.Role;
 import br.com.meli.projetointegrador.model.entity.User;
-import br.com.meli.projetointegrador.model.entity.Warehouse;
 import br.com.meli.projetointegrador.model.enums.ERole;
 import br.com.meli.projetointegrador.model.repository.AgentRepository;
 import br.com.meli.projetointegrador.model.repository.RoleRepository;
@@ -141,7 +140,6 @@ public class AuthController {
         user.setRoles(roles);
         user.setCpf(signUpRequest.getCpf());
         Agent agent = new Agent()
-                .warehouse(new Warehouse())
                 .cpf(signUpRequest.getCpf())
                 .name(user.getUsername())
                 .warehouse(warehouseService.find(signUpRequest.getWarehouseCode()))
