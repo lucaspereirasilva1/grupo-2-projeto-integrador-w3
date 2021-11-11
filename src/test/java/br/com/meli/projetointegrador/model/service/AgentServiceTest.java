@@ -47,9 +47,8 @@ class AgentServiceTest {
 
         when(agentRepository.findByCpf(anyString()))
                 .thenReturn(Optional.empty());
-
         AgentException agentException = assertThrows(AgentException.class, () ->
-                agentService.find(agent.getCpf()));
+                agentService.find("11122233344"));
 
         String expectedMessage = "Representante nao cadastrado na base!!! Por gentileza realizar o cadastro";
 

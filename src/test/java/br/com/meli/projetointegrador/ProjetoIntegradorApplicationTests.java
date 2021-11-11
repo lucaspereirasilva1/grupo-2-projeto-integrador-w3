@@ -3,12 +3,14 @@ package br.com.meli.projetointegrador;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @SpringBootTest
 class ProjetoIntegradorApplicationTests {
 
     @Test
     void contextLoads() {
-        assert Integer.valueOf(1).equals(1);
+        assertEquals(1,Integer.valueOf(1));
     }
 
 }

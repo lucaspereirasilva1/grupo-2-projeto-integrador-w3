@@ -53,23 +53,11 @@ class SectionServiceTest {
 
     @Test
     void validSectionNotExistTest(){
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("Sao Paulo")
-                .build();
-
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("Laticionios")
-                .maxLength(10)
-                .warehouse(warehouse)
-                .build();
-
         when(mockSectionRepository.existsSectionBySectionCode(anyString()))
                 .thenReturn(false);
 
         SectionException sectionException = assertThrows(SectionException.class, () ->
-                sectionService.validSection(section.getSectionCode()));
+                sectionService.validSection("LA"));
 
         String expectedMessage = "Nao existe esse setor, por gentileza verificar o setor!";
 
@@ -261,17 +249,11 @@ class SectionServiceTest {
 
     @Test
     void findNotExistTest() {
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("Laticionios")
-                .maxLength(3)
-                .build();
-
         when(mockSectionRepository.findBySectionCode(anyString()))
                 .thenReturn(Optional.empty());
 
         SectionException sectionException = assertThrows
-                (SectionException.class,() -> sectionService.find(section.getSectionCode()));
+                (SectionException.class,() -> sectionService.find("LA"));
 
         String mensagemEsperada = "Sessao nao existe!!! Reenviar com uma sessao valida";
         String mensagemRecebida = sectionException.getMessage();
