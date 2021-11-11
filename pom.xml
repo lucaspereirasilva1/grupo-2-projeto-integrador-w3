@@ -20,6 +20,7 @@
         <sonar.jacoco.reportPath>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPath>
         <sonar.language>java</sonar.language>
         <sonar.coverage.exclusions>**/util/**/*, **/dto/**/*, **/exception/**/*, **/entity/**/*, **/advisor/**/*, **/dao/**/*</sonar.coverage.exclusions>
+        <maven.test.skip>true</maven.test.skip>
     </properties>
     <dependencies>
         <dependency>
@@ -110,6 +111,7 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.6</version>
                 <configuration>
+                    <skip>${maven.test.skip}</skip>
                     <destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile>
                     <dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile>
                     <output>file</output>

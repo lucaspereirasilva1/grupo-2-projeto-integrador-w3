@@ -90,9 +90,11 @@ public class InboundOrderService {
      */
     public void inputValid(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
         Boolean validAgentIntoWarehouse = inboundOrderDTO.getSectionDTO().getWarehouseCode().equals(agentDTO.getWarehouseCode());
-        if (!warehouseService.validWarehouse(inboundOrderDTO.getSectionDTO().getWarehouseCode()) ||
+        Boolean validWarehouse = warehouseService.validWarehouse(inboundOrderDTO.getSectionDTO().getWarehouseCode());
+        Boolean validSection = sectionService.validSection(inboundOrderDTO.getSectionDTO().getSectionCode());
+        if (Boolean.FALSE.equals(validWarehouse) ||
             Boolean.FALSE.equals(validAgentIntoWarehouse) ||
-            !sectionService.validSection(inboundOrderDTO.getSectionDTO().getSectionCode())) {
+            Boolean.FALSE.equals(validSection)) {
             throw new ValidInputException("Problema na validacao dos dados de entrada!!!");
         }
     }

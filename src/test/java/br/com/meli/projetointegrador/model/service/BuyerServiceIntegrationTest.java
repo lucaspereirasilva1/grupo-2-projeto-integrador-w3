@@ -11,7 +11,7 @@ import org.springframework.util.ObjectUtils;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class BuyerServiceIntegrationTest {
+class BuyerServiceIntegrationTest {
 
     @Autowired
     private BuyerRepository buyerRepository;

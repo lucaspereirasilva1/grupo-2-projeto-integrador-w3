@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 
 @DataMongoTest
-public class WarahouseRepositoryTest {
+class WarahouseRepositoryTest {
 
     @Autowired
     private WarehouseRepository warehouseRepository;
@@ -43,7 +43,7 @@ public class WarahouseRepositoryTest {
     @Test
     void findByWarehouseCodeTest() {
         final Optional<Warehouse> warehouse = warehouseRepository.findByWarehouseCode("SP");
-        assertEquals(warehouse.orElse(new Warehouse()).getWarehouseCode(), "SP");
+        assertEquals("SP", warehouse.orElse(new Warehouse()).getWarehouseCode());
     }
 
     @Test

@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
  * Camada de testes unitarios do service responsavel pela regra de negocio relacionada ao batchStock
  */
 
-public class BatchStockServiceTest {
+class BatchStockServiceTest {
 
     private final BatchStockRepository mockBatchStockRepository = mock(BatchStockRepository.class);
     private final SectionService mockSectionService = mock(SectionService.class);
@@ -648,33 +648,6 @@ public class BatchStockServiceTest {
     @Test
     void validListProductIdByOrderNotExist(){
         List<BatchStock> batchStockList = new ArrayList<>();
-        List<BatchStockListProductDTO> batchStockListProductDTOList = new ArrayList<>();
-
-        BatchStockListProductDTO batchStockListProductDTO = new BatchStockListProductDTO()
-                .batchNumber(1)
-                .currentQuantity(4)
-                .dueDate(LocalDate.now().plusWeeks(+4))
-                .build();
-
-        BatchStockListProductDTO batchStockListProductDTODois = new BatchStockListProductDTO()
-                .batchNumber(2)
-                .currentQuantity(5)
-                .dueDate(LocalDate.now().plusWeeks(+7))
-                .build();
-
-        batchStockListProductDTOList.add(batchStockListProductDTO);
-        batchStockListProductDTOList.add(batchStockListProductDTODois);
-
-        SectionDTO sectionDTO = new SectionDTO()
-                .sectionCode("LA")
-                .warehouseCode("SP")
-                .build();
-
-        BatchStockResponseDTO batchStockResponseDTO = new BatchStockResponseDTO()
-                .sectionDTO(sectionDTO)
-                .productId("QJ")
-                .batchStock(batchStockListProductDTOList)
-                .build();
 
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")
@@ -735,7 +708,7 @@ public class BatchStockServiceTest {
 
         ProductExceptionNotFound productExceptionNotFound = assertThrows
                 (ProductExceptionNotFound.class,() ->
-                                batchStockService.listProductId(batchStockResponseDTO.getProductId(),"T"));
+                                batchStockService.listProductId("QJ","T"));
 
         String menssagemEsperada = "Codigo do filtro nao existe!";
 

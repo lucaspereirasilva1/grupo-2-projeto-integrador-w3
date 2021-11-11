@@ -27,7 +27,7 @@ import static org.mockito.Mockito.*;
  * Camada de testes unitarios do service responsavel pela regra de negocio relacionada ao inboundOrder
  */
 
-public class InboundOrderServiceTest {
+class InboundOrderServiceTest {
 
     private final InboundOrderRepository mockInboundOrderRepository = mock(InboundOrderRepository.class);
     private final BatchStockService mockBatchStockService = mock(BatchStockService.class);

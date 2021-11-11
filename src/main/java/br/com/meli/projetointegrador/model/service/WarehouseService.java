@@ -34,7 +34,8 @@ public class WarehouseService {
      * @return verdadeiro ou exception.
      */
     public Boolean validWarehouse(String warehouseCode) {
-        if (warehouseRepository.existsByWarehouseCode(warehouseCode)) {
+        Boolean existsByWarehouseCode = warehouseRepository.existsByWarehouseCode(warehouseCode);
+        if (Boolean.TRUE.equals(existsByWarehouseCode)) {
             return true;
         } else {
             throw new WarehouseException("Armazem nao cadastrado!!! Por gentileza cadastrar!!!");

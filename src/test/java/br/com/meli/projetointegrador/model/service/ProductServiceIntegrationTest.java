@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 
 @SpringBootTest
-public class ProductServiceIntegrationTest {
+class ProductServiceIntegrationTest {
 
     @Autowired
     private ProductRepository productRepository;
@@ -143,22 +143,22 @@ public class ProductServiceIntegrationTest {
         Product product = new Product();
 
         ProductException productException = assertThrows(ProductException.class, () ->
-                productService.find(product.getProductId()));
+                productService.find("LK"));
 
-        String expectedMessage = "Produto (" + product.getProductId() + ") nao cadastrado!!! Por gentileza cadastrar";
+        String expectedMessage = "Produto (" + "LK" + ") nao cadastrado!!! Por gentileza cadastrar";
 
         assertTrue(expectedMessage.contains(productException.getMessage()));
     }
 
     @Test
     void validListProductByCategoryTest(){
-        assertEquals(productService.listProdutcByCategory(ESectionCategory.FF.toString()).size(), 1);
+        assertEquals(1, productService.listProdutcByCategory(ESectionCategory.FF.toString()).size());
     }
 
     @Test
     void validListProductByCategoryTestEmpty(){
         ProductExceptionNotFound productExceptionNotFound = assertThrows
-                (ProductExceptionNotFound.class,() -> productService.listProdutcByCategory(ESectionCategory.RF.toString()));
+                (ProductExceptionNotFound.class,() -> productService.listProdutcByCategory("RF"));
 
         String mensagemEsperada = "Nao temos produtos nessa categoria " + ESectionCategory.RF.toString() + ", por favor informar a categoria correta!";
         String mensagemRecebida = productExceptionNotFound.getMessage();

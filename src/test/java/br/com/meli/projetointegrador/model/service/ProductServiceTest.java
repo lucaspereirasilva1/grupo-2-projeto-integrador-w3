@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
  * Camada de testes unitarios do service responsavel pela regra de negocio relacionada ao product
  */
 
-public class ProductServiceTest {
+class ProductServiceTest {
 
     private final ProductRepository mockProductRepository = mock(ProductRepository.class);
     private final SectionService mockSectionService = mock(SectionService.class);
@@ -55,23 +55,11 @@ public class ProductServiceTest {
 
     @Test
     void validProductSectionNotExistTest() {
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("Sao Paulo")
-                .build();
-
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("Laticionios")
-                .warehouse(warehouse)
-                .maxLength(10)
-                .build();
-
         when(mockProductRepository.existsProductBySection(any(Section.class)))
                 .thenReturn(false);
 
         ProductException productException = assertThrows(ProductException.class, () ->
-                productService.validProductSection(section.getSectionCode()));
+                productService.validProductSection("LA"));
 
         String expectedMessage = "Produto nao faz parte do setor, por favor verifique o setor correto!";
 
@@ -108,31 +96,13 @@ public class ProductServiceTest {
 
     @Test
     void findNotExistTest() {
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("Sao Paulo")
-                .build();
-
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("Laticionios")
-                .warehouse(warehouse)
-                .maxLength(10)
-                .build();
-
-        Product product = new Product()
-                .productId("LE")
-                .productName("leite")
-                .section(section)
-                .build();
-
-        when(mockProductRepository.findDistinctFirstByProductId(product.getProductId()))
+        when(mockProductRepository.findDistinctFirstByProductId("LE"))
                 .thenReturn(Optional.empty());
 
         ProductException productException = assertThrows(ProductException.class, () ->
-                productService.find(product.getProductId()));
+                productService.find("LE"));
 
-        String expectedMessage = "Produto (" + product.getProductId() + ") nao cadastrado!!! Por gentileza cadastrar";
+        String expectedMessage = "Produto (" + "LE" + ") nao cadastrado!!! Por gentileza cadastrar";
 
         assertTrue(expectedMessage.contains(productException.getMessage()));
     }
@@ -176,7 +146,7 @@ public class ProductServiceTest {
         when(mockSectionCategoryService.find(any(ESectionCategory.class)))
                 .thenReturn(new SectionCategory().name(ESectionCategory.FF).build());
 
-        assertEquals(productService.listProdutcByCategory(ESectionCategory.FF.toString()).size(), 2);
+        assertEquals(2, productService.listProdutcByCategory(ESectionCategory.FF.toString()).size());
     }
 
     @Test
@@ -187,9 +157,9 @@ public class ProductServiceTest {
                 .thenReturn(new SectionCategory().name(ESectionCategory.FF).build());
 
         ProductExceptionNotFound productExceptionNotFound = assertThrows
-                (ProductExceptionNotFound.class,() -> productService.listProdutcByCategory(ESectionCategory.FF.toString()));
+                (ProductExceptionNotFound.class,() -> productService.listProdutcByCategory("FF"));
 
-        String mensagemEsperada = "Nao temos produtos nessa categoria " + ESectionCategory.FF.toString() + ", por favor informar a categoria correta!";
+        String mensagemEsperada = "Nao temos produtos nessa categoria " + "FF" + ", por favor informar a categoria correta!";
         String mensagemRecebida = productExceptionNotFound.getMessage();
 
         assertTrue(mensagemEsperada.contains(mensagemRecebida));

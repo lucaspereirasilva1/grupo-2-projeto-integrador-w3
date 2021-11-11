@@ -29,7 +29,7 @@ import static org.mockito.Mockito.*;
  * Camada de testes unitarios do service responsavel pela regra de negocio relacionada ao section
  */
 
-public class PurchaseOrderServiceTest {
+class PurchaseOrderServiceTest {
 
     private final PurchaseOrderRepository mockPurchaseOrderRepository = mock(PurchaseOrderRepository.class);
     private final ProductService mockProductService = mock(ProductService.class);
