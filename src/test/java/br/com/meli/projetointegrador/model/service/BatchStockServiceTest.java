@@ -41,8 +41,7 @@ public class BatchStockServiceTest {
             mockSectionService, mockAgentService, mockProductService);
 
     @BeforeEach
-    void setUp() {
-    }
+    void setUp() {}
 
     @Test
     void postAllTest() {
