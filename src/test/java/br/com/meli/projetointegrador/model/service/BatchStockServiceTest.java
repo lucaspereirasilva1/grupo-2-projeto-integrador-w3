@@ -955,6 +955,7 @@ public class BatchStockServiceTest {
 
         assertTrue(batchStockListDueDateDTO.getBatchStock().get(0).getDueDate().isBefore(batchStockListDueDateDTO.getBatchStock().get(1).getDueDate()));
     }
+
     @Test
     void listBatchStockDueDateDescTest(){
         List<Product> productList = new ArrayList<>();
@@ -1073,7 +1074,6 @@ public class BatchStockServiceTest {
                 .agent(agent)
                 .section(section)
                 .build();
-
 
         Product productUm = new Product()
                 .productId("LE")
