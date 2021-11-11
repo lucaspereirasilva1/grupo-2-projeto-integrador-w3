@@ -116,6 +116,29 @@ class BatchStockControllerTest {
         assertEquals(HttpStatus.OK.value(), response.getStatus());
     }
 
+    @Test
+    void getProductOrder() throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/listsorder/")
+                .param("productId","LE")
+                .param("order","L")
+                .header("Authorization", "Bearer " + tokenTest.getAccessToken())
+                .contentType("application/json"))
+                .andReturn().getResponse();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+    }
+
+    @Test
+    void getProductOrderDyas() throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/due-date/list/")
+                .param("days","30")
+                .header("Authorization", "Bearer " + tokenTest.getAccessToken())
+                .contentType("application/json"))
+                .andReturn().getResponse();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+    }
+
     void createData() {
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")
@@ -148,7 +171,7 @@ class BatchStockControllerTest {
                 .productName("leite")
                 .section(section)
                 .productPrice(new BigDecimal("2.0"))
-                .dueDate(LocalDate.now())
+                .dueDate(LocalDate.now().plusWeeks(+2))
                 .category(sectionCategory)
                 .build();
         productRepository.save(product);
@@ -162,7 +185,7 @@ class BatchStockControllerTest {
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())
-                .dueDate(LocalDate.of(2022,  12,  1))
+                .dueDate(LocalDate.now().plusWeeks(+2))
                 .section(section)
                 .agent(agent)
                 .build();

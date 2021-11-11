@@ -47,7 +47,7 @@ public class BatchStockController {
      * Ordenados por:L = ordenado por lote, C = ordenado por quantidade ou F = ordenado por data vencimiento
      */
     @GetMapping(value = "/listsorder") // Chamada do endpoint: /lists?productId=LE&L, C ou F
-    public ResponseEntity<BatchStockResponseDTO> getProductB(@RequestParam("productId") String productId,
+    public ResponseEntity<BatchStockResponseDTO> getProductOrder(@RequestParam("productId") String productId,
                                                              @RequestParam("order") String order) {
         BatchStockResponseDTO batchStockResponseDTO = batchStockService.listProductId(productId, order);
         return ResponseEntity.ok(batchStockResponseDTO);
@@ -59,8 +59,8 @@ public class BatchStockController {
      * requisito 5 - endpoint 1: Veja uma lista de produtos com todos os lotes onde aparece
      * ordenado pelo dias pra vencer.
      */
-    @GetMapping(value = "/due-date/list") // Chamada do endpoint: /due-date/lists?days={}&category={FS/FF/RF}&order={asc/desc}
-    public ResponseEntity<BatchStockListDueDateDTO> getProduct(@RequestParam("days") Integer days) {
+    @GetMapping(value = "/due-date/list") // Chamada do endpoint: /due-date/list?days=5}
+    public ResponseEntity<BatchStockListDueDateDTO> getProductDyas(@RequestParam("days") Integer days) {
         BatchStockListDueDateDTO batchStockListDueDateDTO = batchStockService.listDueDateDays(days);
         return ResponseEntity.ok(batchStockListDueDateDTO);
     }
