@@ -753,4 +753,62 @@ class BatchStockServiceTest {
         assertTrue(batchStockService.dueDataProduct(LocalDate.of(2022, 3, 21)));
     }
 
+    @Test
+    void validQuantityProductBatchStock(){
+        List<BatchStock> listBatchStock = new ArrayList<>();
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("laticinios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+
+        Agent agent = new Agent().
+                cpf("11122233344").
+                name("jhony").
+                build();
+
+        BatchStock batchStockUm = new BatchStock()
+                .batchNumber(2)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now().plusWeeks(+7))
+                .agent(agent)
+                .section(section)
+                .build();
+        listBatchStock.add(batchStockUm);
+
+        BatchStock batchStockDois = new BatchStock()
+                .batchNumber(1)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(4)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now().plusWeeks(+4))
+                .agent(agent)
+                .section(section)
+                .build();
+        listBatchStock.add(batchStockDois);
+
+        when(mockBatchStockRepository.findAllByProductId(anyString())).thenReturn(listBatchStock);
+
+        Integer quantityProductBatchStock = batchStockService.quantityProductBatchStock("QJ", "SP");
+
+        assertEquals(quantityProductBatchStock,9);
+    }
+
 }
