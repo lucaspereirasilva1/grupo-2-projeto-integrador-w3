@@ -3,6 +3,7 @@ package br.com.meli.projetointegrador.controller;
 import br.com.meli.projetointegrador.model.dto.AgentDTO;
 import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
 import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;
+import br.com.meli.projetointegrador.model.service.AgentService;
 import br.com.meli.projetointegrador.model.service.InboundOrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,19 +25,18 @@ import java.util.List;
 public class InboundOrderController {
 
     private final InboundOrderService inboundOrderService;
+    private final AgentService agentService;
 
-    public InboundOrderController(InboundOrderService inboundOrderService) {
+    public InboundOrderController(InboundOrderService inboundOrderService, AgentService agentService) {
         this.inboundOrderService = inboundOrderService;
+        this.agentService = agentService;
     }
 
     @PostMapping(value = "/inboundorder", produces = "application/json")
     public ResponseEntity<List<BatchStockDTO>> post(@Valid @RequestBody InboundOrderDTO inboundOrderDTO,
-                                                   UriComponentsBuilder uriComponentsBuilder) {
-        AgentDTO agentDTO = new AgentDTO()
-                .name("lucas")
-                .cpf("11122233344")
-                .warehouseCode("SP")
-                .build();
+                                                   UriComponentsBuilder uriComponentsBuilder,
+                                                    @RequestParam String cpf) {
+        final AgentDTO agentDTO = agentService.findByCpf(cpf);
         inboundOrderService.inputValid(inboundOrderDTO, agentDTO);
         List<BatchStockDTO> listBatchStockDTO = inboundOrderService.post(inboundOrderDTO, agentDTO);
         URI uri = uriComponentsBuilder.path("/inboundorder/1").buildAndExpand(1).toUri();
@@ -45,12 +45,9 @@ public class InboundOrderController {
 
     @PutMapping(value = "/inboundorder", produces = "application/json")
     public ResponseEntity<List<BatchStockDTO>> put(@Valid @RequestBody InboundOrderDTO inboundOrderDTO,
-                                                   UriComponentsBuilder uriComponentsBuilder) {
-        AgentDTO agentDTO = new AgentDTO()
-                .name("lucas")
-                .cpf("11122233344")
-                .warehouseCode("SP")
-                .build();
+                                                   UriComponentsBuilder uriComponentsBuilder,
+                                                   @RequestParam String cpf) {
+        final AgentDTO agentDTO = agentService.findByCpf(cpf);
         inboundOrderService.inputValid(inboundOrderDTO, agentDTO);
         List<BatchStockDTO> listBatchStockDTO = inboundOrderService.put(inboundOrderDTO, agentDTO);
         URI uri = uriComponentsBuilder.path("/inboundorder/1").buildAndExpand(1).toUri();

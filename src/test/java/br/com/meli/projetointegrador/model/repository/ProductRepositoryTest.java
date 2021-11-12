@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -26,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 
 @DataMongoTest
-public class ProductRepositoryTest {
+class ProductRepositoryTest {
 
     @Autowired
     private ProductRepository productRepository;
@@ -50,11 +51,13 @@ public class ProductRepositoryTest {
         SectionCategory sectionCategory = new SectionCategory()
                 .name(ESectionCategory.FF)
                 .build();
+        sectionCategoryRepository.save(sectionCategory);
 
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")
                 .warehouseName("Sao Paulo")
                 .build();
+        warehouseRepository.save(warehouse);
 
         Section section = new Section()
                 .sectionCode("LA")
@@ -62,6 +65,7 @@ public class ProductRepositoryTest {
                 .maxLength(10)
                 .warehouse(warehouse)
                 .build();
+        sectionRepository.save(section);
 
         Product product = new Product()
                 .productId("LE")
@@ -71,11 +75,7 @@ public class ProductRepositoryTest {
                 .category(sectionCategory)
                 .dueDate(LocalDate.now())
                 .build();
-
-        sectionRepository.save(section);
         productRepository.save(product);
-        warehouseRepository.save(warehouse);
-        sectionCategoryRepository.save(sectionCategory);
     }
 
     @AfterEach
@@ -100,7 +100,8 @@ public class ProductRepositoryTest {
 
     @Test
     void findProductByCategory() {
-        assertFalse(productRepository.findProductByCategory(new SectionCategory().name(ESectionCategory.FF)).isEmpty());
+        Optional<SectionCategory> sectionCategory = sectionCategoryRepository.findByName(ESectionCategory.FF);
+        final List<Product> productByCategoryList  = productRepository.findProductByCategory(sectionCategory.orElse(new SectionCategory()));
+        assertFalse(productByCategoryList.isEmpty());
     }
-
 }

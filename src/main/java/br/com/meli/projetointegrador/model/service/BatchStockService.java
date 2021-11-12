@@ -13,6 +13,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -33,7 +36,8 @@ public class BatchStockService {
 
     public BatchStockService(BatchStockRepository batchStockRepository,
                              SectionService sectionService,
-                             AgentService agentService, ProductService productService) {
+                             AgentService agentService,
+                             ProductService productService) {
         this.batchStockRepository = batchStockRepository;
         this.sectionService = sectionService;
         this.agentService = agentService;
@@ -49,40 +53,61 @@ public class BatchStockService {
         listBatchStock.forEach(b -> {
             Product product = productService.find(b.getProductId());
             if (productService.validProductSection(sectionDTO.getSectionCode()) &&
-                sectionService.validSectionLength(product.getSection()))
+                sectionService.validSectionLength(product.getSection())) {
                 b.agent(agentService.find(agentDTO.getCpf()));
                 b.section(sectionService.find(sectionDTO.getSectionCode()));
+            }
         });
         batchStockRepository.saveAll(listBatchStock);
     }
 
     /**
-     * @param listBatchStock recebe uma lista bqaqtchStock;
-     * @param agentDTO recebe um agenteDTO;
-     * @param sectionDTO recebe uma sectionDTO;
+     * @param listBatchStock lista de batchstock enviada pela inboundorder;
+     * @param listBatchStockDTO lista de batchstock recebida do controller;
+     * @param agentDTO agente recebido do controller;
+     * @param sectionDTO section recebida do controller;
      */
-    public void putAll(List<BatchStock> listBatchStock, List<BatchStockDTO> listBatchStockDTO, AgentDTO agentDTO, SectionDTO sectionDTO) {
-        for (int i = 0; i < listBatchStock.size(); i++) {
-            for (int x = i; x < listBatchStockDTO.size(); x++) {
-                if (productService.validProductSection(sectionDTO.getSectionCode()) &&
-                        sectionService.validSectionLength(listBatchStock.get(i).getSection()))
-                    listBatchStock.get(i).batchNumber(listBatchStockDTO.get(x).getBatchNumber());
-                    listBatchStock.get(i).productId(listBatchStockDTO.get(x).getProductId());
-                    listBatchStock.get(i).currentTemperature(listBatchStockDTO.get(x).getCurrentTemperature());
-                    listBatchStock.get(i).minimumTemperature(listBatchStockDTO.get(x).getMinimumTemperature());
-                    listBatchStock.get(i).initialQuantity(listBatchStockDTO.get(x).getInitialQuantity());
-                    listBatchStock.get(i).currentQuantity(listBatchStockDTO.get(x).getCurrentQuantity());
-                    listBatchStock.get(i).manufacturingDate(listBatchStockDTO.get(x).getManufacturingDate());
-                    listBatchStock.get(i).manufacturingTime(listBatchStockDTO.get(x).getManufacturingTime());
-                    listBatchStock.get(i).dueDate(listBatchStockDTO.get(x).getDueDate());
-                    Agent agent = listBatchStock.get(i).getAgent();
-                    agent.cpf(agentDTO.getCpf());
-                    agent.name(agentDTO.getName());
-                    listBatchStock.get(i).agent(agent);
-                    x++;
+    public void putAll(final List<BatchStock> listBatchStock, List<BatchStockDTO> listBatchStockDTO, AgentDTO agentDTO, SectionDTO sectionDTO) {
+        final List<BatchStock> batchStockList = new ArrayList<>();
+        listBatchStock.forEach(b -> {
+            if (productService.validProductSection(sectionDTO.getSectionCode()) &&
+                    sectionService.validSectionLength(b.getSection())) {
+                Optional<BatchStockDTO> batchStockDTO = listBatchStockDTO.stream()
+                        .filter(bd -> bd.getBatchNumber().equals(b.getBatchNumber()))
+                        .findFirst();
+                if (batchStockDTO.isEmpty()) {
+                    throw new BatchStockException("Divergencia entre dados de entrada e do banco!!!");
+                }
+                final BatchStock batchStock = fillBatchStock(batchStockDTO.get(), agentDTO, b);
+                batchStockList.add(batchStock);
             }
-            batchStockRepository.save(listBatchStock.get(i));
-        }
+        });
+        batchStockRepository.saveAll(batchStockList);
+
+    }
+
+    /**
+     * Atualiza um objeto batchstock do banco com os dados recebidos pelo controller
+     * @param batchStockDTO lista de batchStockDTO
+     * @param agentDTO agentDTO
+     * @param batchStock batchstock enviado pela inbound order
+     * @return batchstock atualizado com os dados do DTO
+     */
+    public BatchStock fillBatchStock(BatchStockDTO batchStockDTO, AgentDTO agentDTO, BatchStock batchStock) {
+        batchStock.setBatchNumber(batchStockDTO.getBatchNumber());
+        batchStock.setProductId(batchStockDTO.getProductId());
+        batchStock.setCurrentTemperature(batchStockDTO.getCurrentTemperature());
+        batchStock.setMinimumTemperature(batchStockDTO.getMinimumTemperature());
+        batchStock.setInitialQuantity(batchStockDTO.getInitialQuantity());
+        batchStock.setCurrentQuantity(batchStockDTO.getCurrentQuantity());
+        batchStock.setManufacturingDate(batchStockDTO.getManufacturingDate());
+        batchStock.setManufacturingTime(batchStockDTO.getManufacturingTime());
+        batchStock.setDueDate(batchStockDTO.getDueDate());
+        Agent agent = agentService.find(agentDTO.getCpf());
+        agent.setName(agentDTO.getName());
+        agent.setCpf(agentDTO.getCpf());
+        batchStock.setAgent(agent);
+        return batchStock;
     }
 
     /**
@@ -190,6 +215,21 @@ public class BatchStockService {
             throw new BatchStockException("Nao existe estoques para esse produto!!!");
         }
         return batchStockList;
+    }
+
+    /**
+     * @param productId, recebe um codigo de produto;
+     * @param warehouseCode, recebe um codigo de armazem;
+     * @return totalQuantity de produtos.
+     */
+    public Integer quantityProductBatchStock(String productId, String warehouseCode){
+        List<BatchStock> productList = batchStockRepository.findAllByProductId(productId);
+        List<BatchStock> productListWarehouseCode = productList.stream()
+                .filter(product -> product.getSection().getWarehouse().getWarehouseCode().equals(warehouseCode))
+                .collect(Collectors.toList());
+        AtomicReference<Integer> totalQuantity = new AtomicReference<>(0);
+        productListWarehouseCode.forEach(b -> totalQuantity.updateAndGet(v -> v + b.getCurrentQuantity()));
+        return totalQuantity.get();
     }
 
 }

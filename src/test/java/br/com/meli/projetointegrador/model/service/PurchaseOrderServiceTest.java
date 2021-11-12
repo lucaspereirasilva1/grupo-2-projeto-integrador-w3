@@ -29,7 +29,7 @@ import static org.mockito.Mockito.*;
  * Camada de testes unitarios do service responsavel pela regra de negocio relacionada ao section
  */
 
-public class PurchaseOrderServiceTest {
+class PurchaseOrderServiceTest {
 
     private final PurchaseOrderRepository mockPurchaseOrderRepository = mock(PurchaseOrderRepository.class);
     private final ProductService mockProductService = mock(ProductService.class);
@@ -284,42 +284,6 @@ public class PurchaseOrderServiceTest {
 
     @Test
     void showOrderProductEmptyList() {
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("Sao Paulo")
-                .build();
-
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("Laticionios")
-                .warehouse(warehouse)
-                .maxLength(10)
-                .build();
-
-        Buyer buyer = new Buyer()
-                .name("lucas")
-                .cpf("22233344411")
-                .build();
-
-        SectionCategory sectionCategory = new SectionCategory()
-                .name(ESectionCategory.FF)
-                .build();
-
-        Product product = new Product()
-                .productId("LE")
-                .productName("leite")
-                .section(section)
-                .productPrice(new BigDecimal(2))
-                .dueDate(LocalDate.of(2021,11,30))
-                .category(sectionCategory)
-                .build();
-
-        PurchaseOrder purchaseOrder = new PurchaseOrder()
-                .date(LocalDate.now())
-                .buyer(buyer)
-                .orderStatus(EOrderStatus.ORDER_CHART)
-                .productList(Collections.singletonList(product))
-                .build();
         when(mockPurchaseOrderRepository.findById(anyString()))
                 .thenReturn(Optional.empty());
 
@@ -332,5 +296,128 @@ public class PurchaseOrderServiceTest {
         assertTrue(mensagemEsperada.contains(mensagemRecebida));
     }
 
+    @Test
+    void calculeTotalDueDateInvalidTest(){
+        List<ProductPurchaseOrderDTO> listProductPurchaseOrderDTO = new ArrayList<>();
+        ProductPurchaseOrderDTO productPurchaseOrderDTO1 = new ProductPurchaseOrderDTO()
+                .productId("FR")
+                .quantity(5)
+                .build();
+        ProductPurchaseOrderDTO productPurchaseOrderDTO2 = new ProductPurchaseOrderDTO()
+                .productId("QJ")
+                .quantity(3)
+                .build();
+        listProductPurchaseOrderDTO.add(productPurchaseOrderDTO1);
+        listProductPurchaseOrderDTO.add(productPurchaseOrderDTO2);
+
+        PurchaseOrderDTO purchaseOrderDTO = new PurchaseOrderDTO()
+                .data(LocalDate.now())
+                .buyerId("1")
+                .orderStatus(new OrderStatusDTO().statusCode(EOrderStatus.IN_PROGRESS))
+                .listProductPurchaseOrderDTO(listProductPurchaseOrderDTO);
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("Sao Paulo")
+                .build();
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("Laticionios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+
+        when(mockProductService.find(productPurchaseOrderDTO1.getProductId()))
+                .thenReturn(new Product()
+                        .productId("LE")
+                        .productName("Leite")
+                        .productPrice(new BigDecimal(2))
+                        .category(new SectionCategory().name(ESectionCategory.FF))
+                        .section(section)
+                        .dueDate(LocalDate.of(2022, 12, 3)));
+
+        when(mockBuyerService.find(anyString()))
+                .thenReturn(new Buyer()
+                        .name("lucas")
+                        .cpf("22233344411")
+                        .build());
+
+        when(mockPurchaseOrderRepository.save(any(PurchaseOrder.class)))
+                .thenReturn(new PurchaseOrder());
+
+        when(mockBatchStockService.dueDataProduct(any(LocalDate.class)))
+                .thenReturn(false);
+
+        PurchaseOrderException purchaseOrderException = assertThrows
+                (PurchaseOrderException.class,() -> purchaseOrderService.save(purchaseOrderDTO));
+
+        String mensagemEsperada = "Vencimento inferior a 3 semanas!!! Produto: " + "Leite" + " Vencimento: " + LocalDate.of(2022, 12, 3);
+        String mensagemRecebida = purchaseOrderException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
+    void calculeTotalProductNotFoundTest(){
+        List<ProductPurchaseOrderDTO> listProductPurchaseOrderDTO = new ArrayList<>();
+        ProductPurchaseOrderDTO productPurchaseOrderDTO1 = new ProductPurchaseOrderDTO()
+                .productId("FR")
+                .quantity(5)
+                .build();
+        ProductPurchaseOrderDTO productPurchaseOrderDTO2 = new ProductPurchaseOrderDTO()
+                .productId("QJ")
+                .quantity(3)
+                .build();
+        listProductPurchaseOrderDTO.add(productPurchaseOrderDTO1);
+        listProductPurchaseOrderDTO.add(productPurchaseOrderDTO2);
+
+        PurchaseOrderDTO purchaseOrderDTO = new PurchaseOrderDTO()
+                .data(LocalDate.now())
+                .buyerId("1")
+                .orderStatus(new OrderStatusDTO().statusCode(EOrderStatus.IN_PROGRESS))
+                .listProductPurchaseOrderDTO(listProductPurchaseOrderDTO);
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("Sao Paulo")
+                .build();
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("Laticionios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+
+        when(mockProductService.find(productPurchaseOrderDTO1.getProductId()))
+                .thenReturn(new Product()
+                        .productId("CA")
+                        .productName("carne")
+                        .productPrice(new BigDecimal(2))
+                        .category(new SectionCategory().name(ESectionCategory.FF))
+                        .section(section)
+                        .dueDate(LocalDate.of(2000, 12, 3)));
+
+        when(mockBuyerService.find(anyString()))
+                .thenReturn(new Buyer()
+                        .name("lucas")
+                        .cpf("22233344411")
+                        .build());
+
+        when(mockPurchaseOrderRepository.save(any(PurchaseOrder.class)))
+                .thenReturn(new PurchaseOrder());
+
+        when(mockBatchStockService.dueDataProduct(any(LocalDate.class)))
+                .thenReturn(true);
+
+        PurchaseOrderException purchaseOrderException = assertThrows
+                (PurchaseOrderException.class,() -> purchaseOrderService.save(purchaseOrderDTO));
+
+        String mensagemEsperada = "Produto nao encontrado";
+        String mensagemRecebida = purchaseOrderException.getMessage();
+
+        assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
 
 }

@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 
 @SpringBootTest
-public class SectionServiceIntegrationTest {
+class SectionServiceIntegrationTest {
 
     @Autowired
     private SectionService sectionService;
@@ -115,18 +115,9 @@ public class SectionServiceIntegrationTest {
      */
     @Test
     void validSectionNotExist(){
-
-        Section section = new Section()
-                .sectionCode("L5A")
-                .sectionName("vdfjky")
-                .maxLength(3)
-                .build();
-
         SectionException sectionException = assertThrows(SectionException.class, () ->
-                sectionService.validSection(section.getSectionCode()));
-
+                sectionService.validSection("L5A"));
         String expectedMessage = "Nao existe esse setor, por gentileza verificar o setor!";
-
         assertTrue(expectedMessage.contains(sectionException.getMessage()));
     }
 
@@ -161,9 +152,9 @@ public class SectionServiceIntegrationTest {
                 .build();
         batchStockRepository.save(batchStock);
 
-
+        Section section = sectionOptional.orElse(new Section());
         SectionException sectionException = assertThrows
-                (SectionException.class,() -> sectionService.validSectionLength(sectionOptional.orElse(new Section())));
+                (SectionException.class,() -> sectionService.validSectionLength(section));
 
         String mensagemEsperada = "Nao tem espaco.";
         String mensagemRecebida = sectionException.getMessage();
@@ -176,7 +167,7 @@ public class SectionServiceIntegrationTest {
      * Teste quando a section nao passada no batchStock
      */
     @Test
-    public void validSectionInformed(){
+    void validSectionInformed(){
         Section section = new Section()
                 .sectionCode("LA")
                 .sectionName("Laticionios")
@@ -204,7 +195,7 @@ public class SectionServiceIntegrationTest {
      * Teste quando a section nao passada no batchStock
      */
     @Test
-    public void validSectionNotInformed(){
+    void validSectionNotInformed(){
         BatchStock batchStock = new BatchStock()
                 .batchNumber(1)
                 .productId("QJ")

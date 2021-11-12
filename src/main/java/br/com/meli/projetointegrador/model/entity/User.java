@@ -42,6 +42,10 @@ public class User {
     @Size(max = 120)
     private String password;
 
+    @NotBlank
+    @Size(max = 11)
+    private String cpf;
+
     @DBRef
     private Set<Role> roles = new HashSet<>();
 

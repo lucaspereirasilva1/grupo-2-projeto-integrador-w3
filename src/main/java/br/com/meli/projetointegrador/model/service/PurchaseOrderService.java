@@ -101,7 +101,8 @@ public class PurchaseOrderService {
         List<Product> productList = new ArrayList<>();
         for (ProductPurchaseOrderDTO p : purchaseOrderDTO.getListProductPurchaseOrderDTO()) {
             Product product = productService.find(p.getProductId());
-            if (!batchStockService.dueDataProduct(product.getDueDate())) {
+            Boolean dueDataProduct = batchStockService.dueDataProduct(product.getDueDate());
+            if (Boolean.FALSE.equals(dueDataProduct)) {
                 throw new PurchaseOrderException("Vencimento inferior a 3 semanas!!! Produto: " + product.getProductName() + " Vencimento: " + product.getDueDate());
             }
             if (p.getProductId().equals(product.getProductId())) {

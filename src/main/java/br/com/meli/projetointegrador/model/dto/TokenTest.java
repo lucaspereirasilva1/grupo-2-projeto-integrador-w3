@@ -1,4 +1,4 @@
-package br.com.meli.projetointegrador.controller;
+package br.com.meli.projetointegrador.model.dto;
 
 import lombok.Data;
 

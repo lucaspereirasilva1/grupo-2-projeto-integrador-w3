@@ -1,18 +1,22 @@
 package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.WarehouseException;
+import br.com.meli.projetointegrador.model.entity.BatchStock;
 import br.com.meli.projetointegrador.model.entity.Warehouse;
+import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import br.com.meli.projetointegrador.model.repository.WarehouseRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.ObjectUtils;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
@@ -22,13 +26,16 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 
 @SpringBootTest
-public class WarehouseServiceIntegrationTest {
+class WarehouseServiceIntegrationTest {
 
     @Autowired
     private WarehouseRepository warehouseRepository;
 
     @Autowired
     private WarehouseService warehouseService;
+
+    @Autowired
+    private BatchStockRepository batchStockRepository;
 
     @BeforeEach
     void setUp() {
@@ -37,6 +44,18 @@ public class WarehouseServiceIntegrationTest {
                 .warehouseName("POA")
                 .build();
         warehouseRepository.save(warehouse);
+
+        BatchStock batchStock =new BatchStock()
+                .batchNumber(1)
+                .currentQuantity(10)
+                .initialQuantity(1)
+                .productId("LA")
+                .currentTemperature(35.5F)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .build();
+        batchStockRepository.save(batchStock);
     }
 
     @AfterEach
@@ -62,9 +81,10 @@ public class WarehouseServiceIntegrationTest {
 
     @Test
     void findExistIntegrationTest() {
-        final Optional<Warehouse> warehouse = warehouseRepository.findByWarehouseCode("RS");
-        assertTrue(warehouse.isPresent());
-
+        final Warehouse warehouse = warehouseService.find("RS");
+        assertFalse(ObjectUtils.isEmpty(warehouse));
+        assertEquals("RS", warehouse.getWarehouseCode());
+        assertEquals("POA", warehouse.getWarehouseName());
     }
 
     @Test
@@ -78,5 +98,11 @@ public class WarehouseServiceIntegrationTest {
         assertTrue(expectedMessage.contains(receivedMessage));
     }
 
+    @Test
+    void listQuantityProductExist(){
+        Integer quantityWarehouse = warehouseRepository.findWarehouseBy("LA").size();
+        Integer quantityBatchStock = batchStockRepository.findAllByProductId("LA").size();
+        assertEquals(quantityWarehouse, quantityBatchStock);
+    }
 
 }
