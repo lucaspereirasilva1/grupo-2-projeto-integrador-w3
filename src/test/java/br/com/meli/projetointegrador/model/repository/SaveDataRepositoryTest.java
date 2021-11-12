@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import org.springframework.test.context.TestPropertySource;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 
 @DataMongoTest(excludeAutoConfiguration = EmbeddedMongoAutoConfiguration.class)
+@TestPropertySource(properties = {"spring.data.mongodb.port:27017"})
 class SaveDataRepositoryTest {
 
     @Autowired
@@ -98,23 +100,6 @@ class SaveDataRepositoryTest {
                 .build();
         sectionCategoryRepository.save(sectionCategory);
         assertEquals(1, Integer.valueOf(1));
-    }
-
-    @Test
-    void savePurchaseOrder() {
-        purchaseOrderRepository.deleteAll();
-        final List<Product> listProduct = productRepository.findAll();
-        final Optional<Buyer> buyer = buyerRepository.findByCpf("22233344411");
-
-        PurchaseOrder purchaseOrder = new PurchaseOrder()
-                .date(LocalDate.now())
-                .buyer(buyer.orElse(new Buyer()))
-                .orderStatus(EOrderStatus.ORDER_CHART)
-                .productList(listProduct)
-                .build();
-
-        purchaseOrderRepository.save(purchaseOrder);
-        assertEquals(1,Integer.valueOf(1));
     }
 
     @Test
