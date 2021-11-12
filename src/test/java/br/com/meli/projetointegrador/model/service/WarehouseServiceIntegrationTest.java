@@ -1,8 +1,6 @@
 package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.WarehouseException;
-import br.com.meli.projetointegrador.model.dto.BatchStockResponseWarehousesDTO;
-import br.com.meli.projetointegrador.model.dto.WarehouseQuantityDTO;
 import br.com.meli.projetointegrador.model.entity.BatchStock;
 import br.com.meli.projetointegrador.model.entity.Warehouse;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
@@ -15,8 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -106,6 +102,5 @@ public class WarehouseServiceIntegrationTest {
         Integer quantityBatchStock = batchStockRepository.findAllByProductId("LA").size();
         assertEquals(quantityWarehouse, quantityBatchStock);
     }
-
 
 }
