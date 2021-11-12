@@ -942,7 +942,7 @@ public class BatchStockServiceTest {
         productList.add(productUm);
         productList.add(productDois);
 
-        when(mockProductService.find(productDois.getProductId()))
+        when(mockProductService.find(productUm.getProductId()))
                 .thenReturn(productUm);
         when(mockProductService.find(productDois.getProductId()))
                 .thenReturn(productDois);

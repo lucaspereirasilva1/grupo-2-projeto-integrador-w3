@@ -106,6 +106,19 @@ class BatchStockControllerTest {
     }
 
     @Test
+    void getProductOrder() throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/listsorder/")
+                .param("product","LE")
+                .param("order","L")
+                .header("Authorization", "Bearer " + tokenTest.getAccessToken())
+                .contentType("application/json"))
+                .andReturn()
+                .getResponse();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+    }
+
+    @Test
     void getProductById() throws Exception {
         MockHttpServletResponse response = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/lists/")
                 .param("productId", "LE")
@@ -117,20 +130,7 @@ class BatchStockControllerTest {
     }
 
     @Test
-    void getProductOrder() throws Exception {
-        MockHttpServletResponse response = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/listsorder/")
-                .param("productId","LE")
-                .param("order","L")
-                .header("Authorization", "Bearer " + tokenTest.getAccessToken())
-                .contentType("application/json"))
-                .andReturn().getResponse();
-
-        assertEquals(HttpStatus.OK.value(), response.getStatus());
-    }
-
-    @Test
     void getProductOrderDyas() throws Exception {
-        setUp();
         MockHttpServletResponse response = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/due-date/list/")
                 .param("days","30")
                 .header("Authorization", "Bearer " + tokenTest.getAccessToken())

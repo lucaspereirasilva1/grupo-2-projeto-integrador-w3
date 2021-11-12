@@ -47,7 +47,7 @@ public class BatchStockController {
      * Ordenados por:L = ordenado por lote, C = ordenado por quantidade ou F = ordenado por data vencimiento
      */
     @GetMapping(value = "/listsorder") // Chamada do endpoint: /lists?productId=LE&L, C ou F
-    public ResponseEntity<BatchStockResponseDTO> getProductOrder(@RequestParam("productId") String productId,
+    public ResponseEntity<BatchStockResponseDTO> getProductOrder(@RequestParam("product") String productId,
                                                              @RequestParam("order") String order) {
         BatchStockResponseDTO batchStockResponseDTO = batchStockService.listProductId(productId, order);
         return ResponseEntity.ok(batchStockResponseDTO);
