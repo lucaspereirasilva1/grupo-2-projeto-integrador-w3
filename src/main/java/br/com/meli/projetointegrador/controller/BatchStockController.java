@@ -74,7 +74,7 @@ public class BatchStockController {
      * e ordenado por data vencimiento asc/desc
      */
     @GetMapping(value = "/due-date/lists") // Chamada do endpoint: /due-date/lists?days={}&category={FS/FF/RF}&order={asc/desc}
-    public ResponseEntity<BatchStockListDueDateDTO> getProduct(@RequestParam("days") Integer days,
+    public ResponseEntity<BatchStockListDueDateDTO> getProductDCO(@RequestParam("days") Integer days,
                                                                @RequestParam("category") String category,
                                                                @RequestParam("order") String order) {
         BatchStockListDueDateDTO batchStockListDueDateDTO = batchStockService.listBatchStockDueDate(days, category, order);

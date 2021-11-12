@@ -130,8 +130,23 @@ class BatchStockControllerTest {
 
     @Test
     void getProductOrderDyas() throws Exception {
+        setUp();
         MockHttpServletResponse response = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/due-date/list/")
                 .param("days","30")
+                .header("Authorization", "Bearer " + tokenTest.getAccessToken())
+                .contentType("application/json"))
+                .andReturn().getResponse();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+    }
+
+    @Test
+    void getProductOrderDCO() throws Exception {
+        setUp();
+        MockHttpServletResponse response = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/due-date/lists/")
+                .param("days","30")
+                .param("category","FS")
+                .param("order","asc")
                 .header("Authorization", "Bearer " + tokenTest.getAccessToken())
                 .contentType("application/json"))
                 .andReturn().getResponse();
@@ -171,7 +186,7 @@ class BatchStockControllerTest {
                 .productName("leite")
                 .section(section)
                 .productPrice(new BigDecimal("2.0"))
-                .dueDate(LocalDate.now().plusWeeks(+2))
+                .dueDate(LocalDate.now())
                 .category(sectionCategory)
                 .build();
         productRepository.save(product);
@@ -185,11 +200,36 @@ class BatchStockControllerTest {
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())
-                .dueDate(LocalDate.now().plusWeeks(+2))
+                .dueDate(LocalDate.of(2022,  12,  1))
                 .section(section)
                 .agent(agent)
                 .build();
         batchStockRepository.save(batchStock);
+
+        Product productDois = new Product()
+                .productId("LE")
+                .productName("leite")
+                .section(section)
+                .productPrice(new BigDecimal("2.0"))
+                .dueDate(LocalDate.now().plusWeeks(+2))
+                .category(sectionCategory)
+                .build();
+        productRepository.save(productDois);
+
+        BatchStock batchStockDois = new BatchStock()
+                .batchNumber(1)
+                .productId("LE")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now().plusWeeks(+2))
+                .section(section)
+                .agent(agent)
+                .build();
+        batchStockRepository.save(batchStockDois);
 
         Role role = new Role();
         role.setName(ERole.ROLE_USER);
