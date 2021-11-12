@@ -72,6 +72,9 @@ class InboundOrderControllerTest {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private SectionCategoryRepository sectionCategoryRepository;
+
 
     @BeforeEach
     void setup() throws Exception{
@@ -87,6 +90,8 @@ class InboundOrderControllerTest {
         signupRequest.setEmail("lucas@gmail.com");
         signupRequest.setPassword("12345678");
         signupRequest.setRole(roles);
+        signupRequest.setCpf("11122233344");
+        signupRequest.setWarehouseCode("SP");
         mockMvc.perform(post("http://localhost:8080/api/auth/signup")
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(signupRequest)))
@@ -113,24 +118,24 @@ class InboundOrderControllerTest {
     void postTest() throws Exception {
         productRepository.deleteAll();
 
-        Product product = new Product()
-                .productId("LE")
-                .productName("leite")
-                .section(Optional.of(sectionRepository.findBySectionCode("LA")).get().orElse(null))
+        Product productDois = new Product()
+                .productId("CA")
+                .productName("carne")
+                .section(sectionRepository.findBySectionCode("CO").orElse(new Section()))
                 .productPrice(new BigDecimal("2.0"))
                 .dueDate(LocalDate.now())
-                .category(new SectionCategory().name(ESectionCategory.FF))
+                .category(sectionCategoryRepository.findByName(ESectionCategory.FF).orElse(new SectionCategory()))
                 .build();
-        productRepository.save(product);
+        productRepository.save(productDois);
 
         SectionDTO sectionDTO = new SectionDTO()
-                .sectionCode("LA")
+                .sectionCode("CO")
                 .warehouseCode("SP")
                 .build();
 
         BatchStockDTO batchStockDTO = new BatchStockDTO()
                 .batchNumber(1)
-                .productId("LE")
+                .productId("CA")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
                 .initialQuantity(1)
@@ -142,7 +147,7 @@ class InboundOrderControllerTest {
 
         BatchStockDTO batchStockDTOUm = new BatchStockDTO()
                 .batchNumber(2)
-                .productId("LE")
+                .productId("CA")
                 .currentTemperature(20.0F)
                 .minimumTemperature(15.0F)
                 .initialQuantity(1)
@@ -160,6 +165,7 @@ class InboundOrderControllerTest {
                 .build();
 
         MockHttpServletResponse response = mockMvc.perform(post("http://localhost:8080/api/v1/fresh-products/inboundorder")
+                .param("cpf", "11122233344")
                 .header("Authorization", "Bearer " + tokenTest.getAccessToken())
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(inboundOrderDTO)))
@@ -233,6 +239,7 @@ class InboundOrderControllerTest {
         inboundOrderRepository.save(inboundOrder);
 
         MockHttpServletResponse response = mockMvc.perform(put("http://localhost:8080/api/v1/fresh-products/inboundorder")
+                .param("cpf", "11122233344")
                 .header("Authorization", "Bearer " + tokenTest.getAccessToken())
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(inboundOrderDTO)))
@@ -256,12 +263,18 @@ class InboundOrderControllerTest {
                 .build();
         sectionRepository.save(section);
 
-        Agent agent = new Agent().
-                cpf("11122233344").
-                name("lucas").
-                warehouse(warehouse).
-                build();
-        agentRepository.save(agent);
+        Section sectionDois = new Section()
+                .sectionCode("CO")
+                .sectionName("laticinios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+        sectionRepository.save(sectionDois);
+
+        SectionCategory sectionCategory = new SectionCategory()
+                .name(ESectionCategory.FF)
+                .build();
+        sectionCategoryRepository.save(sectionCategory);
 
         Product product = new Product()
                 .productId("LE")
@@ -269,9 +282,19 @@ class InboundOrderControllerTest {
                 .section(section)
                 .productPrice(new BigDecimal("2.0"))
                 .dueDate(LocalDate.now())
-                .category(new SectionCategory().name(ESectionCategory.FF))
+                .category(sectionCategory)
                 .build();
         productRepository.save(product);
+
+        Product productDois = new Product()
+                .productId("CA")
+                .productName("carne")
+                .section(sectionDois)
+                .productPrice(new BigDecimal("2.0"))
+                .dueDate(LocalDate.now())
+                .category(sectionCategory)
+                .build();
+        productRepository.save(productDois);
 
         Role role = new Role();
         role.setName(ERole.ROLE_USER);
@@ -294,6 +317,7 @@ class InboundOrderControllerTest {
         agentRepository.deleteAll();
         batchStockRepository.deleteAll();
         warehouseRepository.deleteAll();
+        sectionCategoryRepository.deleteAll();
     }
 
 }

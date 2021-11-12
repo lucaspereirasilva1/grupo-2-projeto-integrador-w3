@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -99,6 +100,8 @@ class ProductRepositoryTest {
 
     @Test
     void findProductByCategory() {
-        assertFalse(productRepository.findProductByCategory(new SectionCategory().name(ESectionCategory.FF)).isEmpty());
+        Optional<SectionCategory> sectionCategory = sectionCategoryRepository.findByName(ESectionCategory.FF);
+        final List<Product> productByCategoryList  = productRepository.findProductByCategory(sectionCategory.orElse(new SectionCategory()));
+        assertFalse(productByCategoryList.isEmpty());
     }
 }

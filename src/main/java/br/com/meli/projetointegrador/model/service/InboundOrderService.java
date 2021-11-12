@@ -6,6 +6,7 @@ import br.com.meli.projetointegrador.model.dto.AgentDTO;
 import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
 import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;
 import br.com.meli.projetointegrador.model.entity.InboundOrder;
+import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.repository.InboundOrderRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -52,7 +53,8 @@ public class InboundOrderService {
             }
         });
         InboundOrder inboundOrder = modelMapper.map(inboundOrderDTO, InboundOrder.class);
-        inboundOrder.section(sectionService.find(inboundOrderDTO.getSectionDTO().getSectionCode()));
+        Section section = sectionService.find(inboundOrderDTO.getSectionDTO().getSectionCode());
+        inboundOrder.section(section);
         batchStockService.postAll(inboundOrder.getListBatchStock(), agentDTO, inboundOrderDTO.getSectionDTO());
         inboundOrderRepository.save(inboundOrder);
         return inboundOrderDTO.getListBatchStockDTO();
