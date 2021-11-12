@@ -1,9 +1,12 @@
 package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.AgentException;
+import br.com.meli.projetointegrador.model.dto.AgentDTO;
 import br.com.meli.projetointegrador.model.entity.Agent;
+import br.com.meli.projetointegrador.model.entity.Warehouse;
 import br.com.meli.projetointegrador.model.repository.AgentRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Optional;
 
@@ -40,11 +43,6 @@ class AgentServiceTest {
 
     @Test
     void findNotExistTest() {
-        Agent agent = new Agent()
-                .name("lucas")
-                .cpf("11122233344")
-                .build();
-
         when(agentRepository.findByCpf(anyString()))
                 .thenReturn(Optional.empty());
         AgentException agentException = assertThrows(AgentException.class, () ->
@@ -55,4 +53,24 @@ class AgentServiceTest {
         assertTrue(expectedMessage.contains(agentException.getMessage()));
     }
 
+
+    @Test
+    void findByCpf() {
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+        Agent agent = new Agent()
+                .name("lucas")
+                .cpf("11122233344")
+                .warehouse(warehouse)
+                .build();
+        when(agentRepository.findByCpf(anyString()))
+                .thenReturn(Optional.of(agent));
+        final AgentDTO agentDTO = agentService.findByCpf("11122233344");
+        assertFalse(ObjectUtils.isEmpty(agentDTO));
+        assertEquals("11122233344", agentDTO.getCpf());
+        assertEquals("lucas", agentDTO.getName());
+        assertEquals("SP", agentDTO.getWarehouseCode());
+    }
 }

@@ -4,6 +4,7 @@ import br.com.meli.projetointegrador.exception.WarehouseException;
 import br.com.meli.projetointegrador.model.entity.Warehouse;
 import br.com.meli.projetointegrador.model.repository.WarehouseRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Optional;
 
@@ -53,7 +54,9 @@ class WarehouseServiceTest {
                 .build();
         when(mockWarehouseRepository.findByWarehouseCode(anyString()))
                 .thenReturn(Optional.of(warehouse));
-        assertEquals("RS", warehouse.getWarehouseCode());
+        final Warehouse warehouseReturn = warehouseService.find("RS");
+        assertFalse(ObjectUtils.isEmpty(warehouseReturn));
+        assertEquals("RS", warehouseReturn.getWarehouseCode());
     }
 
     @Test

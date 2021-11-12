@@ -1,6 +1,7 @@
 package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.AgentException;
+import br.com.meli.projetointegrador.model.dto.AgentDTO;
 import br.com.meli.projetointegrador.model.entity.Agent;
 import br.com.meli.projetointegrador.model.entity.Warehouse;
 import br.com.meli.projetointegrador.model.repository.AgentRepository;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.ObjectUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -69,6 +71,15 @@ class AgentServiceIntegrationTest {
                 agentService.find(""));
         String expectedMessage = "Representante nao cadastrado na base!!! Por gentileza realizar o cadastro";
         assertTrue(expectedMessage.contains(agentException.getMessage()));
+    }
+
+    @Test
+    void findByCpf() {
+        final AgentDTO agentDTO = agentService.findByCpf("11122233344");
+        assertFalse(ObjectUtils.isEmpty(agentDTO));
+        assertEquals("11122233344", agentDTO.getCpf());
+        assertEquals("lucas", agentDTO.getName());
+        assertEquals("SP", agentDTO.getWarehouseCode());
     }
 
 }

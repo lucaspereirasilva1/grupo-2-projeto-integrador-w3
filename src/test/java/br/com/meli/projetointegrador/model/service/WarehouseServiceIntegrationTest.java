@@ -8,11 +8,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.ObjectUtils;
 
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
@@ -62,9 +60,10 @@ class WarehouseServiceIntegrationTest {
 
     @Test
     void findExistIntegrationTest() {
-        final Optional<Warehouse> warehouse = warehouseRepository.findByWarehouseCode("RS");
-        assertTrue(warehouse.isPresent());
-
+        final Warehouse warehouse = warehouseService.find("RS");
+        assertFalse(ObjectUtils.isEmpty(warehouse));
+        assertEquals("RS", warehouse.getWarehouseCode());
+        assertEquals("POA", warehouse.getWarehouseName());
     }
 
     @Test

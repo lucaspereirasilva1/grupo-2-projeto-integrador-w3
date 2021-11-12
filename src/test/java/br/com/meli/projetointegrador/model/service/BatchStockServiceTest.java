@@ -117,6 +117,7 @@ class BatchStockServiceTest {
         AgentDTO agentDTO = new AgentDTO()
                 .cpf("11122233344")
                 .name("lucas")
+                .warehouseCode("SP")
                 .build();
 
         Warehouse warehouse = new Warehouse()
@@ -134,6 +135,7 @@ class BatchStockServiceTest {
         Agent agent = new Agent().
                 cpf("11122233344").
                 name("lucas").
+                warehouse(warehouse).
                 build();
 
         BatchStock batchStock = new BatchStock()
@@ -168,11 +170,14 @@ class BatchStockServiceTest {
                 thenReturn(true);
         when(mockBatchStockRepository.save(any(BatchStock.class)))
                 .thenReturn(batchStock);
+        when(mockAgentService.find(anyString()))
+                .thenReturn(agent);
+
 
         batchStockService.putAll(Collections.singletonList(batchStock), Collections.singletonList(batchStockDTO)
                 ,agentDTO, sectionDTO);
 
-        verify(mockBatchStockRepository, times(1)).save(any(BatchStock.class));
+        verify(mockBatchStockRepository, times(1)).saveAll(anyList());
     }
 
     @Test
