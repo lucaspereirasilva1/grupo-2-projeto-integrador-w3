@@ -6,6 +6,7 @@ import br.com.meli.projetointegrador.model.dto.AgentDTO;
 import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
 import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;
 import br.com.meli.projetointegrador.model.entity.InboundOrder;
+import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.repository.InboundOrderRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -52,7 +53,8 @@ public class InboundOrderService {
             }
         });
         InboundOrder inboundOrder = modelMapper.map(inboundOrderDTO, InboundOrder.class);
-        inboundOrder.section(sectionService.find(inboundOrderDTO.getSectionDTO().getSectionCode()));
+        Section section = sectionService.find(inboundOrderDTO.getSectionDTO().getSectionCode());
+        inboundOrder.section(section);
         batchStockService.postAll(inboundOrder.getListBatchStock(), agentDTO, inboundOrderDTO.getSectionDTO());
         inboundOrderRepository.save(inboundOrder);
         return inboundOrderDTO.getListBatchStockDTO();
@@ -64,6 +66,11 @@ public class InboundOrderService {
      * @return faz o put e retorna a lista alterada.
      */
     public List<BatchStockDTO> put(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
+        inboundOrderDTO.getListBatchStockDTO().forEach(b -> {
+            if (b.getDueDate().isBefore(LocalDate.now())) {
+                throw new InboundOrderException("Estoque com data retroativa: " + b.getDueDate());
+            }
+        });
         Optional<InboundOrder> inboundOrderCheck = inboundOrderRepository.findByOrderNumber(inboundOrderDTO.getOrderNumber());
         if (inboundOrderCheck.isPresent()) {
             InboundOrder inboundOrder = inboundOrderCheck.get();
@@ -84,9 +91,12 @@ public class InboundOrderService {
      * @param agentDTO recebe um agenteDTO
      */
     public void inputValid(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
-        if (!warehouseService.validWarehouse(inboundOrderDTO.getSectionDTO().getWarehouseCode()) |
-            !inboundOrderDTO.getSectionDTO().getWarehouseCode().equals(agentDTO.getWarehouseCode()) |
-            !sectionService.validSection(inboundOrderDTO.getSectionDTO().getSectionCode())) {
+        Boolean validAgentIntoWarehouse = inboundOrderDTO.getSectionDTO().getWarehouseCode().equals(agentDTO.getWarehouseCode());
+        Boolean validWarehouse = warehouseService.validWarehouse(inboundOrderDTO.getSectionDTO().getWarehouseCode());
+        Boolean validSection = sectionService.validSection(inboundOrderDTO.getSectionDTO().getSectionCode());
+        if (Boolean.FALSE.equals(validWarehouse) ||
+            Boolean.FALSE.equals(validAgentIntoWarehouse) ||
+            Boolean.FALSE.equals(validSection)) {
             throw new ValidInputException("Problema na validacao dos dados de entrada!!!");
         }
     }

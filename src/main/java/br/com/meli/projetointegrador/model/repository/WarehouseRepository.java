@@ -4,6 +4,7 @@ import br.com.meli.projetointegrador.model.entity.Warehouse;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -18,4 +19,5 @@ public interface WarehouseRepository  extends MongoRepository <Warehouse, String
 
     Optional<Warehouse> findByWarehouseCode(String warehouseCode);
     Boolean existsByWarehouseCode(String warehouseCode);
+    List<Warehouse> findWarehouseBy(String productId);
 }

@@ -23,6 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -33,7 +34,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureDataMongo
-class ProductControllerTest {
+public class WarehouseControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -42,12 +43,10 @@ class ProductControllerTest {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private RoleRepository roleRepository;
-
-    private TokenTest tokenTest = new TokenTest();
+    private SectionRepository sectionRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    private AgentRepository agentRepository;
 
     @Autowired
     private WarehouseRepository warehouseRepository;
@@ -56,10 +55,15 @@ class ProductControllerTest {
     private ProductRepository productRepository;
 
     @Autowired
-    private SectionRepository sectionRepository;
+    private BatchStockRepository batchStockRepository;
 
     @Autowired
-    private AgentRepository agentRepository;
+    private RoleRepository roleRepository;
+
+    private TokenTest tokenTest = new TokenTest();
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
     private SectionCategoryRepository sectionCategoryRepository;
@@ -74,19 +78,19 @@ class ProductControllerTest {
         roles.add(ERole.ROLE_ADMIN.toString());
         roles.add(ERole.ROLE_MODERATOR.toString());
         SignupRequest signupRequest = new SignupRequest();
-        signupRequest.setUsername("lucas");
-        signupRequest.setEmail("lucas@gmail.com");
+        signupRequest.setUsername("jhony");
+        signupRequest.setEmail("jhony@gmail.com");
         signupRequest.setPassword("12345678");
-        signupRequest.setRole(roles);
-        signupRequest.setCpf("11122233344");
+        signupRequest.setCpf("12345678912");
         signupRequest.setWarehouseCode("SP");
+        signupRequest.setRole(roles);
         mockMvc.perform(post("http://localhost:8080/api/auth/signup")
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(signupRequest)))
                 .andReturn().getResponse();
 
         LoginRequest loginRequest = new LoginRequest();
-        loginRequest.setUsername("lucas");
+        loginRequest.setUsername("jhony");
         loginRequest.setPassword("12345678");
         MockHttpServletResponse responseSignin = mockMvc.perform(post("http://localhost:8080/api/auth/signin")
                 .contentType("application/json")
@@ -103,46 +107,14 @@ class ProductControllerTest {
     }
 
     @Test
-    void getProductByCategory() throws Exception {
-        MockHttpServletResponse response = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/list")
-                .param("sectionCategory", "FF")
+    void getQuantityProductsWarehouse() throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/warehouse")
+                .param("productId", "LE")
                 .header("Authorization", "Bearer " + tokenTest.getAccessToken())
                 .contentType("application/json"))
                 .andReturn().getResponse();
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
-    }
-
-    @Test
-    void getProductByCategoryBadRequest() throws Exception {
-        MockHttpServletResponse response = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/list")
-                .param("sectionCategory", "OO")
-                .header("Authorization", "Bearer " + tokenTest.getAccessToken())
-                .contentType("application/json"))
-                .andReturn().getResponse();
-
-        assertEquals(HttpStatus.BAD_REQUEST.value(), response.getStatus());
-    }
-
-    @Test
-    void getlistProductBylist() throws Exception {
-        MockHttpServletResponse response = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/products")
-                .header("Authorization", "Bearer " + tokenTest.getAccessToken())
-                .contentType("application/json"))
-                .andReturn().getResponse();
-
-        assertEquals(HttpStatus.OK.value(), response.getStatus());
-    }
-
-    @Test
-    void getlistProductBylistNotFound() throws Exception {
-        productRepository.deleteAll();
-        MockHttpServletResponse response = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/products")
-                .header("Authorization", "Bearer " + tokenTest.getAccessToken())
-                .contentType("application/json"))
-                .andReturn().getResponse();
-
-        assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatus());
     }
 
     void createData() {
@@ -182,6 +154,21 @@ class ProductControllerTest {
                 .build();
         productRepository.save(product);
 
+        BatchStock batchStock = new BatchStock()
+                .batchNumber(1)
+                .productId("LE")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.of(2022,  12,  1))
+                .section(section)
+                .agent(agent)
+                .build();
+        batchStockRepository.save(batchStock);
+
         Role role = new Role();
         role.setName(ERole.ROLE_USER);
         roleRepository.save(role);
@@ -197,10 +184,10 @@ class ProductControllerTest {
 
     void clearBase() {
         userRepository.deleteAll();
-        productRepository.deleteAll();
         roleRepository.deleteAll();
         sectionRepository.deleteAll();
         agentRepository.deleteAll();
+        batchStockRepository.deleteAll();
         warehouseRepository.deleteAll();
         sectionCategoryRepository.deleteAll();
     }

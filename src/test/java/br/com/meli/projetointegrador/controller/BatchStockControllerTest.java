@@ -2,6 +2,7 @@ package br.com.meli.projetointegrador.controller;
 
 import br.com.meli.projetointegrador.model.dto.LoginRequest;
 import br.com.meli.projetointegrador.model.dto.SignupRequest;
+import br.com.meli.projetointegrador.model.dto.TokenTest;
 import br.com.meli.projetointegrador.model.entity.*;
 import br.com.meli.projetointegrador.model.enums.ERole;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
@@ -18,7 +19,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
@@ -31,7 +31,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
-@ActiveProfiles("test")
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureDataMongo
@@ -83,6 +82,8 @@ class BatchStockControllerTest {
         signupRequest.setEmail("lucas@gmail.com");
         signupRequest.setPassword("12345678");
         signupRequest.setRole(roles);
+        signupRequest.setCpf("11122233344");
+        signupRequest.setWarehouseCode("SP");
         mockMvc.perform(post("http://localhost:8080/api/auth/signup")
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(signupRequest)))

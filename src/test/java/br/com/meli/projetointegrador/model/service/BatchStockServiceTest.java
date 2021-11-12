@@ -6,10 +6,8 @@ import br.com.meli.projetointegrador.model.dto.*;
 import br.com.meli.projetointegrador.model.entity.*;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
-import br.com.meli.projetointegrador.model.repository.ProductRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -32,7 +29,6 @@ import static org.mockito.Mockito.*;
 
 public class BatchStockServiceTest {
 
-    private final ProductRepository mockProductRepository = mock(ProductRepository.class);
     private final BatchStockRepository mockBatchStockRepository = mock(BatchStockRepository.class);
     private final SectionService mockSectionService = mock(SectionService.class);
     private final AgentService mockAgentService = mock(AgentService.class);
@@ -41,7 +37,8 @@ public class BatchStockServiceTest {
             mockSectionService, mockAgentService, mockProductService);
 
     @BeforeEach
-    void setUp() {}
+    void setUp() {
+    }
 
     @Test
     void postAllTest() {
@@ -120,6 +117,7 @@ public class BatchStockServiceTest {
         AgentDTO agentDTO = new AgentDTO()
                 .cpf("11122233344")
                 .name("lucas")
+                .warehouseCode("SP")
                 .build();
 
         Warehouse warehouse = new Warehouse()
@@ -137,6 +135,7 @@ public class BatchStockServiceTest {
         Agent agent = new Agent().
                 cpf("11122233344").
                 name("lucas").
+                warehouse(warehouse).
                 build();
 
         BatchStock batchStock = new BatchStock()
@@ -171,11 +170,14 @@ public class BatchStockServiceTest {
                 thenReturn(true);
         when(mockBatchStockRepository.save(any(BatchStock.class)))
                 .thenReturn(batchStock);
+        when(mockAgentService.find(anyString()))
+                .thenReturn(agent);
+
 
         batchStockService.putAll(Collections.singletonList(batchStock), Collections.singletonList(batchStockDTO)
                 ,agentDTO, sectionDTO);
 
-        verify(mockBatchStockRepository, times(1)).save(any(BatchStock.class));
+        verify(mockBatchStockRepository, times(1)).saveAll(anyList());
     }
 
     @Test
@@ -739,7 +741,7 @@ public class BatchStockServiceTest {
 
         ProductExceptionNotFound productExceptionNotFound = assertThrows
                 (ProductExceptionNotFound.class,() ->
-                                batchStockService.listProductId(batchStockResponseDTO.getProductId(),"T"));
+                                batchStockService.listProductId("QJ","T"));
 
         String menssagemEsperada = "Codigo do filtro nao existe!";
 
@@ -775,8 +777,66 @@ public class BatchStockServiceTest {
     }
 
     @Test
-    void dueDataProductTest() {
+    void dueDataProduct() {
         assertTrue(batchStockService.dueDataProduct(LocalDate.of(2022, 3, 21)));
+    }
+
+    @Test
+    void validQuantityProductBatchStock(){
+        List<BatchStock> listBatchStock = new ArrayList<>();
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("laticinios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+
+        Agent agent = new Agent().
+                cpf("11122233344").
+                name("jhony").
+                build();
+
+        BatchStock batchStockUm = new BatchStock()
+                .batchNumber(2)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now().plusWeeks(+7))
+                .agent(agent)
+                .section(section)
+                .build();
+        listBatchStock.add(batchStockUm);
+
+        BatchStock batchStockDois = new BatchStock()
+                .batchNumber(1)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(4)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now().plusWeeks(+4))
+                .agent(agent)
+                .section(section)
+                .build();
+        listBatchStock.add(batchStockDois);
+
+        when(mockBatchStockRepository.findAllByProductId(anyString())).thenReturn(listBatchStock);
+
+        Integer quantityProductBatchStock = batchStockService.quantityProductBatchStock("QJ", "SP");
+
+        assertEquals(quantityProductBatchStock,9);
     }
 
     @Test

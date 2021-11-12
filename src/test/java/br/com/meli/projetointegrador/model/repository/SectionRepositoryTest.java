@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 
 @DataMongoTest
-public class SectionRepositoryTest {
+class SectionRepositoryTest {
 
     @Autowired
     private SectionRepository sectionRepository;
