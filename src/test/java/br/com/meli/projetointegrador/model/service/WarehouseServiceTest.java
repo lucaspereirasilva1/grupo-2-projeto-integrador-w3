@@ -5,6 +5,7 @@ import br.com.meli.projetointegrador.model.dto.BatchStockResponseWarehousesDTO;
 import br.com.meli.projetointegrador.model.entity.Warehouse;
 import br.com.meli.projetointegrador.model.repository.WarehouseRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.util.ObjectUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,7 @@ import static org.mockito.Mockito.*;
  * Camada de testes unitarios do service responsavel pela regra de negocio relacionada ao warehouse
  */
 
-public class WarehouseServiceTest {
+class WarehouseServiceTest {
 
     private final WarehouseRepository mockWarehouseRepository = mock(WarehouseRepository.class);
     private final BatchStockService mockbatchStockService = mock(BatchStockService.class);
@@ -56,7 +57,9 @@ public class WarehouseServiceTest {
                 .build();
         when(mockWarehouseRepository.findByWarehouseCode(anyString()))
                 .thenReturn(Optional.of(warehouse));
-        assertEquals("RS", warehouse.getWarehouseCode());
+        final Warehouse warehouseReturn = warehouseService.find("RS");
+        assertFalse(ObjectUtils.isEmpty(warehouseReturn));
+        assertEquals("RS", warehouseReturn.getWarehouseCode());
     }
 
     @Test

@@ -7,6 +7,7 @@ import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import br.com.meli.projetointegrador.model.repository.SectionRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.Optional;
 
@@ -34,7 +35,8 @@ public class SectionService {
      * @return true ou exception personalizada
      */
     public Boolean validSection(String sectionCode) {
-        if (sectionRepository.existsSectionBySectionCode(sectionCode)){
+        Boolean existsSectionBySectionCode = sectionRepository.existsSectionBySectionCode(sectionCode);
+        if (Boolean.TRUE.equals(existsSectionBySectionCode)){
             return true;
         } else {
             throw new SectionException("Nao existe esse setor, por gentileza verificar o setor!");
@@ -57,10 +59,11 @@ public class SectionService {
      * @return verdadeiro ou exception.
      */
     public Boolean validSectionInformed(BatchStock batchStock) {
-        if(!(batchStock.getSection()==null))
+        if(!ObjectUtils.isEmpty(batchStock.getSection())){
             return true;
-        else
+        }else{
             throw new ValidInputException("Sessao nao informada!!! Reenviar com uma sessao  existente!");
+        }
     }
 
     /**

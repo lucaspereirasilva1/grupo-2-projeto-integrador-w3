@@ -2,6 +2,7 @@ package br.com.meli.projetointegrador.controller;
 
 import br.com.meli.projetointegrador.model.dto.LoginRequest;
 import br.com.meli.projetointegrador.model.dto.SignupRequest;
+import br.com.meli.projetointegrador.model.dto.TokenTest;
 import br.com.meli.projetointegrador.model.entity.*;
 import br.com.meli.projetointegrador.model.enums.ERole;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
@@ -77,6 +78,8 @@ class ProductControllerTest {
         signupRequest.setEmail("lucas@gmail.com");
         signupRequest.setPassword("12345678");
         signupRequest.setRole(roles);
+        signupRequest.setCpf("11122233344");
+        signupRequest.setWarehouseCode("SP");
         mockMvc.perform(post("http://localhost:8080/api/auth/signup")
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(signupRequest)))

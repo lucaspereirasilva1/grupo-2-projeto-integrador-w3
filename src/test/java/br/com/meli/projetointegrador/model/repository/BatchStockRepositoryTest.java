@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
  */
 
 @DataMongoTest
-public class BatchStockRepositoryTest {
+class BatchStockRepositoryTest {
 
     @Autowired
     private BatchStockRepository batchStockRepository;

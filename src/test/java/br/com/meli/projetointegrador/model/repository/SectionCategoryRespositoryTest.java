@@ -11,7 +11,7 @@ import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataMongoTest
-public class SectionCategoryRespositoryTest {
+class SectionCategoryRespositoryTest {
 
     @Autowired
     private SectionCategoryRepository sectionCategoryRepository;

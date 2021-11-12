@@ -37,7 +37,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureDataMongo
-public class PurchaseOrderControllerTest {
+class PurchaseOrderControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -103,6 +103,8 @@ public class PurchaseOrderControllerTest {
         signupRequest.setEmail("lucas@gmail.com");
         signupRequest.setPassword("12345678");
         signupRequest.setRole(roles);
+        signupRequest.setCpf("11122233344");
+        signupRequest.setWarehouseCode("SP");
         mockMvc.perform(post("http://localhost:8080/api/auth/signup")
                 .contentType("application/json")
                 .content(objectMapper.writeValueAsString(signupRequest)))

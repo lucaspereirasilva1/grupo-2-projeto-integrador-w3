@@ -6,6 +6,7 @@ import br.com.meli.projetointegrador.model.dto.AgentDTO;
 import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
 import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;
 import br.com.meli.projetointegrador.model.entity.InboundOrder;
+import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.repository.InboundOrderRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -52,7 +53,8 @@ public class InboundOrderService {
             }
         });
         InboundOrder inboundOrder = modelMapper.map(inboundOrderDTO, InboundOrder.class);
-        inboundOrder.section(sectionService.find(inboundOrderDTO.getSectionDTO().getSectionCode()));
+        Section section = sectionService.find(inboundOrderDTO.getSectionDTO().getSectionCode());
+        inboundOrder.section(section);
         batchStockService.postAll(inboundOrder.getListBatchStock(), agentDTO, inboundOrderDTO.getSectionDTO());
         inboundOrderRepository.save(inboundOrder);
         return inboundOrderDTO.getListBatchStockDTO();
@@ -90,9 +92,11 @@ public class InboundOrderService {
      */
     public void inputValid(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
         Boolean validAgentIntoWarehouse = inboundOrderDTO.getSectionDTO().getWarehouseCode().equals(agentDTO.getWarehouseCode());
-        if (!warehouseService.validWarehouse(inboundOrderDTO.getSectionDTO().getWarehouseCode()) ||
+        Boolean validWarehouse = warehouseService.validWarehouse(inboundOrderDTO.getSectionDTO().getWarehouseCode());
+        Boolean validSection = sectionService.validSection(inboundOrderDTO.getSectionDTO().getSectionCode());
+        if (Boolean.FALSE.equals(validWarehouse) ||
             Boolean.FALSE.equals(validAgentIntoWarehouse) ||
-            !sectionService.validSection(inboundOrderDTO.getSectionDTO().getSectionCode())) {
+            Boolean.FALSE.equals(validSection)) {
             throw new ValidInputException("Problema na validacao dos dados de entrada!!!");
         }
     }

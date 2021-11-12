@@ -1,5 +1,7 @@
 package br.com.meli.projetointegrador.model.service;
 
+import br.com.meli.projetointegrador.exception.BatchStockException;
+import br.com.meli.projetointegrador.exception.ProductExceptionNotFound;
 import br.com.meli.projetointegrador.model.dto.*;
 import br.com.meli.projetointegrador.model.entity.*;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
@@ -29,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 
 @SpringBootTest
-public class BatchStocketServiceIntegrationTest {
+class BatchStocketServiceIntegrationTest {
 
     @Autowired
     private BatchStockRepository batchStockRepository;
@@ -124,7 +126,7 @@ public class BatchStocketServiceIntegrationTest {
                 .minimumTemperature(5.0F)
                 .initialQuantity(1)
                 .currentQuantity(5)
-                .manufacturingDate(LocalDate.now())
+                .manufacturingDate(LocalDate.of(2022, 1, 1))
                 .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now())
                 .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
@@ -160,6 +162,140 @@ public class BatchStocketServiceIntegrationTest {
         final BatchStockResponseDTO productResponseDTO = batchStockService.listProductId("QJ", "");
         assertFalse(ObjectUtils.isEmpty(productResponseDTO));
         assertEquals("QJ", productResponseDTO.getProductId());
+    }
+
+//    @Test
+//    void validListProductIdNotExist(){
+//        BatchStockException batchStockException = assertThrows
+//                (BatchStockException.class,() ->
+//                        batchStockService.listProductId("ME",""));
+//
+//        String menssagemEsperada = "Nao existe estoques para esse produto!!!";
+//
+//        assertTrue(menssagemEsperada.contains(batchStockException.getMessage()));
+//    }
+
+    @Test
+    void validListProductIdExpiredDate() {
+        ProductExceptionNotFound productExceptionNotFound = assertThrows
+                (ProductExceptionNotFound.class, () ->
+                        batchStockService.listProductId("ME", ""));
+
+        String menssagemEsperada = "Nao existe estoques vigentes para esse produto, por favor verifique os dados inseridos!!!";
+
+        assertTrue(menssagemEsperada.contains(productExceptionNotFound.getMessage()));
+    }
+
+    @Test
+    void validListProductIdByOrderStock(){
+        List<BatchStockListProductDTO> batchStockListProductDTOList = new ArrayList<>();
+
+        BatchStockListProductDTO batchStockListProductDTO = new BatchStockListProductDTO()
+                .batchNumber(1)
+                .currentQuantity(5)
+                .dueDate(LocalDate.of(2022, 2, 1))
+                .build();
+
+        batchStockListProductDTOList.add(batchStockListProductDTO);
+
+        SectionDTO sectionDTO = new SectionDTO()
+                .sectionCode("LA")
+                .warehouseCode("SP")
+                .build();
+
+        BatchStockResponseDTO batchStockResponseDTO = new BatchStockResponseDTO()
+                .sectionDTO(sectionDTO)
+                .productId("QJ")
+                .batchStock(batchStockListProductDTOList)
+                .build();
+
+        assertEquals(batchStockResponseDTO, batchStockService.listProductId(batchStockResponseDTO.getProductId(),"L"));
+    }
+
+    @Test
+    void validListProductIdByOrderQuantity(){
+        List<BatchStockListProductDTO> batchStockListProductDTOList = new ArrayList<>();
+
+        BatchStockListProductDTO batchStockListProductDTO = new BatchStockListProductDTO()
+                .batchNumber(1)
+                .currentQuantity(5)
+                .dueDate(LocalDate.of(2022, 2, 1))
+                .build();
+
+        batchStockListProductDTOList.add(batchStockListProductDTO);
+
+        SectionDTO sectionDTO = new SectionDTO()
+                .sectionCode("LA")
+                .warehouseCode("SP")
+                .build();
+
+        BatchStockResponseDTO batchStockResponseDTO = new BatchStockResponseDTO()
+                .sectionDTO(sectionDTO)
+                .productId("QJ")
+                .batchStock(batchStockListProductDTOList)
+                .build();
+
+        assertEquals(batchStockResponseDTO, batchStockService.listProductId(batchStockResponseDTO.getProductId(),"C"));
+    }
+
+    @Test
+    void validListProductIdByOrderDueDate(){
+        List<BatchStockListProductDTO> batchStockListProductDTOList = new ArrayList<>();
+
+        BatchStockListProductDTO batchStockListProductDTO = new BatchStockListProductDTO()
+                .batchNumber(1)
+                .currentQuantity(5)
+                .dueDate(LocalDate.of(2022, 2, 1))
+                .build();
+
+        batchStockListProductDTOList.add(batchStockListProductDTO);
+
+        SectionDTO sectionDTO = new SectionDTO()
+                .sectionCode("LA")
+                .warehouseCode("SP")
+                .build();
+
+        BatchStockResponseDTO batchStockResponseDTO = new BatchStockResponseDTO()
+                .sectionDTO(sectionDTO)
+                .productId("QJ")
+                .batchStock(batchStockListProductDTOList)
+                .build();
+
+        assertEquals(batchStockResponseDTO, batchStockService.listProductId(batchStockResponseDTO.getProductId(),"F"));
+    }
+
+    @Test
+    void validListProductIdByOrderNotExist(){
+        ProductExceptionNotFound productExceptionNotFound = assertThrows
+                (ProductExceptionNotFound.class,() ->
+                        batchStockService.listProductId("QJ","T"));
+
+        String menssagemEsperada = "Codigo do filtro nao existe!";
+
+        assertTrue(menssagemEsperada.contains(productExceptionNotFound.getMessage()));
+    }
+
+    @Test
+    void updateBatchStockNotExist() {
+        List<ProductPurchaseOrderDTO> listProductPurchaseOrderDTO = new ArrayList<>();
+        ProductPurchaseOrderDTO productPurchaseOrderDTO1 = new ProductPurchaseOrderDTO()
+                .productId("CA")
+                .quantity(5)
+                .build();
+        listProductPurchaseOrderDTO.add(productPurchaseOrderDTO1);
+
+        BatchStockException batchStockException = assertThrows
+                (BatchStockException.class,() ->
+                        batchStockService.updateBatchStock(listProductPurchaseOrderDTO));
+
+        String menssagemEsperada = "Nao foi encontrado estoque para esse produto!!!";
+
+        assertTrue(menssagemEsperada.contains(batchStockException.getMessage()));
+    }
+
+    @Test
+    void dueDataProduct() {
+        assertTrue(batchStockService.dueDataProduct(LocalDate.of(2022, 3, 21)));
     }
 
     void createData() {
@@ -199,6 +335,26 @@ public class BatchStocketServiceIntegrationTest {
                 .build();
         productRepository.save(product);
 
+        Product productTres = new Product()
+                .productId("CA")
+                .productName("carne")
+                .productPrice(new BigDecimal("2.0"))
+                .dueDate(LocalDate.of(2022, 2, 1))
+                .category(sectionCategory)
+                .section(section)
+                .build();
+        productRepository.save(productTres);
+
+        Product productUm = new Product()
+                .productId("ME")
+                .productName("melao")
+                .productPrice(new BigDecimal("2.0"))
+                .dueDate(LocalDate.of(2021, 2, 1))
+                .category(sectionCategory)
+                .section(section)
+                .build();
+        productRepository.save(productUm);
+
         BatchStock batchStock = new BatchStock()
                 .batchNumber(1)
                 .productId("QJ")
@@ -213,6 +369,21 @@ public class BatchStocketServiceIntegrationTest {
                 .section(section)
                 .build();
         batchStockRepository.save(batchStock);
+
+        BatchStock batchStockUm = new BatchStock()
+                .batchNumber(1)
+                .productId("ME")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.of(2021, 2, 1))
+                .agent(agent)
+                .section(section)
+                .build();
+        batchStockRepository.save(batchStockUm);
     }
 
     void clearBase() {

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -25,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 
 @SpringBootTest
-public class WarehouseServiceIntegrationTest {
+class WarehouseServiceIntegrationTest {
 
     @Autowired
     private WarehouseRepository warehouseRepository;
@@ -80,9 +81,10 @@ public class WarehouseServiceIntegrationTest {
 
     @Test
     void findExistIntegrationTest() {
-        final Optional<Warehouse> warehouse = warehouseRepository.findByWarehouseCode("RS");
-        assertTrue(warehouse.isPresent());
-
+        final Warehouse warehouse = warehouseService.find("RS");
+        assertFalse(ObjectUtils.isEmpty(warehouse));
+        assertEquals("RS", warehouse.getWarehouseCode());
+        assertEquals("POA", warehouse.getWarehouseName());
     }
 
     @Test

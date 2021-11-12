@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Camada de teste integrado do service responsavel pela regra de negocio relacionada ao inboundOrder
  */
 @SpringBootTest
-public class InboundOrderServiceIntegrationTest {
+class InboundOrderServiceIntegrationTest {
 
     @Autowired
     private InboundOrderService inboundOrderService;
@@ -248,9 +248,35 @@ public class InboundOrderServiceIntegrationTest {
     void putNotTest() {
         clearBase();
 
-        InboundOrderDTO inboundOrderDTO = new InboundOrderDTO();
+        SectionDTO sectionDTO = new SectionDTO()
+                .sectionCode("LA")
+                .warehouseCode("SP")
+                .build();
 
-        AgentDTO agentDTO = new AgentDTO();
+        BatchStockDTO batchStockDTO = new BatchStockDTO()
+                .batchNumber(1)
+                .productId("LE")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .build();
+
+        InboundOrderDTO inboundOrderDTO = new InboundOrderDTO()
+                .orderNumber(50)
+                .orderDate(LocalDate.now())
+                .sectionDTO(sectionDTO)
+                .batchStockDTO(Collections.singletonList(batchStockDTO))
+                .build();
+
+        AgentDTO agentDTO = new AgentDTO().
+                name("lucas").
+                cpf("11122233344").
+                warehouseCode("SP").
+                build();
 
         InboundOrderException inboundOrderException = assertThrows
                 (InboundOrderException.class, () -> inboundOrderService.put(inboundOrderDTO, agentDTO));
