@@ -1,10 +1,14 @@
 package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.WarehouseException;
+import br.com.meli.projetointegrador.model.dto.BatchStockResponseWarehousesDTO;
+import br.com.meli.projetointegrador.model.dto.WarehouseQuantityDTO;
 import br.com.meli.projetointegrador.model.entity.Warehouse;
 import br.com.meli.projetointegrador.model.repository.WarehouseRepository;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -68,6 +72,31 @@ public class WarehouseServiceTest {
         String receivedMessage = warehouseException.getMessage();
 
         assertTrue(expectedMessage.contains(receivedMessage));
+    }
+
+    @Test
+    void validListQuantityProduct(){
+        List<Warehouse> warehouseList = new ArrayList<>();
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("Sao Paulo")
+                .build();
+        warehouseList.add(warehouse);
+
+        Warehouse warehouseDois = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("Sao Paulo")
+                .build();
+        warehouseList.add(warehouseDois);
+
+        when(mockbatchStockService.quantityProductBatchStock(anyString(), anyString())).thenReturn(10);
+
+        when(mockWarehouseRepository.findWarehouseBy(anyString())).thenReturn(warehouseList);
+
+        BatchStockResponseWarehousesDTO batchStockResponseWarehousesDTO = warehouseService.listQuantityProduct("LA");
+
+        assertTrue(batchStockResponseWarehousesDTO.getWarehouses().size() == 2);
     }
 
 }
