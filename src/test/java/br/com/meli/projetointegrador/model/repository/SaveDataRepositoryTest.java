@@ -1,5 +1,3 @@
-
-
 package br.com.meli.projetointegrador.model.repository;
 
 import br.com.meli.projetointegrador.model.entity.*;
