@@ -452,4 +452,69 @@ class InboundOrderServiceTest {
         assertTrue(mensagemEsperada.contains(mensagemRecebida));
     }
 
+    @Test
+    void postValidOderDateTest() {
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("Sao Paulo")
+                .build();
+
+        InboundOrder inboundOrder = new InboundOrder()
+                .orderNumber(1)
+                .orderDate(LocalDate.of(2021,11,1))
+                .section(section)
+                .build();
+
+        SectionDTO sectionDTO = new SectionDTO()
+                .sectionCode("LA")
+                .warehouseCode("SP")
+                .build();
+
+        BatchStockDTO batchStockDTO = new BatchStockDTO()
+                .batchNumber(1)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.of(2020, 1, 1))
+                .build();
+
+        BatchStockDTO batchStockDTO1 = new BatchStockDTO()
+                .batchNumber(2)
+                .productId("LE")
+                .currentTemperature(20.0F)
+                .minimumTemperature(15.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.of(2020, 1, 1))
+                .build();
+
+        InboundOrderDTO inboundOrderDTO = new InboundOrderDTO()
+                .orderNumber(1)
+                .orderDate(LocalDate.of(2021,11,1))
+                .sectionDTO(sectionDTO)
+                .batchStockDTO(Arrays.asList(batchStockDTO, batchStockDTO1))
+                .build();
+
+        AgentDTO agentDTO = new AgentDTO().
+                name("lucas").
+                cpf("11122233344");
+
+        when(mockInboundOrderRepository.findByOrderNumber(anyInt()))
+                .thenReturn(Optional.ofNullable(inboundOrder));
+
+        InboundOrderException inboundOrderException = assertThrows(InboundOrderException.class, () ->
+                inboundOrderService.post(inboundOrderDTO,agentDTO));
+
+        String expectedMessage = "Order com data retroativa, favor inserir uma data valida!";
+        String receivedMessage = inboundOrderException.getMessage();
+
+        assertTrue(expectedMessage.contains(receivedMessage));
+    }
+
 }
