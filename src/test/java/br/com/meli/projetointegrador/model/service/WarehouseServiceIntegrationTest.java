@@ -14,7 +14,6 @@ import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,6 +38,7 @@ class WarehouseServiceIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        clearBase();
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("RS")
                 .warehouseName("POA")
@@ -61,6 +61,7 @@ class WarehouseServiceIntegrationTest {
     @AfterEach
     void clearBase() {
         warehouseRepository.deleteAll();
+        batchStockRepository.deleteAll();
     }
 
     @Test
@@ -104,5 +105,4 @@ class WarehouseServiceIntegrationTest {
         Integer quantityBatchStock = batchStockRepository.findAllByProductId("LA").size();
         assertEquals(quantityWarehouse, quantityBatchStock);
     }
-
 }

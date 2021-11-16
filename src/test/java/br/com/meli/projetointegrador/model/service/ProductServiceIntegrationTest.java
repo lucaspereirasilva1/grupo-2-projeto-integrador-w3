@@ -140,8 +140,6 @@ class ProductServiceIntegrationTest {
 
     @Test
     void findNotExistTest() {
-        Product product = new Product();
-
         ProductException productException = assertThrows(ProductException.class, () ->
                 productService.find("LK"));
 
