@@ -2,7 +2,6 @@ package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.InboundOrderException;
 import br.com.meli.projetointegrador.exception.ValidInputException;
-import br.com.meli.projetointegrador.exception.WarehouseException;
 import br.com.meli.projetointegrador.model.dto.AgentDTO;
 import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
 import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;
