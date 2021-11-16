@@ -156,6 +156,7 @@ class BatchStockControllerTest {
     }
 
     void createData() {
+        clearBase();
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")
                 .warehouseName("sao paulo")
@@ -218,7 +219,7 @@ class BatchStockControllerTest {
         productRepository.save(productDois);
 
         BatchStock batchStockDois = new BatchStock()
-                .batchNumber(1)
+                .batchNumber(2)
                 .productId("LE")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
@@ -252,6 +253,7 @@ class BatchStockControllerTest {
         agentRepository.deleteAll();
         batchStockRepository.deleteAll();
         warehouseRepository.deleteAll();
+        productRepository.deleteAll();
         sectionCategoryRepository.deleteAll();
     }
 }

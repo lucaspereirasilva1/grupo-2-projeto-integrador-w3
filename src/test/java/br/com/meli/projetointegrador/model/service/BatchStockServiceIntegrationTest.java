@@ -1,5 +1,6 @@
 package br.com.meli.projetointegrador.model.service;
 
+import br.com.meli.projetointegrador.exception.BatchStockException;
 import br.com.meli.projetointegrador.exception.ProductExceptionNotFound;
 import br.com.meli.projetointegrador.model.dto.*;
 import br.com.meli.projetointegrador.model.entity.*;
@@ -58,6 +59,13 @@ public class BatchStockServiceIntegrationTest {
     void setUp() {
         clearBase();
         createData();
+    }
+
+    @Test
+    void listProductId() {
+        final BatchStockResponseDTO productResponseDTO = batchStockService.listProductId("QJ", "");
+        assertFalse(ObjectUtils.isEmpty(productResponseDTO));
+        assertEquals("QJ", productResponseDTO.getProductId());
     }
 
     @AfterEach
@@ -143,6 +151,145 @@ public class BatchStockServiceIntegrationTest {
     }
 
     @Test
+    void validListProductIdExpiredDate() {
+
+        BatchStock batchStock = new BatchStock()
+                .batchNumber(1)
+                .productId("LE")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.of(2021, 12, 1))
+                .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
+                .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
+                .build();
+        batchStockRepository.save(batchStock);
+
+        ProductExceptionNotFound productExceptionNotFound = assertThrows
+                (ProductExceptionNotFound.class, () ->
+                        batchStockService.listProductId("LE", "asc"));
+
+        String menssagemEsperada = "Nao existe estoques vigentes para esse produto, por favor verifique os dados inseridos!!!";
+
+        assertTrue(menssagemEsperada.contains(productExceptionNotFound.getMessage()));
+    }
+
+    @Test
+    void validListProductIdByOrderStock(){
+        List<BatchStockListProductDTO> batchStockListProductDTOList = new ArrayList<>();
+
+        BatchStockListProductDTO batchStockListProductDTO = new BatchStockListProductDTO()
+                .batchNumber(1)
+                .currentQuantity(5)
+                .dueDate(LocalDate.of(2022, 2, 1))
+                .build();
+
+        batchStockListProductDTOList.add(batchStockListProductDTO);
+
+        SectionDTO sectionDTO = new SectionDTO()
+                .sectionCode("LA")
+                .warehouseCode("SP")
+                .build();
+
+        BatchStockResponseDTO batchStockResponseDTO = new BatchStockResponseDTO()
+                .sectionDTO(sectionDTO)
+                .productId("QJ")
+                .batchStock(batchStockListProductDTOList)
+                .build();
+
+        assertEquals(batchStockResponseDTO, batchStockService.listProductId(batchStockResponseDTO.getProductId(),"L"));
+    }
+
+    @Test
+    void validListProductIdByOrderQuantity(){
+        List<BatchStockListProductDTO> batchStockListProductDTOList = new ArrayList<>();
+
+        BatchStockListProductDTO batchStockListProductDTO = new BatchStockListProductDTO()
+                .batchNumber(1)
+                .currentQuantity(5)
+                .dueDate(LocalDate.of(2022, 2, 1))
+                .build();
+
+        batchStockListProductDTOList.add(batchStockListProductDTO);
+
+        SectionDTO sectionDTO = new SectionDTO()
+                .sectionCode("LA")
+                .warehouseCode("SP")
+                .build();
+
+        BatchStockResponseDTO batchStockResponseDTO = new BatchStockResponseDTO()
+                .sectionDTO(sectionDTO)
+                .productId("QJ")
+                .batchStock(batchStockListProductDTOList)
+                .build();
+
+        assertEquals(batchStockResponseDTO, batchStockService.listProductId(batchStockResponseDTO.getProductId(),"C"));
+    }
+
+    @Test
+    void validListProductIdByOrderDueDate(){
+        List<BatchStockListProductDTO> batchStockListProductDTOList = new ArrayList<>();
+
+        BatchStockListProductDTO batchStockListProductDTO = new BatchStockListProductDTO()
+                .batchNumber(1)
+                .currentQuantity(5)
+                .dueDate(LocalDate.of(2022, 2, 1))
+                .build();
+
+        batchStockListProductDTOList.add(batchStockListProductDTO);
+
+        SectionDTO sectionDTO = new SectionDTO()
+                .sectionCode("LA")
+                .warehouseCode("SP")
+                .build();
+
+        BatchStockResponseDTO batchStockResponseDTO = new BatchStockResponseDTO()
+                .sectionDTO(sectionDTO)
+                .productId("QJ")
+                .batchStock(batchStockListProductDTOList)
+                .build();
+
+        assertEquals(batchStockResponseDTO, batchStockService.listProductId(batchStockResponseDTO.getProductId(),"F"));
+    }
+
+    @Test
+    void validListProductIdByOrderNotExist(){
+        ProductExceptionNotFound productExceptionNotFound = assertThrows
+                (ProductExceptionNotFound.class,() ->
+                        batchStockService.listProductId("QJ","T"));
+
+        String menssagemEsperada = "Codigo do filtro nao existe!";
+
+        assertTrue(menssagemEsperada.contains(productExceptionNotFound.getMessage()));
+    }
+
+    @Test
+    void updateBatchStockNotExist() {
+        List<ProductPurchaseOrderDTO> listProductPurchaseOrderDTO = new ArrayList<>();
+        ProductPurchaseOrderDTO productPurchaseOrderDTO1 = new ProductPurchaseOrderDTO()
+                .productId("CA")
+                .quantity(5)
+                .build();
+        listProductPurchaseOrderDTO.add(productPurchaseOrderDTO1);
+
+        BatchStockException batchStockException = assertThrows
+                (BatchStockException.class,() ->
+                        batchStockService.updateBatchStock(listProductPurchaseOrderDTO));
+
+        String menssagemEsperada = "Nao foi encontrado estoque para esse produto!!!";
+
+        assertTrue(menssagemEsperada.contains(batchStockException.getMessage()));
+    }
+
+    @Test
+    void dueDataProduct() {
+        assertTrue(batchStockService.dueDataProduct(LocalDate.of(2022, 3, 21)));
+    }
+
+    @Test
     void updateBatchStockIntegration() {
         List<ProductPurchaseOrderDTO> listProductPurchaseOrderDTO = new ArrayList<>();
         ProductPurchaseOrderDTO productPurchaseOrderDTO2 = new ProductPurchaseOrderDTO()
@@ -157,12 +304,6 @@ public class BatchStockServiceIntegrationTest {
                 assertEquals(2, b.getCurrentQuantity()));
     }
 
-    @Test
-    void listProductId() {
-        final BatchStockResponseDTO productResponseDTO = batchStockService.listProductId("QJ", "");
-        assertFalse(ObjectUtils.isEmpty(productResponseDTO));
-        assertEquals("QJ", productResponseDTO.getProductId());
-    }
 
 //////////////////////////////////////////
 

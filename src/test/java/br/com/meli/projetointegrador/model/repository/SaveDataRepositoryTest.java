@@ -1,7 +1,9 @@
 package br.com.meli.projetointegrador.model.repository;
 
-import br.com.meli.projetointegrador.model.entity.*;
-import br.com.meli.projetointegrador.model.enums.EOrderStatus;
+import br.com.meli.projetointegrador.model.entity.Buyer;
+import br.com.meli.projetointegrador.model.entity.Product;
+import br.com.meli.projetointegrador.model.entity.Section;
+import br.com.meli.projetointegrador.model.entity.SectionCategory;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,28 +37,10 @@ class SaveDataRepositoryTest {
     private ProductRepository productRepository;
 
     @Autowired
-    private AgentRepository agentRepository;
-
-    @Autowired
-    private WarehouseRepository warehouseRepository;
-
-    @Autowired
     private SectionCategoryRepository sectionCategoryRepository;
 
     @Autowired
     private BuyerRepository buyerRepository;
-
-    @Autowired
-    private InboundOrderRepository inboundOrderRepository;
-
-    @Autowired
-    private BatchStockRepository batchStockRepository;
-
-    @Autowired
-    private RoleRepository roleRepository;
-
-    @Autowired
-    private PurchaseOrderRepository purchaseOrderRepository;
 
     @Test
     void saveProduct() {

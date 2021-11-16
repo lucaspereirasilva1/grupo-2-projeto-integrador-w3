@@ -98,7 +98,7 @@ class WarehouseServiceTest {
 
         BatchStockResponseWarehousesDTO batchStockResponseWarehousesDTO = warehouseService.listQuantityProduct("LA");
 
-        assertTrue(batchStockResponseWarehousesDTO.getWarehouses().size() == 2);
+        assertEquals(batchStockResponseWarehousesDTO.getWarehouses().size(),2);
     }
 
 }
