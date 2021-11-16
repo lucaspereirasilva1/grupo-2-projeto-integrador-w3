@@ -11,6 +11,8 @@ import br.com.meli.projetointegrador.model.repository.InboundOrderRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -47,6 +49,9 @@ public class InboundOrderService {
      * @return faz o post e retorna a lista salva.
      */
     public List<BatchStockDTO> post(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
+        if (inboundOrderDTO.getOrderDate().isBefore(LocalDate.now())){
+            throw new InboundOrderException("Order com data (" + inboundOrderDTO.getOrderDate() + ") retroativa, favor inserir uma data valida!");
+        }
         inboundOrderDTO.getListBatchStockDTO().forEach(b -> {
             if (b.getDueDate().isBefore(LocalDate.now())) {
                 throw new InboundOrderException("Estoque com data retroativa: " + b.getDueDate());
