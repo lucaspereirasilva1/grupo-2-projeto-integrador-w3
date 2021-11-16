@@ -233,32 +233,6 @@ public class BatchStockService {
         return totalQuantity.get();
     }
 
-    public BatchStockResponseDTO listProductId(String productId, String order) {
-        BatchStockResponseDTO batchStockResponseDTO = new BatchStockResponseDTO();
-        List<BatchStock> batchStockList = findBatchStock(productId);
-        final List<BatchStock> batchStockListNotExpired = batchStockList.stream()
-                .filter(b -> dueDataProduct(b.getDueDate()))
-                .collect(toList());
-        if(!batchStockListNotExpired.isEmpty()){
-            Product product = productService.find(productId);
-            List<BatchStockListProductDTO> listBatchStockProductDTO = convertDTO(batchStockListNotExpired);
-            SectionDTO sectionDTO = new SectionDTO()
-                    .sectionCode(product.getSection().getSectionCode())
-                    .warehouseCode(product.getSection().getWarehouse().getWarehouseCode())
-                    .build();
-            batchStockResponseDTO.sectionDTO(sectionDTO);
-            batchStockResponseDTO.productId(product.getProductId());
-            if (!order.equals("")){
-                batchStockResponseDTO.batchStock(ordenar(order,listBatchStockProductDTO));
-            }else {
-                batchStockResponseDTO.batchStock(listBatchStockProductDTO);
-            }
-            return batchStockResponseDTO;
-        } else {
-            throw new ProductExceptionNotFound("Nao existe estoques vigentes para esse produto, por favor verifique os dados inseridos!!!");
-        }
-    }
-
     /**
      * @param days, periodo de dias;
      * @return lista de batchStockListDueDateDTO ordenado pela data
@@ -285,8 +259,7 @@ public class BatchStockService {
      * @param days, periodo de dias;
      * @param category, categoria do produto;
      * @param order, orem do retorno, asc/desc;
-     * @return lista de BatchStockListDueDateDTO ordenado pela data;
-     * @return ProductExceptionNotFound(Nao existe esta categoria);
+     * @return lista de BatchStockListDueDateDTO ordenado pela data;ProductExceptionNotFound(Nao existe esta categoria
      */
     public BatchStockListDueDateDTO listBatchStockDueDate(Integer days, String category, String order) {
         BatchStockListDueDateDTO batchStockListDueDateDTO = listDueDateDays(days);
@@ -312,8 +285,6 @@ public class BatchStockService {
      * @param order, orem do retorno, asc/desc;
      * @param batchStockListDueDateDTO;
      * @param batchStockServiceDueDateList ;
-     * @return lista de BatchStockListDueDateDTO ordenado pela data asc/desc;
-     * @return ProductExceptionNotFound(Nao existe esta categoria);
      */
     public void listAscDesc(String order,BatchStockListDueDateDTO batchStockListDueDateDTO,List<BatchStockServiceDueDateDTO> batchStockServiceDueDateList){
         switch (order) {
