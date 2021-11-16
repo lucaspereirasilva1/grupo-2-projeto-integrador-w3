@@ -3,6 +3,7 @@ package br.com.meli.projetointegrador.model.entity;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.*;
 
 import java.time.LocalDate;
@@ -23,7 +24,9 @@ public class InboundOrder {
     @Setter(AccessLevel.NONE)
     private String id;
 
+    @Indexed(unique = true)
     private Integer orderNumber;
+
     private LocalDate orderDate;
 
     @DBRef

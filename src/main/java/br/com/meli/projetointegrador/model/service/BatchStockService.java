@@ -1,6 +1,7 @@
 package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.BatchStockException;
+import br.com.meli.projetointegrador.exception.PersistenceException;
 import br.com.meli.projetointegrador.exception.ProductExceptionNotFound;
 import br.com.meli.projetointegrador.model.dto.*;
 import br.com.meli.projetointegrador.model.entity.Agent;
@@ -8,6 +9,9 @@ import br.com.meli.projetointegrador.model.entity.BatchStock;
 import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -34,6 +38,7 @@ public class BatchStockService {
     private final SectionService sectionService;
     private final AgentService agentService;
     private final ProductService productService;
+    private static final Logger logger = LoggerFactory.getLogger(BatchStockService.class);
 
     public BatchStockService(BatchStockRepository batchStockRepository,
                              SectionService sectionService,
@@ -59,7 +64,13 @@ public class BatchStockService {
                 b.section(sectionService.find(sectionDTO.getSectionCode()));
             }
         });
-        batchStockRepository.saveAll(listBatchStock);
+        try {
+            batchStockRepository.saveAll(listBatchStock);
+        }catch (DataAccessException e) {
+            logger.error("Erro durante a persistencia no banco!!!", e);
+            throw new PersistenceException("Erro durante a persistencia no banco!!!");
+        }
+
     }
 
     /**
@@ -83,8 +94,12 @@ public class BatchStockService {
                 batchStockList.add(batchStock);
             }
         });
-        batchStockRepository.saveAll(batchStockList);
-
+        try {
+            batchStockRepository.saveAll(batchStockList);
+        }catch (DataAccessException e) {
+            logger.error("Erro durante a persistencia no banco!!!", e);
+            throw new PersistenceException("Erro durante a persistencia no banco!!!");
+        }
     }
 
     /**
@@ -169,7 +184,12 @@ public class BatchStockService {
             }
             listBatchStock.forEach(b -> {
                 b.setCurrentQuantity(b.getCurrentQuantity()-p.getQuantity());
-                batchStockRepository.save(b);
+                try {
+                    batchStockRepository.save(b);
+                }catch (DataAccessException e) {
+                    logger.error("Erro durante a persistencia no banco!!!", e);
+                    throw new PersistenceException("Erro durante a persistencia no banco!!!");
+                }
             });
         });
     }

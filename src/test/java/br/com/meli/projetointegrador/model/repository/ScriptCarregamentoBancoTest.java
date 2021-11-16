@@ -121,7 +121,7 @@ class ScriptCarregamentoBancoTest {
                 .section(section)
                 .category(sectionCategoryFS)
                 .productPrice(bigDecimal)
-                .dueDate(LocalDate.of(2022, 3, 23))
+                .dueDate(LocalDate.now().plusWeeks(5))
                 .build();
 
         productRepository.save(product);
@@ -132,7 +132,7 @@ class ScriptCarregamentoBancoTest {
                 .section(section)
                 .category(sectionCategoryFS)
                 .productPrice(bigDecimal)
-                .dueDate(LocalDate.of(2022, 3, 23))
+                .dueDate(LocalDate.now().plusWeeks(5))
                 .build();
 
         Product productTres = new Product()
@@ -141,7 +141,7 @@ class ScriptCarregamentoBancoTest {
                 .section(sectionCO)
                 .category(sectionCategoryFF)
                 .productPrice(bigDecimal)
-                .dueDate(LocalDate.of(2022, 3, 23))
+                .dueDate(LocalDate.now().plusWeeks(5))
                 .build();
 
         Product productQuatro = new Product()
@@ -150,7 +150,7 @@ class ScriptCarregamentoBancoTest {
                 .section(sectionCO)
                 .category(sectionCategoryFF)
                 .productPrice(bigDecimal)
-                .dueDate(LocalDate.of(2022, 3, 23))
+                .dueDate(LocalDate.now().plusWeeks(5))
                 .build();
 
         productRepository.saveAll(Arrays.asList(product, productDois,

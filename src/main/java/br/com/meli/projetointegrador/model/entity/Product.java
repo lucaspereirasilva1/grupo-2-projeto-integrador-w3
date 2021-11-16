@@ -4,6 +4,7 @@ import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.*;
 
 import java.math.BigDecimal;
@@ -24,7 +25,9 @@ public class Product {
     @Setter(AccessLevel.NONE)
     private String id;
 
+    @Indexed(unique = true)
     private String productId;
+
     private String productName;
     private BigDecimal productPrice;
     private LocalDate dueDate;
