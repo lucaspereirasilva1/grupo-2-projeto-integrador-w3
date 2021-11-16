@@ -36,7 +36,7 @@ public class PurchaseOrderService {
     private final BuyerService buyerService;
     private final BatchStockService batchStockService;
     private BigDecimal total = new BigDecimal(0);
-    private static final Logger logger = LoggerFactory.getLogger(BatchStockService.class);
+    private static final Logger logger = LoggerFactory.getLogger(PurchaseOrderService.class);
 
     public PurchaseOrderService(PurchaseOrderRepository purchaseOrderRepository
             , ProductService productService, BuyerService buyerService

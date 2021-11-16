@@ -1,5 +1,6 @@
 package br.com.meli.projetointegrador.controller;
 
+import br.com.meli.projetointegrador.exception.PersistenceException;
 import br.com.meli.projetointegrador.model.dto.JwtResponse;
 import br.com.meli.projetointegrador.model.dto.LoginRequest;
 import br.com.meli.projetointegrador.model.dto.MessageResponse;
@@ -14,7 +15,10 @@ import br.com.meli.projetointegrador.model.repository.UserRepository;
 import br.com.meli.projetointegrador.model.service.WarehouseService;
 import br.com.meli.projetointegrador.security.jwt.JwtUtils;
 import br.com.meli.projetointegrador.security.services.UserDetailsImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -64,6 +68,7 @@ public class AuthController {
     JwtUtils jwtUtils;
 
     private static final String ROLE_IS_NOT_FOUND =  "Error: Role is not found.";
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     @PostMapping("/signin")
     public ResponseEntity<Object> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -144,8 +149,20 @@ public class AuthController {
                 .name(user.getUsername())
                 .warehouse(warehouseService.find(signUpRequest.getWarehouseCode()))
                 .build();
-        agentRepository.save(agent);
-        userRepository.save(user);
+
+        try {
+            agentRepository.save(agent);
+        }catch (DataAccessException e) {
+            logger.error("Erro durante a persistencia no banco!!!", e);
+            throw new PersistenceException("Erro durante a persistencia no banco!!!");
+        }
+
+        try {
+            userRepository.save(user);
+        }catch (DataAccessException e) {
+            logger.error("Erro durante a persistencia no banco!!!", e);
+            throw new PersistenceException("Erro durante a persistencia no banco!!!");
+        }
 
         return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
