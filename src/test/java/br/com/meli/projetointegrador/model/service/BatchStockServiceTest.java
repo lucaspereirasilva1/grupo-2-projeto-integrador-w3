@@ -183,6 +183,85 @@ public class BatchStockServiceTest {
     }
 
     @Test
+    void putAllExceptionTest() {
+        SectionDTO sectionDTO = new SectionDTO()
+                .sectionCode("LA")
+                .warehouseCode("SP")
+                .build();
+
+        AgentDTO agentDTO = new AgentDTO()
+                .cpf("11122233344")
+                .name("lucas")
+                .warehouseCode("SP")
+                .build();
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("laticinios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+
+        Agent agent = new Agent().
+                cpf("11122233344").
+                name("lucas").
+                warehouse(warehouse).
+                build();
+
+        BatchStock batchStock = new BatchStock()
+                .batchNumber(1)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .agent(agent)
+                .section(section)
+                .build();
+
+        BatchStockDTO batchStockDTO = new BatchStockDTO()
+                .batchNumber(5)
+                .productId("oj")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .build();
+
+        when(mockProductService.validProductSection(anyString())).
+                thenReturn(true);
+        when(mockSectionService.validSectionLength(any(Section.class))).
+                thenReturn(true);
+        when(mockBatchStockRepository.save(any(BatchStock.class)))
+                .thenReturn(batchStock);
+        when(mockAgentService.find(anyString()))
+                .thenReturn(agent);
+
+
+
+
+        BatchStockException batchStockException = assertThrows
+                (BatchStockException.class,() ->
+                        batchStockService.putAll(Collections.singletonList(batchStock), Collections.singletonList(batchStockDTO)
+                                ,agentDTO, sectionDTO));
+
+        String menssagemEsperada = "Divergencia entre dados de entrada e do banco!!!";
+
+        assertTrue(menssagemEsperada.contains(batchStockException.getMessage()));
+    }
+
+    @Test
     void updateBatchStockTest() {
         List<ProductPurchaseOrderDTO> listProductPurchaseOrderDTO = new ArrayList<>();
         ProductPurchaseOrderDTO productPurchaseOrderDTO1 = new ProductPurchaseOrderDTO()
@@ -655,33 +734,7 @@ public class BatchStockServiceTest {
     @Test
     void validListProductIdByOrderNotExistTest(){
         List<BatchStock> batchStockList = new ArrayList<>();
-        List<BatchStockListProductDTO> batchStockListProductDTOList = new ArrayList<>();
 
-        BatchStockListProductDTO batchStockListProductDTO = new BatchStockListProductDTO()
-                .batchNumber(1)
-                .currentQuantity(4)
-                .dueDate(LocalDate.now().plusWeeks(+4))
-                .build();
-
-        BatchStockListProductDTO batchStockListProductDTODois = new BatchStockListProductDTO()
-                .batchNumber(2)
-                .currentQuantity(5)
-                .dueDate(LocalDate.now().plusWeeks(+7))
-                .build();
-
-        batchStockListProductDTOList.add(batchStockListProductDTO);
-        batchStockListProductDTOList.add(batchStockListProductDTODois);
-
-        SectionDTO sectionDTO = new SectionDTO()
-                .sectionCode("LA")
-                .warehouseCode("SP")
-                .build();
-
-        BatchStockResponseDTO batchStockResponseDTO = new BatchStockResponseDTO()
-                .sectionDTO(sectionDTO)
-                .productId("QJ")
-                .batchStock(batchStockListProductDTOList)
-                .build();
 
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")
@@ -937,7 +990,6 @@ public class BatchStockServiceTest {
 
     @Test
     void listBatchStockDueDateAscTest(){
-        List<Product> productList = new ArrayList<>();
         List<BatchStock> batchStockList = new ArrayList<>();
 
         Warehouse warehouse = new Warehouse()
@@ -992,17 +1044,12 @@ public class BatchStockServiceTest {
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
 
-        productList.add(productUm);
-
         Product productDois = new Product()
                 .productId("QJ")
                 .productName("queijo")
                 .section(section)
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
-
-        productList.add(productUm);
-        productList.add(productDois);
 
         when(mockProductService.find(productUm.getProductId()))
                 .thenReturn(productUm);
@@ -1020,7 +1067,6 @@ public class BatchStockServiceTest {
 
     @Test
     void listBatchStockDueDateDescTest(){
-        List<Product> productList = new ArrayList<>();
         List<BatchStock> batchStockList = new ArrayList<>();
 
         Warehouse warehouse = new Warehouse()
@@ -1075,7 +1121,6 @@ public class BatchStockServiceTest {
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
 
-        productList.add(productUm);
 
         Product productDois = new Product()
                 .productId("QJ")
@@ -1084,8 +1129,6 @@ public class BatchStockServiceTest {
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
 
-        productList.add(productUm);
-        productList.add(productDois);
 
         when(mockProductService.find(productDois.getProductId()))
                 .thenReturn(productUm);
@@ -1103,7 +1146,6 @@ public class BatchStockServiceTest {
 
     @Test
     void listBatchStockDueDateExceptionOrderTest(){
-        List<Product> productList = new ArrayList<>();
         List<BatchStock> batchStockList = new ArrayList<>();
 
         Warehouse warehouse = new Warehouse()
@@ -1137,24 +1179,12 @@ public class BatchStockServiceTest {
                 .section(section)
                 .build();
 
-        Product productUm = new Product()
-                .productId("LE")
-                .productName("leite")
-                .section(section)
-                .category(new SectionCategory().name(ESectionCategory.FF))
-                .build();
-
-        productList.add(productUm);
-
-        Product productDois = new Product()
+       Product productDois = new Product()
                 .productId("QJ")
                 .productName("queijo")
                 .section(section)
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
-
-        productList.add(productUm);
-        productList.add(productDois);
 
         when(mockProductService.find(anyString()))
                 .thenReturn(productDois);
@@ -1174,7 +1204,6 @@ public class BatchStockServiceTest {
 
     @Test
     void listBatchStockDueDateExceptionCategoryTest(){
-        List<Product> productList = new ArrayList<>();
         List<BatchStock> batchStockList = new ArrayList<>();
 
         Warehouse warehouse = new Warehouse()
@@ -1208,25 +1237,12 @@ public class BatchStockServiceTest {
                 .section(section)
                 .build();
 
-
-        Product productUm = new Product()
-                .productId("LE")
-                .productName("leite")
-                .section(section)
-                .category(new SectionCategory().name(ESectionCategory.FF))
-                .build();
-
-        productList.add(productUm);
-
-        Product productDois = new Product()
+         Product productDois = new Product()
                 .productId("QJ")
                 .productName("queijo")
                 .section(section)
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
-
-        productList.add(productUm);
-        productList.add(productDois);
 
         when(mockProductService.find(anyString()))
                 .thenReturn(productDois);
