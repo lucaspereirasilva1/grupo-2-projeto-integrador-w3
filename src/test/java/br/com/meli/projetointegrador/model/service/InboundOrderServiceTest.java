@@ -11,7 +11,7 @@ import br.com.meli.projetointegrador.model.repository.InboundOrderRepository;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
- * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @author Jhony Zuim / Lucas Pereira / Edemilson Nobre / Rafael Vicente
  * @version 1.0.0
  * @since 15/10/2021
  * Camada de testes unitarios do service responsavel pela regra de negocio relacionada ao inboundOrder
@@ -51,7 +51,7 @@ class InboundOrderServiceTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now())
                 .build();
 
@@ -63,7 +63,7 @@ class InboundOrderServiceTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now())
                 .build();
 
@@ -104,7 +104,7 @@ class InboundOrderServiceTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now())
                 .agent(agent)
                 .section(section)
@@ -152,7 +152,7 @@ class InboundOrderServiceTest {
                 .initialQuantity(2)
                 .currentQuantity(2)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now())
                 .build();
 
@@ -164,7 +164,7 @@ class InboundOrderServiceTest {
                 .initialQuantity(2)
                 .currentQuantity(2)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now())
                 .build();
 
@@ -205,7 +205,7 @@ class InboundOrderServiceTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now())
                 .agent(agent)
                 .section(section)
@@ -261,7 +261,7 @@ class InboundOrderServiceTest {
                 .initialQuantity(2)
                 .currentQuantity(2)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now())
                 .build();
 
@@ -273,7 +273,7 @@ class InboundOrderServiceTest {
                 .initialQuantity(2)
                 .currentQuantity(2)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now())
                 .build();
 
@@ -319,7 +319,7 @@ class InboundOrderServiceTest {
                 .initialQuantity(2)
                 .currentQuantity(2)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now())
                 .build();
 
@@ -365,7 +365,7 @@ class InboundOrderServiceTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.of(2020, 1, 1))
                 .build();
 
@@ -377,7 +377,7 @@ class InboundOrderServiceTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.of(2020, 1, 1))
                 .build();
 
@@ -416,7 +416,7 @@ class InboundOrderServiceTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.of(2020, 1, 1))
                 .build();
 
@@ -428,7 +428,7 @@ class InboundOrderServiceTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.of(2020, 1, 1))
                 .build();
 

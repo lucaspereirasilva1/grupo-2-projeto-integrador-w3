@@ -4,10 +4,10 @@ import lombok.Data;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
- * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @author Jhony Zuim / Lucas Pereira / Edemilson Nobre / Rafael Vicente
  * @version 1.0.0
  * @since 15/10/2021
  * Objeto de Transferência de Dados do BatchStock
@@ -44,7 +44,7 @@ public class BatchStockDTO {
     private LocalDate manufacturingDate;
 
     @NotNull(message = "manufacturingTime cannot be null")
-    private LocalDateTime manufacturingTime;
+    private LocalTime manufacturingTime;
 
     @NotNull(message = "dueDate cannot be null")
     private LocalDate dueDate;
@@ -84,7 +84,7 @@ public class BatchStockDTO {
         return this;
     }
 
-    public BatchStockDTO manufacturingTime(LocalDateTime manufacturingTime) {
+    public BatchStockDTO manufacturingTime(LocalTime manufacturingTime) {
         this.manufacturingTime = manufacturingTime;
         return this;
     }
