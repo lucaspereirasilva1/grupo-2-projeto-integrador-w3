@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 
 /**
- * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @author Jhony Zuim / Lucas Pereira / Edemilson Nobre / Rafael Vicente
  * @version 1.0.0
  * @since 15/10/2021
  * Camada de teste do controller responsavel pela regra de negocio relacionada ao inboundOrderController
@@ -141,7 +141,7 @@ class InboundOrderControllerTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now())
                 .build();
 
@@ -153,7 +153,7 @@ class InboundOrderControllerTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now())
                 .build();
 
@@ -189,7 +189,7 @@ class InboundOrderControllerTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now())
                 .build();
 
@@ -201,7 +201,7 @@ class InboundOrderControllerTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now())
                 .build();
 
@@ -223,7 +223,7 @@ class InboundOrderControllerTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now())
                 .section(section.orElse(new Section()))
                 .agent(agent.orElse(new Agent()))
