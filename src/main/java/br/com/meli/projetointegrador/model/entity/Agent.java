@@ -3,6 +3,7 @@ package br.com.meli.projetointegrador.model.entity;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
@@ -24,6 +25,8 @@ public class Agent {
     private String id;
 
     private String name;
+
+    @Indexed(unique = true)
     private String cpf;
 
     @DBRef

@@ -3,6 +3,7 @@ package br.com.meli.projetointegrador.model.entity;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
@@ -26,7 +27,9 @@ public class BatchStock {
     @Setter(AccessLevel.NONE)
     private String id;
 
+    @Indexed(unique = true)
     private Integer batchNumber;
+
     private String productId;
     private Float currentTemperature;
     private Float minimumTemperature;
