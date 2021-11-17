@@ -30,6 +30,11 @@ public class ProductController {
         this.productService = productService;
     }
 
+    /**
+     * @param category, categoria de produto
+     * @return ResponseEntity.ok com uma productList
+     * requisito 2 - endpoint 2: Veja uma lista completa de produtos por categoria. Caso nao exista retornar 404.
+     */
     @GetMapping(value = "/list") // Chamada do endpoint: /list?sectionCategory=FF ou FS ou RF ou um que nao existe.
     public ResponseEntity<Object> getProductByCategory(@RequestParam("sectionCategory") String category){
         if (category.equals(ESectionCategory.FS.toString()) ||
@@ -43,6 +48,11 @@ public class ProductController {
         return ResponseHandler.generateResponse("Categoria invalida!!!", HttpStatus.BAD_REQUEST, "");
     }
 
+    /**
+     * Nao recebe param
+     * @return ResponseEntity.ok com uma productList
+     * requisito 2 - endpoint 1: Veja uma lista completa de produtos. Caso nao exista retornar 404.
+     */
     @GetMapping(value = "/products")
     public ResponseEntity<Object> getlistProductBylist() {
         List<ProductDTO> productsListDTO = productService.findAllProducts();

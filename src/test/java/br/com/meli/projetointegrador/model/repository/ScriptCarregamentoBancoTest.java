@@ -26,9 +26,6 @@ class ScriptCarregamentoBancoTest {
     private ProductRepository productRepository;
 
     @Autowired
-    private AgentRepository agentRepository;
-
-    @Autowired
     private WarehouseRepository warehouseRepository;
 
     @Autowired
@@ -45,7 +42,6 @@ class ScriptCarregamentoBancoTest {
         productRepository.deleteAll();
         warehouseRepository.deleteAll();
         sectionRepository.deleteAll();
-        agentRepository.deleteAll();
         roleRepository.deleteAll();
         buyerRepository.deleteAll();
         sectionCategoryRepository.deleteAll();
@@ -73,7 +69,7 @@ class ScriptCarregamentoBancoTest {
                 .warehouseName("Minas Gerais")
                 .build();
 
-        warehouseRepository.save(warehouse);
+        warehouseRepository.save(warehouseMG);
 
         Section section = new Section()
                 .sectionCode("LA")
@@ -121,7 +117,7 @@ class ScriptCarregamentoBancoTest {
                 .section(section)
                 .category(sectionCategoryFS)
                 .productPrice(bigDecimal)
-                .dueDate(LocalDate.of(2022, 3, 23))
+                .dueDate(LocalDate.now().plusWeeks(5))
                 .build();
 
         productRepository.save(product);
@@ -132,7 +128,7 @@ class ScriptCarregamentoBancoTest {
                 .section(section)
                 .category(sectionCategoryFS)
                 .productPrice(bigDecimal)
-                .dueDate(LocalDate.of(2022, 3, 23))
+                .dueDate(LocalDate.now().plusWeeks(5))
                 .build();
 
         Product productTres = new Product()
@@ -141,7 +137,7 @@ class ScriptCarregamentoBancoTest {
                 .section(sectionCO)
                 .category(sectionCategoryFF)
                 .productPrice(bigDecimal)
-                .dueDate(LocalDate.of(2022, 3, 23))
+                .dueDate(LocalDate.now().plusWeeks(5))
                 .build();
 
         Product productQuatro = new Product()
@@ -150,7 +146,7 @@ class ScriptCarregamentoBancoTest {
                 .section(sectionCO)
                 .category(sectionCategoryFF)
                 .productPrice(bigDecimal)
-                .dueDate(LocalDate.of(2022, 3, 23))
+                .dueDate(LocalDate.now().plusWeeks(5))
                 .build();
 
         productRepository.saveAll(Arrays.asList(product, productDois,

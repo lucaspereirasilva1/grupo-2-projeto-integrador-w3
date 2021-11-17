@@ -3,6 +3,9 @@ package br.com.meli.projetointegrador.model.entity;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import org.springframework.data.annotation.Reference;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
@@ -22,9 +25,14 @@ public class Section {
     @Setter(AccessLevel.NONE)
     private String id;
 
+    @Indexed(unique = true)
     private String sectionCode;
+
     private String sectionName;
     private Integer maxLength;
+
+    @DBRef
+    @Reference
     private Warehouse warehouse;
 
     public Section id(String id) {

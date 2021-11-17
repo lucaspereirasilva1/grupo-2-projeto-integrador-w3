@@ -3,6 +3,8 @@ package br.com.meli.projetointegrador.model.entity;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
@@ -16,6 +18,9 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 
 @Data
 @Document(collection = "warehouse")
+@CompoundIndexes({
+        @CompoundIndex(name = "warehouse_code_name", def = "{'warehouseCode' : 1, 'warehouseName': 1}", unique = true)
+})
 public class Warehouse {
 
     @MongoId(FieldType.OBJECT_ID)

@@ -1,6 +1,8 @@
 package br.com.meli.projetointegrador.model.service;
 
+import Utils.ConstantsUtil;
 import br.com.meli.projetointegrador.exception.InboundOrderException;
+import br.com.meli.projetointegrador.exception.PersistenceException;
 import br.com.meli.projetointegrador.exception.ValidInputException;
 import br.com.meli.projetointegrador.model.dto.AgentDTO;
 import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
@@ -9,6 +11,9 @@ import br.com.meli.projetointegrador.model.entity.InboundOrder;
 import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.repository.InboundOrderRepository;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -30,6 +35,7 @@ public class InboundOrderService {
     private final BatchStockService batchStockService;
     private final SectionService sectionService;
     private final WarehouseService warehouseService;
+    private static final Logger logger = LoggerFactory.getLogger(PurchaseOrderService.class);
 
     public InboundOrderService(InboundOrderRepository inboudOrderRepository,
                                BatchStockService batchStockService,
@@ -47,6 +53,9 @@ public class InboundOrderService {
      * @return faz o post e retorna a lista salva.
      */
     public List<BatchStockDTO> post(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
+        if (inboundOrderDTO.getOrderDate().isBefore(LocalDate.now())){
+            throw new InboundOrderException("Order com data retroativa, favor inserir uma data valida!");
+        }
         inboundOrderDTO.getListBatchStockDTO().forEach(b -> {
             if (b.getDueDate().isBefore(LocalDate.now())) {
                 throw new InboundOrderException("Estoque com data retroativa: " + b.getDueDate());
@@ -56,7 +65,12 @@ public class InboundOrderService {
         Section section = sectionService.find(inboundOrderDTO.getSectionDTO().getSectionCode());
         inboundOrder.section(section);
         batchStockService.postAll(inboundOrder.getListBatchStock(), agentDTO, inboundOrderDTO.getSectionDTO());
-        inboundOrderRepository.save(inboundOrder);
+        try {
+            inboundOrderRepository.save(inboundOrder);
+        }catch (DataAccessException e) {
+            logger.error(ConstantsUtil.PERSISTENCE_ERROR, e);
+            throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
+        }
         return inboundOrderDTO.getListBatchStockDTO();
     }
 
@@ -79,7 +93,12 @@ public class InboundOrderService {
             batchStockService.putAll(inboundOrder.getListBatchStock(),
                     inboundOrderDTO.getListBatchStockDTO(), agentDTO
                     , inboundOrderDTO.getSectionDTO());
-            inboundOrderRepository.save(inboundOrder);
+            try {
+                inboundOrderRepository.save(inboundOrder);
+            }catch (DataAccessException e) {
+                logger.error(ConstantsUtil.PERSISTENCE_ERROR, e);
+                throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
+            }
         } else {
             throw new InboundOrderException("Ordem de entrada nao existe!!! Por gentileza realizar o cadastro antes de atualizar");
         }

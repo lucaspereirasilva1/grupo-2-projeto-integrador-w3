@@ -13,13 +13,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Optional;
+import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @author Jhony Zuim / Lucas Pereira / Edemilson Nobre / Rafael Vicente
  * @version 1.0.0
  * @since 15/10/2021
  * Camada de teste integrado do service responsavel pela regra de negocio relacionada ao warehouse
@@ -39,6 +38,7 @@ class WarehouseServiceIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        clearBase();
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("RS")
                 .warehouseName("POA")
@@ -52,7 +52,7 @@ class WarehouseServiceIntegrationTest {
                 .productId("LA")
                 .currentTemperature(35.5F)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now())
                 .build();
         batchStockRepository.save(batchStock);
@@ -61,6 +61,7 @@ class WarehouseServiceIntegrationTest {
     @AfterEach
     void clearBase() {
         warehouseRepository.deleteAll();
+        batchStockRepository.deleteAll();
     }
 
     @Test
@@ -104,5 +105,4 @@ class WarehouseServiceIntegrationTest {
         Integer quantityBatchStock = batchStockRepository.findAllByProductId("LA").size();
         assertEquals(quantityWarehouse, quantityBatchStock);
     }
-
 }

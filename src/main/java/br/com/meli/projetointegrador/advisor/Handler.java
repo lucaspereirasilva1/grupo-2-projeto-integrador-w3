@@ -66,12 +66,6 @@ public class Handler extends ResponseEntityExceptionHandler{
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
     }
 
-    @ExceptionHandler(value = WarehouseExceptionNotFound.class)
-    protected ResponseEntity<Object> handleConflict(WarehouseExceptionNotFound ex, WebRequest request) {
-        String bodyOfResponse = ex.getMessage();
-        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.NOT_FOUND, request);
-    }
-
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         Map<String, String> errors = new HashMap<>();
@@ -85,6 +79,12 @@ public class Handler extends ResponseEntityExceptionHandler{
 
     @ExceptionHandler(value = PurchaseOrderException.class)
     protected ResponseEntity<Object> handleConflict(PurchaseOrderException ex, WebRequest request) {
+        String bodyOfResponse = ex.getMessage();
+        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
+    @ExceptionHandler(value = PersistenceException.class)
+    protected ResponseEntity<Object> handleConflict(PersistenceException ex, WebRequest request) {
         String bodyOfResponse = ex.getMessage();
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }

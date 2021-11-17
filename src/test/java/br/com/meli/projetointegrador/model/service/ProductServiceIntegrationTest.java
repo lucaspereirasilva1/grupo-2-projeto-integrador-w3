@@ -51,11 +51,11 @@ class ProductServiceIntegrationTest {
     @BeforeEach
     void setUp(){
         clearBase();
-
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")
                 .warehouseName("Sao Paulo")
                 .build();
+        warehouseRepository.save(warehouse);
 
         Section section = new Section()
                 .sectionCode("LA")
@@ -70,6 +70,7 @@ class ProductServiceIntegrationTest {
                 .warehouse(warehouse)
                 .maxLength(10)
                 .build();
+        sectionRepository.saveAll(Arrays.asList(section, sectionDois));
 
         SectionCategory sectionCategory = new SectionCategory()
                 .name(ESectionCategory.FF)
@@ -89,10 +90,7 @@ class ProductServiceIntegrationTest {
                 .dueDate(LocalDate.now())
                 .category(sectionCategory)
                 .build();
-
-        sectionRepository.saveAll(Arrays.asList(section, sectionDois));
         productRepository.save(product);
-        warehouseRepository.save(warehouse);
     }
 
     @AfterEach
@@ -115,33 +113,12 @@ class ProductServiceIntegrationTest {
 
     @Test
     void findExistTest() {
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("Sao Paulo")
-                .build();
-
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("Laticionios")
-                .warehouse(warehouse)
-                .maxLength(10)
-                .build();
-
-        Product product = new Product()
-                .productId("LE")
-                .productName("leite")
-                .section(section)
-                .build();
-
-        Product productReturn = productService.find(product.getProductId());
-
+        Product productReturn = productService.find("LE");
         assertEquals("LE", productReturn.getProductId());
     }
 
     @Test
     void findNotExistTest() {
-        Product product = new Product();
-
         ProductException productException = assertThrows(ProductException.class, () ->
                 productService.find("LK"));
 
@@ -172,9 +149,9 @@ class ProductServiceIntegrationTest {
     }
 
     void clearBase() {
+        warehouseRepository.deleteAll();
         sectionRepository.deleteAll();
         productRepository.deleteAll();
-        warehouseRepository.deleteAll();
         sectionCategoryRepository.deleteAll();
     }
 }

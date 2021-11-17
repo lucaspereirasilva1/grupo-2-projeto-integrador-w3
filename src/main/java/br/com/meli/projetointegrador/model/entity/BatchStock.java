@@ -3,13 +3,15 @@ package br.com.meli.projetointegrador.model.entity;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import org.springframework.data.annotation.Reference;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
@@ -26,20 +28,24 @@ public class BatchStock {
     @Setter(AccessLevel.NONE)
     private String id;
 
+    @Indexed(unique = true)
     private Integer batchNumber;
+
     private String productId;
     private Float currentTemperature;
     private Float minimumTemperature;
     private Integer initialQuantity;
     private Integer currentQuantity;
     private LocalDate manufacturingDate;
-    private LocalDateTime manufacturingTime;
+    private LocalTime manufacturingTime;
     private LocalDate dueDate;
 
     @DBRef
+    @Reference
     private Agent agent;
 
     @DBRef
+    @Reference
     private Section section;
 
     public BatchStock id(String id) {
@@ -82,7 +88,7 @@ public class BatchStock {
         return this;
     }
 
-    public BatchStock manufacturingTime(LocalDateTime manufacturingTime) {
+    public BatchStock manufacturingTime(LocalTime manufacturingTime) {
         this.manufacturingTime = manufacturingTime;
         return this;
     }

@@ -17,6 +17,7 @@ import org.springframework.util.ObjectUtils;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -198,21 +199,21 @@ class PurchaseOrderServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.of(2022, 1, 3))
                 .agent(agent)
                 .section(section)
                 .build();
 
         BatchStock batchStockDois = new BatchStock()
-                .batchNumber(1)
+                .batchNumber(2)
                 .productId("QJ")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
                 .initialQuantity(1)
                 .currentQuantity(10)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.of(2022, 1, 3))
                 .agent(agent)
                 .section(section)
@@ -297,7 +298,7 @@ class PurchaseOrderServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.of(2022, 1, 3))
                 .agent(agent)
                 .section(section)
@@ -311,7 +312,7 @@ class PurchaseOrderServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(10)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.of(2022, 1, 3))
                 .agent(agent)
                 .section(section)
@@ -429,28 +430,28 @@ class PurchaseOrderServiceIntegrationTest {
         agentRepository.save(agent);
 
         BatchStock batchStock = new BatchStock()
-                .batchNumber(20)
+                .batchNumber(22)
                 .productId("MU")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.of(2022, 1, 3))
                 .agent(agent)
                 .section(section)
                 .build();
 
         BatchStock batchStockDois = new BatchStock()
-                .batchNumber(21)
+                .batchNumber(23)
                 .productId("CA")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
                 .initialQuantity(1)
                 .currentQuantity(10)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.of(2022, 1, 3))
                 .agent(agent)
                 .section(section)
@@ -485,134 +486,6 @@ class PurchaseOrderServiceIntegrationTest {
 
         assertTrue(mensagemEsperada.contains(mensagemRecebida));
     }
-
-//    @Test
-//    void calculeTotalProductNotFoundTest(){
-//        clearBase();
-//
-//        Warehouse warehouse = new Warehouse()
-//                .warehouseCode("MG")
-//                .warehouseName("Minas Gerais")
-//                .build();
-//        warehouseRepository.save(warehouse);
-//
-//        Section section = new Section()
-//                .sectionCode("FR")
-//                .sectionName("Frios")
-//                .warehouse(warehouse)
-//                .maxLength(10)
-//                .build();
-//        sectionRepository.save(section);
-//
-//        Buyer buyer = new Buyer()
-//                .name("lucas")
-//                .cpf("22233344411")
-//                .build();
-//        buyerRepository.save(buyer);
-//
-//        SectionCategory sectionCategory = new SectionCategory()
-//                .name(ESectionCategory.RF)
-//                .build();
-//        sectionCategoryRepository.save(sectionCategory);
-//
-//        Product product = new Product()
-//                .productId("MU")
-//                .productName("mussarela")
-//                .section(section)
-//                .productPrice(new BigDecimal(2))
-//                .dueDate(LocalDate.of(2022,11,30))
-//                .category(sectionCategory)
-//                .build();
-//
-//        Product productUm = new Product()
-//                .productId("CA")
-//                .productName("carne")
-//                .section(section)
-//                .productPrice(new BigDecimal(3))
-//                .dueDate(LocalDate.of(2022,11,30))
-//                .category(sectionCategory)
-//                .build();
-//
-//        Product productTres = new Product()
-//                .productId("ME")
-//                .productName("melao")
-//                .section(section)
-//                .productPrice(new BigDecimal(3))
-//                .dueDate(LocalDate.of(2000,11,30))
-//                .category(sectionCategory)
-//                .build();
-//        productRepository.saveAll(Arrays.asList(product, productUm, productTres));
-//
-//        Agent agent = new Agent()
-//                .name("lucas")
-//                .cpf("11122233344")
-//                .warehouse(warehouse)
-//                .build();
-//        agentRepository.save(agent);
-//
-//        BatchStock batchStock = new BatchStock()
-//                .batchNumber(20)
-//                .productId("MU")
-//                .currentTemperature(10.0F)
-//                .minimumTemperature(5.0F)
-//                .initialQuantity(1)
-//                .currentQuantity(5)
-//                .manufacturingDate(LocalDate.now())
-//                .manufacturingTime(LocalDateTime.now())
-//                .dueDate(LocalDate.of(2022, 1, 3))
-//                .agent(agent)
-//                .section(section)
-//                .build();
-//
-//        BatchStock batchStockDois = new BatchStock()
-//                .batchNumber(21)
-//                .productId("CA")
-//                .currentTemperature(10.0F)
-//                .minimumTemperature(5.0F)
-//                .initialQuantity(1)
-//                .currentQuantity(10)
-//                .manufacturingDate(LocalDate.now())
-//                .manufacturingTime(LocalDateTime.now())
-//                .dueDate(LocalDate.of(2022, 1, 3))
-//                .agent(agent)
-//                .section(section)
-//                .build();
-//        batchStockRepository.saveAll(Arrays.asList(batchStock, batchStockDois));
-//
-//        PurchaseOrder purchaseOrder = new PurchaseOrder()
-//                .date(LocalDate.now())
-//                .buyer(buyer)
-//                .orderStatus(EOrderStatus.ORDER_CHART)
-//                .productList(Arrays.asList(product, productUm))
-//                .build();
-//        purchaseOrderRepository.save(purchaseOrder);
-//
-//        List<ProductPurchaseOrderDTO> listProductPurchaseOrderDTO = new ArrayList<>();
-//        ProductPurchaseOrderDTO productPurchaseOrderDTO1 = new ProductPurchaseOrderDTO()
-//                .productId("FR")
-//                .quantity(5)
-//                .build();
-//        ProductPurchaseOrderDTO productPurchaseOrderDTO2 = new ProductPurchaseOrderDTO()
-//                .productId("QJ")
-//                .quantity(3)
-//                .build();
-//        listProductPurchaseOrderDTO.add(productPurchaseOrderDTO1);
-//        listProductPurchaseOrderDTO.add(productPurchaseOrderDTO2);
-//
-//        PurchaseOrderDTO purchaseOrderDTO = new PurchaseOrderDTO()
-//                .data(LocalDate.now())
-//                .buyerId("1")
-//                .orderStatus(new OrderStatusDTO().statusCode(EOrderStatus.IN_PROGRESS))
-//                .listProductPurchaseOrderDTO(listProductPurchaseOrderDTO);
-//
-//        PurchaseOrderException purchaseOrderException = assertThrows
-//                (PurchaseOrderException.class,() -> purchaseOrderService.save(purchaseOrderDTO));
-//
-//        String mensagemEsperada = "Produto nao encontrado";
-//        String mensagemRecebida = purchaseOrderException.getMessage();
-//
-//        assertTrue(mensagemEsperada.contains(mensagemRecebida));
-//    }
 
     void clearBase() {
         warehouseRepository.deleteAll();

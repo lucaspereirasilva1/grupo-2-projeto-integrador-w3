@@ -1,5 +1,7 @@
 package br.com.meli.projetointegrador.model.service;
 
+import Utils.ConstantsUtil;
+import br.com.meli.projetointegrador.exception.PersistenceException;
 import br.com.meli.projetointegrador.exception.PurchaseOrderException;
 import br.com.meli.projetointegrador.model.dto.ProductDTO;
 import br.com.meli.projetointegrador.model.dto.ProductPurchaseOrderDTO;
@@ -8,6 +10,9 @@ import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.entity.PurchaseOrder;
 import br.com.meli.projetointegrador.model.enums.EOrderStatus;
 import br.com.meli.projetointegrador.model.repository.PurchaseOrderRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -32,6 +37,7 @@ public class PurchaseOrderService {
     private final BuyerService buyerService;
     private final BatchStockService batchStockService;
     private BigDecimal total = new BigDecimal(0);
+    private static final Logger logger = LoggerFactory.getLogger(PurchaseOrderService.class);
 
     public PurchaseOrderService(PurchaseOrderRepository purchaseOrderRepository
             , ProductService productService, BuyerService buyerService
@@ -78,6 +84,12 @@ public class PurchaseOrderService {
             purchaseOrder.date(LocalDate.now());
             purchaseOrder.buyer(buyerService.find(purchaseOrderDTO.getBuyerId()));
             purchaseOrder.orderStatus(EOrderStatus.ORDER_CHART);
+            try {
+                purchaseOrderRepository.save(purchaseOrder);
+            }catch (DataAccessException e) {
+                logger.error(ConstantsUtil.PERSISTENCE_ERROR, e);
+                throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
+            }
             purchaseOrderRepository.save(purchaseOrder);
             batchStockService.updateBatchStock(purchaseOrderDTO.getListProductPurchaseOrderDTO());
         }else {
@@ -87,7 +99,12 @@ public class PurchaseOrderService {
             purchaseOrder.buyer(buyerService.find(purchaseOrderDTO.getBuyerId()));
             purchaseOrder.orderStatus(EOrderStatus.ORDER_CHART);
             purchaseOrder.id(purchaseOrderDTO.getId());
-            purchaseOrderRepository.save(purchaseOrder);
+            try {
+                purchaseOrderRepository.save(purchaseOrder);
+            }catch (DataAccessException e) {
+                logger.error(ConstantsUtil.PERSISTENCE_ERROR, e);
+                throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
+            }
             batchStockService.updateBatchStock(purchaseOrderDTO.getListProductPurchaseOrderDTO());
         }
         return total;

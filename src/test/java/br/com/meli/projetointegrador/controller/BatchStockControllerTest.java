@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -107,9 +107,47 @@ class BatchStockControllerTest {
     }
 
     @Test
+    void getProductOrder() throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/listsorder/")
+                .param("product","LE")
+                .param("order","L")
+                .header("Authorization", "Bearer " + tokenTest.getAccessToken())
+                .contentType("application/json"))
+                .andReturn()
+                .getResponse();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+    }
+
+    @Test
     void getProductById() throws Exception {
         MockHttpServletResponse response = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/lists/")
                 .param("productId", "LE")
+                .header("Authorization", "Bearer " + tokenTest.getAccessToken())
+                .contentType("application/json"))
+                .andReturn().getResponse();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+    }
+
+    @Test
+    void getProductOrderDyas() throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/due-date/list/")
+                .param("days","30")
+                .header("Authorization", "Bearer " + tokenTest.getAccessToken())
+                .contentType("application/json"))
+                .andReturn().getResponse();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+    }
+
+    @Test
+    void getProductOrderDCO() throws Exception {
+        setUp();
+        MockHttpServletResponse response = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/due-date/lists/")
+                .param("days","30")
+                .param("category","FS")
+                .param("order","asc")
                 .header("Authorization", "Bearer " + tokenTest.getAccessToken())
                 .contentType("application/json"))
                 .andReturn().getResponse();
@@ -133,7 +171,7 @@ class BatchStockControllerTest {
         sectionRepository.save(section);
 
         Agent agent = new Agent().
-                cpf("11122233344").
+                cpf("22233344411").
                 name("lucas").
                 warehouse(warehouse).
                 build();
@@ -162,12 +200,37 @@ class BatchStockControllerTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.of(2022,  12,  1))
                 .section(section)
                 .agent(agent)
                 .build();
         batchStockRepository.save(batchStock);
+
+        Product productDois = new Product()
+                .productId("QJ")
+                .productName("queijo")
+                .section(section)
+                .productPrice(new BigDecimal("2.0"))
+                .dueDate(LocalDate.now().plusWeeks(+2))
+                .category(sectionCategory)
+                .build();
+        productRepository.save(productDois);
+
+        BatchStock batchStockDois = new BatchStock()
+                .batchNumber(2)
+                .productId("LE")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalTime.now())
+                .dueDate(LocalDate.now().plusWeeks(+2))
+                .section(section)
+                .agent(agent)
+                .build();
+        batchStockRepository.save(batchStockDois);
 
         Role role = new Role();
         role.setName(ERole.ROLE_USER);
@@ -189,6 +252,7 @@ class BatchStockControllerTest {
         agentRepository.deleteAll();
         batchStockRepository.deleteAll();
         warehouseRepository.deleteAll();
+        productRepository.deleteAll();
         sectionCategoryRepository.deleteAll();
     }
 }

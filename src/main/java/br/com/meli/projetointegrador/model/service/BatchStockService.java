@@ -1,12 +1,18 @@
 package br.com.meli.projetointegrador.model.service;
 
+import Utils.ConstantsUtil;
 import br.com.meli.projetointegrador.exception.BatchStockException;
+import br.com.meli.projetointegrador.exception.PersistenceException;
 import br.com.meli.projetointegrador.exception.ProductExceptionNotFound;
 import br.com.meli.projetointegrador.model.dto.*;
 import br.com.meli.projetointegrador.model.entity.Agent;
 import br.com.meli.projetointegrador.model.entity.BatchStock;
 import br.com.meli.projetointegrador.model.entity.Product;
+import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -33,6 +39,7 @@ public class BatchStockService {
     private final SectionService sectionService;
     private final AgentService agentService;
     private final ProductService productService;
+    private static final Logger logger = LoggerFactory.getLogger(BatchStockService.class);
 
     public BatchStockService(BatchStockRepository batchStockRepository,
                              SectionService sectionService,
@@ -58,7 +65,13 @@ public class BatchStockService {
                 b.section(sectionService.find(sectionDTO.getSectionCode()));
             }
         });
-        batchStockRepository.saveAll(listBatchStock);
+        try {
+            batchStockRepository.saveAll(listBatchStock);
+        }catch (DataAccessException e) {
+            logger.error(ConstantsUtil.PERSISTENCE_ERROR, e);
+            throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
+        }
+
     }
 
     /**
@@ -82,8 +95,12 @@ public class BatchStockService {
                 batchStockList.add(batchStock);
             }
         });
-        batchStockRepository.saveAll(batchStockList);
-
+        try {
+            batchStockRepository.saveAll(batchStockList);
+        }catch (DataAccessException e) {
+            logger.error(ConstantsUtil.PERSISTENCE_ERROR, e);
+            throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
+        }
     }
 
     /**
@@ -168,7 +185,12 @@ public class BatchStockService {
             }
             listBatchStock.forEach(b -> {
                 b.setCurrentQuantity(b.getCurrentQuantity()-p.getQuantity());
-                batchStockRepository.save(b);
+                try {
+                    batchStockRepository.save(b);
+                }catch (DataAccessException e) {
+                    logger.error(ConstantsUtil.PERSISTENCE_ERROR, e);
+                    throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
+                }
             });
         });
     }
@@ -232,4 +254,93 @@ public class BatchStockService {
         return totalQuantity.get();
     }
 
+    /**
+     * @param days, periodo de dias;
+     * @return lista de batchStockListDueDateDTO ordenado pela data
+     */
+    public BatchStockListDueDateDTO listDueDateDays(Integer days) {
+        BatchStockListDueDateDTO batchStockListDueDateDTO = new BatchStockListDueDateDTO(new ArrayList<>());
+        List<BatchStock> batchStockList = batchStockRepository.findAll();
+        List<BatchStockServiceDueDateDTO> batchStockServiceDueDateList = new ArrayList<>();
+        batchStockList.forEach(b -> {
+            if (LocalDate.now().plusDays(days).isAfter(b.getDueDate())) {
+                newList(batchStockServiceDueDateList,b.getBatchNumber(),b.getProductId(),b.getDueDate(),b.getCurrentQuantity());
+            }
+        });
+        if (!batchStockServiceDueDateList.isEmpty()) {
+            batchStockListDueDateDTO.setBatchStock(batchStockServiceDueDateList.stream()
+                    .sorted(Comparator.comparing(BatchStockServiceDueDateDTO::getDueDate)).collect(toList()));
+            return batchStockListDueDateDTO;
+        } else {
+            throw new ProductExceptionNotFound("Nao existe estoque com este filtro!!!");
+        }
+    }
+
+    /**
+     * @param days, periodo de dias;
+     * @param category, categoria do produto;
+     * @param order, orem do retorno, asc/desc;
+     * @return lista de BatchStockListDueDateDTO ordenado pela data;ProductExceptionNotFound(Nao existe esta categoria
+     */
+    public BatchStockListDueDateDTO listBatchStockDueDate(Integer days, String category, String order) {
+        BatchStockListDueDateDTO batchStockListDueDateDTO = listDueDateDays(days);
+        List<BatchStock> batchStockList = batchStockRepository.findAll();
+        List<BatchStockServiceDueDateDTO>  batchStockServiceDueDateList = new ArrayList<>();
+        if (category.equals("FF")||category.equals("FS")||category.equals("RF")){
+            batchStockList.forEach(b -> {
+                 if (LocalDate.now().plusDays(days).isAfter(b.getDueDate()) &&
+                         productService.find(b.getProductId()).getCategory().getName().equals(ESectionCategory.valueOf(category))) {
+                     newList(batchStockServiceDueDateList,b.getBatchNumber(),b.getProductId(),b.getDueDate(),b.getCurrentQuantity());
+                }
+            });
+            if (!batchStockServiceDueDateList.isEmpty()) {
+                listAscDesc(order,batchStockListDueDateDTO,batchStockServiceDueDateList);
+            }
+                return batchStockListDueDateDTO;
+        }else
+            throw new ProductExceptionNotFound("Nao existe esta categoria!!!");
+
+    }
+
+    /**
+     * @param order, orem do retorno, asc/desc;
+     * @param batchStockListDueDateDTO;
+     * @param batchStockServiceDueDateList ;
+     */
+    public void listAscDesc(String order,BatchStockListDueDateDTO batchStockListDueDateDTO,List<BatchStockServiceDueDateDTO> batchStockServiceDueDateList){
+        switch (order) {
+            case "desc":
+            {
+                batchStockListDueDateDTO.setBatchStock(batchStockServiceDueDateList.stream()
+                        .sorted(Comparator.comparing(BatchStockServiceDueDateDTO::getDueDate).reversed()).collect(toList()));
+                break;
+            }
+            case "asc": {
+                batchStockListDueDateDTO.setBatchStock(batchStockServiceDueDateList.stream()
+                        .sorted(Comparator.comparing(BatchStockServiceDueDateDTO::getDueDate)).collect(toList()));
+                break;
+            }
+            default:
+                throw new ProductExceptionNotFound("Codigo da ordenacao nao existe!!!");
+        }
+    }
+
+    /**
+     * @param batchStockServiceDueDateList;
+     * @param number, batchNumber;
+     * @param productId, id do produto;
+     * @param dueDate, data de validade do produto;
+     * @param quantity, qntidade do produto
+     * @return batchStockServiceDueDateList;
+     */
+    public List<BatchStockServiceDueDateDTO> newList(List<BatchStockServiceDueDateDTO> batchStockServiceDueDateList,
+                                                      Integer number, String productId,LocalDate dueDate, Integer quantity ){
+        BatchStockServiceDueDateDTO batchStockServiceDueDateDTO = new BatchStockServiceDueDateDTO();
+        batchStockServiceDueDateDTO.batchNumber(number);
+        batchStockServiceDueDateDTO.productId(productId);
+        batchStockServiceDueDateDTO.dueDate(dueDate);
+        batchStockServiceDueDateDTO.quantity(quantity);
+        batchStockServiceDueDateList.add(batchStockServiceDueDateDTO);
+        return batchStockServiceDueDateList;
+    }
 }
