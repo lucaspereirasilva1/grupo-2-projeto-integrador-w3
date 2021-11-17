@@ -52,6 +52,9 @@ public class InboundOrderService {
      * @return faz o post e retorna a lista salva.
      */
     public List<BatchStockDTO> post(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
+        if (inboundOrderDTO.getOrderDate().isBefore(LocalDate.now())){
+            throw new InboundOrderException("Order com data retroativa, favor inserir uma data valida!");
+        }
         inboundOrderDTO.getListBatchStockDTO().forEach(b -> {
             if (b.getDueDate().isBefore(LocalDate.now())) {
                 throw new InboundOrderException("Estoque com data retroativa: " + b.getDueDate());

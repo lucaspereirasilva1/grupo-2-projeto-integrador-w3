@@ -18,12 +18,17 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
+ * @author Jhony Zuim / Lucas Pereira / Edemilson Nobre / Rafael Vicente
  * @version 1.0.0
  * @since 15/10/2021
  * Camada de teste integrado do service responsavel pela regra de negocio relacionada ao batchStock
@@ -91,7 +96,7 @@ public class BatchStockServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now())
                 .build();
 
@@ -121,10 +126,10 @@ public class BatchStockServiceIntegrationTest {
                 .initialQuantity(2)
                 .currentQuantity(2)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now())
                 .build();
-
+      
         BatchStock batchStock = batchStockRepository.findAll().get(0);
 
         batchStockService.putAll(Collections.singletonList(batchStock), Collections.singletonList(batchStockDTO),
@@ -146,7 +151,7 @@ public class BatchStockServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.of(2021, 12, 1))
                 .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
                 .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
@@ -307,7 +312,7 @@ public class BatchStockServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now().plusWeeks(+12))
                 .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
                 .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
@@ -333,7 +338,7 @@ public class BatchStockServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now().plusWeeks(+1))
                 .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
                 .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
@@ -348,7 +353,7 @@ public class BatchStockServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now().plusWeeks(+2))
                 .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
                 .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
@@ -374,7 +379,7 @@ public class BatchStockServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now().plusWeeks(+1))
                 .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
                 .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
@@ -389,7 +394,7 @@ public class BatchStockServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now().plusWeeks(+2))
                 .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
                 .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
@@ -463,6 +468,7 @@ public class BatchStockServiceIntegrationTest {
                 .dueDate(LocalDate.now().plusWeeks(5))
                 .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
                 .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
+                .manufacturingTime(LocalTime.now())
                 .build();
 
         DataAccessException dataAccessException = assertThrows
@@ -519,8 +525,8 @@ public class BatchStockServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now().plusWeeks(4))
+                .manufacturingTime(LocalTime.now())
                 .agent(agent)
                 .section(section)
                 .build();

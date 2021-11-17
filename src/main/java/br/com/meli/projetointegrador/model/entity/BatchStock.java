@@ -11,7 +11,7 @@ import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
@@ -37,7 +37,7 @@ public class BatchStock {
     private Integer initialQuantity;
     private Integer currentQuantity;
     private LocalDate manufacturingDate;
-    private LocalDateTime manufacturingTime;
+    private LocalTime manufacturingTime;
     private LocalDate dueDate;
 
     @DBRef
@@ -88,7 +88,7 @@ public class BatchStock {
         return this;
     }
 
-    public BatchStock manufacturingTime(LocalDateTime manufacturingTime) {
+    public BatchStock manufacturingTime(LocalTime manufacturingTime) {
         this.manufacturingTime = manufacturingTime;
         return this;
     }
