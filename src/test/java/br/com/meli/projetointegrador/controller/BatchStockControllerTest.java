@@ -156,7 +156,6 @@ class BatchStockControllerTest {
     }
 
     void createData() {
-        clearBase();
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")
                 .warehouseName("sao paulo")
@@ -172,7 +171,7 @@ class BatchStockControllerTest {
         sectionRepository.save(section);
 
         Agent agent = new Agent().
-                cpf("11122233344").
+                cpf("22233344411").
                 name("lucas").
                 warehouse(warehouse).
                 build();
@@ -209,8 +208,8 @@ class BatchStockControllerTest {
         batchStockRepository.save(batchStock);
 
         Product productDois = new Product()
-                .productId("LE")
-                .productName("leite")
+                .productId("QJ")
+                .productName("queijo")
                 .section(section)
                 .productPrice(new BigDecimal("2.0"))
                 .dueDate(LocalDate.now().plusWeeks(+2))

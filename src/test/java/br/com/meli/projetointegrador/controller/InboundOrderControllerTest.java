@@ -119,8 +119,8 @@ class InboundOrderControllerTest {
         productRepository.deleteAll();
 
         Product productDois = new Product()
-                .productId("CA")
-                .productName("carne")
+                .productId("MA")
+                .productName("margarina")
                 .section(sectionRepository.findBySectionCode("CO").orElse(new Section()))
                 .productPrice(new BigDecimal("2.0"))
                 .dueDate(LocalDate.now())
@@ -135,7 +135,7 @@ class InboundOrderControllerTest {
 
         BatchStockDTO batchStockDTO = new BatchStockDTO()
                 .batchNumber(1)
-                .productId("CA")
+                .productId("MA")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
                 .initialQuantity(1)
@@ -147,7 +147,7 @@ class InboundOrderControllerTest {
 
         BatchStockDTO batchStockDTOUm = new BatchStockDTO()
                 .batchNumber(2)
-                .productId("CA")
+                .productId("MA")
                 .currentTemperature(20.0F)
                 .minimumTemperature(15.0F)
                 .initialQuantity(1)
@@ -182,7 +182,7 @@ class InboundOrderControllerTest {
                 .build();
 
         BatchStockDTO batchStockDTO = new BatchStockDTO()
-                .batchNumber(1)
+                .batchNumber(10)
                 .productId("LE")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
@@ -194,7 +194,7 @@ class InboundOrderControllerTest {
                 .build();
 
         BatchStockDTO batchStockDTOUm = new BatchStockDTO()
-                .batchNumber(2)
+                .batchNumber(11)
                 .productId("LE")
                 .currentTemperature(20.0F)
                 .minimumTemperature(15.0F)
@@ -216,7 +216,7 @@ class InboundOrderControllerTest {
         final Optional<Agent> agent = agentRepository.findByCpf("11122233344");
 
         BatchStock batchStock = new BatchStock()
-                .batchNumber(1)
+                .batchNumber(10)
                 .productId("LE")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
@@ -229,6 +229,21 @@ class InboundOrderControllerTest {
                 .agent(agent.orElse(new Agent()))
                 .build();
         batchStockRepository.save(batchStock);
+
+        BatchStock batchStockUm = new BatchStock()
+                .batchNumber(11)
+                .productId("LE")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalTime.now())
+                .dueDate(LocalDate.now())
+                .section(section.orElse(new Section()))
+                .agent(agent.orElse(new Agent()))
+                .build();
+        batchStockRepository.save(batchStockUm);
 
         InboundOrder inboundOrder = new InboundOrder()
                 .orderNumber(1)
@@ -318,6 +333,7 @@ class InboundOrderControllerTest {
         batchStockRepository.deleteAll();
         warehouseRepository.deleteAll();
         sectionCategoryRepository.deleteAll();
+        productRepository.deleteAll();
     }
 
 }

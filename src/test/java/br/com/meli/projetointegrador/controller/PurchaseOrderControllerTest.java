@@ -254,7 +254,7 @@ class PurchaseOrderControllerTest {
 
         Agent agent = new Agent()
                 .name("lucas")
-                .cpf("11122233344")
+                .cpf("22233344411")
                 .warehouse(warehouse)
                 .build();
         agentRepository.save(agent);
@@ -268,13 +268,13 @@ class PurchaseOrderControllerTest {
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalTime.now())
-                .dueDate(LocalDate.of(2022, 1, 3))
+                .dueDate(LocalDate.now().plusWeeks(4))
                 .agent(agent)
                 .section(section)
                 .build();
 
         BatchStock batchStockDois = new BatchStock()
-                .batchNumber(1)
+                .batchNumber(2)
                 .productId("QJ")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
@@ -282,7 +282,7 @@ class PurchaseOrderControllerTest {
                 .currentQuantity(10)
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalTime.now())
-                .dueDate(LocalDate.of(2022, 1, 3))
+                .dueDate(LocalDate.now().plusWeeks(4))
                 .agent(agent)
                 .section(section)
                 .build();

@@ -161,7 +161,7 @@ class ProductControllerTest {
         sectionRepository.save(section);
 
         Agent agent = new Agent().
-                cpf("11122233344").
+                cpf("33344455566").
                 name("lucas").
                 warehouse(warehouse).
                 build();
