@@ -8,6 +8,7 @@ import br.com.meli.projetointegrador.model.dto.*;
 import br.com.meli.projetointegrador.model.entity.Agent;
 import br.com.meli.projetointegrador.model.entity.BatchStock;
 import br.com.meli.projetointegrador.model.entity.Product;
+import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import org.slf4j.Logger;
@@ -342,5 +343,33 @@ public class BatchStockService {
         batchStockServiceDueDateDTO.quantity(quantity);
         batchStockServiceDueDateList.add(batchStockServiceDueDateDTO);
         return batchStockServiceDueDateList;
+    }
+
+    /**
+     * @param days, numero de dias;
+     * @param sectionCode, codigo da secao;
+     * @return batchStockServiceSection.
+     */
+    public BatchStockListDueDateDTO listBatchStockSection (Integer days, String sectionCode) {
+        BatchStockListDueDateDTO batchStockListDueDateDTO = new BatchStockListDueDateDTO(new ArrayList<>());
+        Section section = sectionService.find(sectionCode);
+        List<BatchStock> batchStockList = batchStockRepository.findAllBySection(section);
+        List<BatchStockServiceDueDateDTO> batchStockServiceDueDateDTOList = new ArrayList<>();
+        if (!batchStockList.isEmpty()) {
+            batchStockList.forEach(b -> {
+                if (LocalDate.now().plusDays(days).isAfter(b.getDueDate())) {
+                    newList(batchStockServiceDueDateDTOList, b.getBatchNumber(), b.getProductId(), b.getDueDate(), b.getCurrentQuantity());
+                }
+            });
+            if (!batchStockServiceDueDateDTOList.isEmpty()) {
+                batchStockListDueDateDTO.setBatchStock(batchStockServiceDueDateDTOList.stream()
+                        .sorted(Comparator.comparing(BatchStockServiceDueDateDTO::getDueDate)).collect(toList()));
+                return batchStockListDueDateDTO;
+            } else {
+                throw new ProductExceptionNotFound("Nao existe dias com este filtro!!!");
+            }
+        } else {
+            throw new ProductExceptionNotFound("Nao existe estoque para a secao informada!!!");
+        }
     }
 }

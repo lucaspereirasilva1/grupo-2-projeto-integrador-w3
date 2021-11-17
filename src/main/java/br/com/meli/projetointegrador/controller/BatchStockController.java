@@ -80,4 +80,17 @@ public class BatchStockController {
         BatchStockListDueDateDTO batchStockListDueDateDTO = batchStockService.listBatchStockDueDate(days, category, order);
         return ResponseEntity.ok(batchStockListDueDateDTO);
     }
+
+    /**
+     * @param days e secao;
+     * @param section, secao que o produdo se encontra;
+     * @return ResponseEntity do tipo batchStockListSection;
+     * requisito 5 - endpoint 3: Veja uma lista de produtos filtrado por dias de vencimentos e por secao.
+     */
+    @GetMapping (value = "/due-date/section") // chamada do endpoint: /due-date/section
+    public ResponseEntity<BatchStockListDueDateDTO> getProduct(@RequestParam("days") Integer days,
+                                                               @RequestParam("section") String section) {
+        BatchStockListDueDateDTO batchStockListDueDateDTO = batchStockService.listBatchStockSection(days, section);
+        return ResponseEntity.ok(batchStockListDueDateDTO);
+    }
 }
