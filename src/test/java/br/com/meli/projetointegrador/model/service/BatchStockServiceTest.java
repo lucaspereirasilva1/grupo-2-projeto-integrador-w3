@@ -12,12 +12,8 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDate;
-import java.util.*;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -1305,7 +1301,7 @@ public class BatchStockServiceTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now().plusWeeks(5))
                 .agent(agent)
                 .section(section)

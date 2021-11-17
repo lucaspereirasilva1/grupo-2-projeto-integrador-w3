@@ -478,7 +478,7 @@ class InboundOrderServiceTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.of(2020, 1, 1))
                 .build();
 
@@ -490,7 +490,7 @@ class InboundOrderServiceTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.of(2020, 1, 1))
                 .build();
 
