@@ -16,13 +16,8 @@ import org.springframework.util.ObjectUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -464,7 +459,7 @@ public class BatchStockServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
+                .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now().plusWeeks(5))
                 .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
                 .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
