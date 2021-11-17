@@ -70,6 +70,10 @@ public class AuthController {
     private static final String ROLE_IS_NOT_FOUND =  "Error: Role is not found.";
     private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
+    /**
+     * @param loginRequest, login de usuario;
+     * @return ResponseEntity do tipo JwtResponse;
+     */
     @PostMapping("/signin")
     public ResponseEntity<Object> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 
@@ -91,6 +95,10 @@ public class AuthController {
                 roles));
     }
 
+    /**
+     * @param signUpRequest, registro de usuario;
+     * @return ResponseEntity.ok ;
+     */
     @PostMapping("/signup")
     public ResponseEntity<Object> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
         Boolean validUserName = userRepository.existsByUsername(signUpRequest.getUsername());

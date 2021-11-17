@@ -31,12 +31,22 @@ public class PurchaseOrderController {
         this.purchaseOrderService = purchaseOrderService;
     }
 
+    /**
+     * @param id, id de uma ordem
+     * @return ResponseEntity.ok com uma productList
+     * requisito 2 - endpoint 4: Veja os produtos de um pedido.
+     */
     @GetMapping(value = "/order")
     public ResponseEntity<List<ProductDTO>> getProductByPurchaseOrder(@RequestParam("id") String id){
         List<ProductDTO> listProductDTO = purchaseOrderService.showOrderProduct(id);
         return ResponseEntity.ok(listProductDTO);
     }
 
+    /**
+     * @param purchaseOrderDTO, ordem de compra
+     * @return ResponseEntity.created com valor total e status 201, caso nao exista notifique a situacao.
+     * requisito 2 - endpoint 3: Registre um pedido com a lista que de produtos que compoe a ordem de compra.
+     */
     @PostMapping(value = "/order", produces = "application/json")
     public ResponseEntity<BigDecimal> post(@Valid @RequestBody PurchaseOrderDTO purchaseOrderDTO,
                                                           UriComponentsBuilder uriComponentsBuilder) {
@@ -45,6 +55,11 @@ public class PurchaseOrderController {
         return ResponseEntity.created(uri).body(total);
     }
 
+    /**
+     * @param purchaseOrderDTO, ordem de compra
+     * @return uma purchase ordder da alteracao.
+     * requisito 2 - endpoint 5: Modifica um pedido existente.
+     */
     @PutMapping(value = "/order", produces = "application/json")
     public ResponseEntity<BigDecimal> put(@Valid @RequestBody PurchaseOrderDTO purchaseOrderDTO,
                                                           UriComponentsBuilder uriComponentsBuilder) {
