@@ -9,13 +9,11 @@ import br.com.meli.projetointegrador.model.dto.SectionDTO;
 import br.com.meli.projetointegrador.model.entity.*;
 import br.com.meli.projetointegrador.model.repository.InboundOrderRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.dao.DataAccessException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -515,6 +513,155 @@ class InboundOrderServiceTest {
         String receivedMessage = inboundOrderException.getMessage();
 
         assertTrue(expectedMessage.contains(receivedMessage));
+    }
+
+    @Test
+    void postTryCatch() {
+        SectionDTO sectionDTO = new SectionDTO()
+                .sectionCode("LA")
+                .warehouseCode("SP")
+                .build();
+
+        BatchStockDTO batchStockDTO = new BatchStockDTO()
+                .batchNumber(1)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalTime.now())
+                .dueDate(LocalDate.now().plusWeeks(4))
+                .build();
+
+        BatchStockDTO batchStockDTO1 = new BatchStockDTO()
+                .batchNumber(2)
+                .productId("LE")
+                .currentTemperature(20.0F)
+                .minimumTemperature(15.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalTime.now())
+                .dueDate(LocalDate.now().plusWeeks(4))
+                .build();
+
+        InboundOrderDTO inboundOrderDTO = new InboundOrderDTO()
+                .orderNumber(1)
+                .orderDate(LocalDate.now().plusWeeks(4))
+                .sectionDTO(sectionDTO)
+                .batchStockDTO(Arrays.asList(batchStockDTO, batchStockDTO1))
+                .build();
+
+        AgentDTO agentDTO = new AgentDTO().
+                name("lucas").
+                cpf("11122233344");
+
+        when(mockInboundOrderRepository.save(any(InboundOrder.class)))
+                .thenThrow(new DataAccessException("") {});
+
+        DataAccessException dataAccessException = assertThrows(DataAccessException.class, () ->
+
+                inboundOrderService.post(inboundOrderDTO,agentDTO));
+
+        String menssagemEsperada = "Erro durante a persistencia no banco!!!";
+
+        assertTrue(menssagemEsperada.contains(Objects.requireNonNull(dataAccessException.getMessage())));
+    }
+
+    @Test
+    void putTryCatch() {
+        SectionDTO sectionDTO = new SectionDTO()
+                .sectionCode("LA")
+                .warehouseCode("SP")
+                .build();
+
+        BatchStockDTO batchStockDTO = new BatchStockDTO()
+                .batchNumber(1)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalTime.now())
+                .dueDate(LocalDate.now().plusWeeks(4))
+                .build();
+
+        BatchStockDTO batchStockDTO1 = new BatchStockDTO()
+                .batchNumber(2)
+                .productId("LE")
+                .currentTemperature(20.0F)
+                .minimumTemperature(15.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalTime.now())
+                .dueDate(LocalDate.now().plusWeeks(4))
+                .build();
+
+        InboundOrderDTO inboundOrderDTO = new InboundOrderDTO()
+                .orderNumber(1)
+                .orderDate(LocalDate.now().plusWeeks(4))
+                .sectionDTO(sectionDTO)
+                .batchStockDTO(Arrays.asList(batchStockDTO, batchStockDTO1))
+                .build();
+
+        AgentDTO agentDTO = new AgentDTO().
+                name("lucas").
+                cpf("11122233344");
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+
+        Agent agent = new Agent().
+                cpf("11122233344").
+                name("lucas")
+                .warehouse(warehouse)
+                .build();
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("laticinios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+
+        BatchStock batchStock = new BatchStock()
+                .batchNumber(1)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalTime.now())
+                .dueDate(LocalDate.now())
+                .agent(agent)
+                .section(section)
+                .build();
+
+        InboundOrder inboundOrder = new InboundOrder()
+                .orderNumber(1)
+                .orderDate(LocalDate.now())
+                .section(section)
+                .listBatchStock(Collections.singletonList(batchStock))
+                .build();
+
+        when(mockInboundOrderRepository.save(any(InboundOrder.class)))
+                .thenThrow(new DataAccessException("") {});
+        when(mockInboundOrderRepository.findByOrderNumber(anyInt()))
+                .thenReturn(Optional.of(inboundOrder));
+
+        DataAccessException dataAccessException = assertThrows(DataAccessException.class, () ->
+
+                inboundOrderService.put(inboundOrderDTO,agentDTO));
+
+        String menssagemEsperada = "Erro durante a persistencia no banco!!!";
+
+        assertTrue(menssagemEsperada.contains(Objects.requireNonNull(dataAccessException.getMessage())));
     }
 
 }

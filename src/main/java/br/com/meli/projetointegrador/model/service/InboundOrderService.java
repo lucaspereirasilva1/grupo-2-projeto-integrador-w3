@@ -58,8 +58,7 @@ public class InboundOrderService {
         }
         inboundOrderDTO.getListBatchStockDTO().forEach(b -> {
             if (b.getDueDate().isBefore(LocalDate.now())) {
-                throw new InboundOrderException("Estoque com data retroativa: " + b.getDueDate());
-            }
+                throw new InboundOrderException("Estoque com data retroativa: " + b.getDueDate()); }
         });
         InboundOrder inboundOrder = modelMapper.map(inboundOrderDTO, InboundOrder.class);
         Section section = sectionService.find(inboundOrderDTO.getSectionDTO().getSectionCode());
@@ -115,9 +114,8 @@ public class InboundOrderService {
         Boolean validSection = sectionService.validSection(inboundOrderDTO.getSectionDTO().getSectionCode());
         if (Boolean.FALSE.equals(validWarehouse) ||
             Boolean.FALSE.equals(validAgentIntoWarehouse) ||
-            Boolean.FALSE.equals(validSection)) {
+            Boolean.FALSE.equals(validSection))
             throw new ValidInputException("Problema na validacao dos dados de entrada!!!");
-        }
     }
 
 }
