@@ -1,5 +1,6 @@
 package br.com.meli.projetointegrador.model.service;
 
+import Utils.ConstantsUtil;
 import br.com.meli.projetointegrador.exception.PersistenceException;
 import br.com.meli.projetointegrador.exception.PurchaseOrderException;
 import br.com.meli.projetointegrador.model.dto.ProductDTO;
@@ -86,8 +87,8 @@ public class PurchaseOrderService {
             try {
                 purchaseOrderRepository.save(purchaseOrder);
             }catch (DataAccessException e) {
-                logger.error("Erro durante a persistencia no banco!!!", e);
-                throw new PersistenceException("Erro durante a persistencia no banco!!!");
+                logger.error(ConstantsUtil.PERSISTENCE_ERROR, e);
+                throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
             }
             purchaseOrderRepository.save(purchaseOrder);
             batchStockService.updateBatchStock(purchaseOrderDTO.getListProductPurchaseOrderDTO());
@@ -101,8 +102,8 @@ public class PurchaseOrderService {
             try {
                 purchaseOrderRepository.save(purchaseOrder);
             }catch (DataAccessException e) {
-                logger.error("Erro durante a persistencia no banco!!!", e);
-                throw new PersistenceException("Erro durante a persistencia no banco!!!");
+                logger.error(ConstantsUtil.PERSISTENCE_ERROR, e);
+                throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
             }
             batchStockService.updateBatchStock(purchaseOrderDTO.getListProductPurchaseOrderDTO());
         }

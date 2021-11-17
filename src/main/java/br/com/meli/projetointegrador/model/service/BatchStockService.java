@@ -1,5 +1,6 @@
 package br.com.meli.projetointegrador.model.service;
 
+import Utils.ConstantsUtil;
 import br.com.meli.projetointegrador.exception.BatchStockException;
 import br.com.meli.projetointegrador.exception.PersistenceException;
 import br.com.meli.projetointegrador.exception.ProductExceptionNotFound;
@@ -67,8 +68,8 @@ public class BatchStockService {
         try {
             batchStockRepository.saveAll(listBatchStock);
         }catch (DataAccessException e) {
-            logger.error("Erro durante a persistencia no banco!!!", e);
-            throw new PersistenceException("Erro durante a persistencia no banco!!!");
+            logger.error(ConstantsUtil.PERSISTENCE_ERROR, e);
+            throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
         }
 
     }
@@ -97,8 +98,8 @@ public class BatchStockService {
         try {
             batchStockRepository.saveAll(batchStockList);
         }catch (DataAccessException e) {
-            logger.error("Erro durante a persistencia no banco!!!", e);
-            throw new PersistenceException("Erro durante a persistencia no banco!!!");
+            logger.error(ConstantsUtil.PERSISTENCE_ERROR, e);
+            throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
         }
     }
 
@@ -187,8 +188,8 @@ public class BatchStockService {
                 try {
                     batchStockRepository.save(b);
                 }catch (DataAccessException e) {
-                    logger.error("Erro durante a persistencia no banco!!!", e);
-                    throw new PersistenceException("Erro durante a persistencia no banco!!!");
+                    logger.error(ConstantsUtil.PERSISTENCE_ERROR, e);
+                    throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
                 }
             });
         });

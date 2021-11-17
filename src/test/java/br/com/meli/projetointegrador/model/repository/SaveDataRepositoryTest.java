@@ -1,17 +1,11 @@
 package br.com.meli.projetointegrador.model.repository;
 
-import br.com.meli.projetointegrador.exception.PersistenceException;
 import br.com.meli.projetointegrador.model.entity.*;
-import br.com.meli.projetointegrador.model.entity.Buyer;
-import br.com.meli.projetointegrador.model.entity.Product;
-import br.com.meli.projetointegrador.model.entity.Section;
-import br.com.meli.projetointegrador.model.entity.SectionCategory;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
-import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.TestPropertySource;
 
 import java.math.BigDecimal;
@@ -42,6 +36,9 @@ class SaveDataRepositoryTest {
 
     @Autowired
     private BuyerRepository buyerRepository;
+
+    @Autowired
+    private WarehouseRepository warehouseRepository;
 
     @Test
     void saveProduct() {
@@ -97,17 +94,13 @@ class SaveDataRepositoryTest {
 
     @Test
     void productTest() {
-        final Optional<Section> section = sectionRepository.findBySectionCode("LA");
-
-        final Optional<SectionCategory> sectionCategory = sectionCategoryRepository.findByName(ESectionCategory.FF);
-
         Product product = new Product()
-                .productId("MA")
-                .productName("leite")
-                .section(section.orElse(new Section()))
-                .category(sectionCategory.orElse(new SectionCategory()))
+                .productId("MR")
+                .productName("mortadela")
+                .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
                 .dueDate(LocalDate.now())
                 .productPrice(new BigDecimal("2.0"))
+                .category(sectionCategoryRepository.findByName(ESectionCategory.FF).orElse(new SectionCategory()))
                 .build();
         productRepository.save(product);
     }
@@ -116,13 +109,20 @@ class SaveDataRepositoryTest {
     void werehouseInsertTest() {
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")
-                .warehouseName("campinas")
+                .warehouseName("sao paulo")
                 .build();
-        try {
-            warehouseRepository.save(warehouse);
-        }catch (DataAccessException e) {
-            throw new PersistenceException("Erro durante a persistencia no banco!!!");
-        }
+        warehouseRepository.save(warehouse);
+    }
+
+    @Test
+    void sectionSaveTest() {
+        Section section = new Section()
+                .sectionCode("MR")
+                .sectionName("mortadela")
+                .warehouse(warehouseRepository.findByWarehouseCode("SP").orElse(new Warehouse()))
+                .maxLength(10)
+                .build();
+        sectionRepository.save(section);
     }
 
 }

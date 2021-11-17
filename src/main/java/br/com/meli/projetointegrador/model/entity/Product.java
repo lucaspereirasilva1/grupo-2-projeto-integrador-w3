@@ -1,11 +1,14 @@
 package br.com.meli.projetointegrador.model.entity;
 
-import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import org.springframework.data.annotation.Reference;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.mapping.*;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.FieldType;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -33,12 +36,12 @@ public class Product {
     private LocalDate dueDate;
 
     @DBRef
+    @Reference
     private Section section;
 
+    @DBRef
+    @Reference
     private SectionCategory category;
-
-    @Field(targetType = FieldType.STRING)
-    private ESectionCategory categories;
 
     /**
      * @author Jhony Zuim
@@ -79,12 +82,6 @@ public class Product {
         this.category = category;
         return this;
     }
-
-    public Product categories(ESectionCategory categories) {
-        this.categories = categories;
-        return this;
-    }
-
 
     public Product build(){
         return this;

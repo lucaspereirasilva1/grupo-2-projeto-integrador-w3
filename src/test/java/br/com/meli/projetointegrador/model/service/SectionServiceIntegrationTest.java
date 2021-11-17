@@ -139,7 +139,7 @@ class SectionServiceIntegrationTest {
     void validSectionFull() {
         Optional<Section> sectionOptional = sectionRepository.findBySectionCode("LA");
         BatchStock batchStock = new BatchStock()
-                .batchNumber(1)
+                .batchNumber(10)
                 .productId("QJ")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)

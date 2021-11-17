@@ -4,6 +4,7 @@ import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
@@ -23,6 +24,7 @@ public class SectionCategory {
     @Setter(AccessLevel.NONE)
     private String id;
 
+    @Indexed(unique = true)
     private ESectionCategory name;
 
     public SectionCategory name(ESectionCategory name) {

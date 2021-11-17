@@ -26,9 +26,6 @@ class ScriptCarregamentoBancoTest {
     private ProductRepository productRepository;
 
     @Autowired
-    private AgentRepository agentRepository;
-
-    @Autowired
     private WarehouseRepository warehouseRepository;
 
     @Autowired
@@ -45,7 +42,6 @@ class ScriptCarregamentoBancoTest {
         productRepository.deleteAll();
         warehouseRepository.deleteAll();
         sectionRepository.deleteAll();
-        agentRepository.deleteAll();
         roleRepository.deleteAll();
         buyerRepository.deleteAll();
         sectionCategoryRepository.deleteAll();
@@ -73,7 +69,7 @@ class ScriptCarregamentoBancoTest {
                 .warehouseName("Minas Gerais")
                 .build();
 
-        warehouseRepository.save(warehouse);
+        warehouseRepository.save(warehouseMG);
 
         Section section = new Section()
                 .sectionCode("LA")

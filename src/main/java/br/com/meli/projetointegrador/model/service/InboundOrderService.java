@@ -1,5 +1,6 @@
 package br.com.meli.projetointegrador.model.service;
 
+import Utils.ConstantsUtil;
 import br.com.meli.projetointegrador.exception.InboundOrderException;
 import br.com.meli.projetointegrador.exception.PersistenceException;
 import br.com.meli.projetointegrador.exception.ValidInputException;
@@ -67,8 +68,8 @@ public class InboundOrderService {
         try {
             inboundOrderRepository.save(inboundOrder);
         }catch (DataAccessException e) {
-            logger.error("Erro durante a persistencia no banco!!!", e);
-            throw new PersistenceException("Erro durante a persistencia no banco!!!");
+            logger.error(ConstantsUtil.PERSISTENCE_ERROR, e);
+            throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
         }
         return inboundOrderDTO.getListBatchStockDTO();
     }
@@ -95,8 +96,8 @@ public class InboundOrderService {
             try {
                 inboundOrderRepository.save(inboundOrder);
             }catch (DataAccessException e) {
-                logger.error("Erro durante a persistencia no banco!!!", e);
-                throw new PersistenceException("Erro durante a persistencia no banco!!!");
+                logger.error(ConstantsUtil.PERSISTENCE_ERROR, e);
+                throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
             }
         } else {
             throw new InboundOrderException("Ordem de entrada nao existe!!! Por gentileza realizar o cadastro antes de atualizar");
