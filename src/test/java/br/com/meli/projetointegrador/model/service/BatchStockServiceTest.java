@@ -8,14 +8,12 @@ import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.dao.DataAccessException;
 import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -1259,4 +1257,77 @@ public class BatchStockServiceTest {
         assertTrue(menssagemEsperada.contains(productExceptionNotFound.getMessage()));
 
     }
+
+    @Test
+    void postAllPersistenceError() {
+        SectionDTO sectionDTO = new SectionDTO()
+                .sectionCode("LA")
+                .warehouseCode("SP")
+                .build();
+
+        AgentDTO agentDTO = new AgentDTO()
+                .cpf("11122233344")
+                .name("lucas")
+                .build();
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("laticinios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+
+        Agent agent = new Agent().
+                cpf("11122233344").
+                name("lucas").
+                build();
+
+        Product product = new Product()
+                .productId("LE")
+                .productName("leite")
+                .section(section)
+                .build();
+
+        BatchStock batchStock = new BatchStock()
+                .batchNumber(1)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now().plusWeeks(5))
+                .agent(agent)
+                .section(section)
+                .build();
+
+        when(mockProductService.find(anyString()))
+                .thenReturn(product);
+        when(mockProductService.validProductSection(anyString())).
+                thenReturn(true);
+        when(mockSectionService.validSectionLength(any(Section.class))).
+                thenReturn(true);
+        when(mockAgentService.find(anyString())).
+                thenReturn(agent);
+        when(mockSectionService.find(anyString())).
+                thenReturn(section);
+        when(mockBatchStockRepository.saveAll(anyList()))
+                .thenThrow(new DataAccessException("") {
+                });
+
+        DataAccessException dataAccessException = assertThrows
+                (DataAccessException.class,() ->
+                        batchStockService.postAll(Collections.singletonList(batchStock), agentDTO, sectionDTO));
+
+        String menssagemEsperada = "Erro durante a persistencia no banco!!!";
+
+        assertTrue(menssagemEsperada.contains(Objects.requireNonNull(dataAccessException.getMessage())));
+    }
+
 }

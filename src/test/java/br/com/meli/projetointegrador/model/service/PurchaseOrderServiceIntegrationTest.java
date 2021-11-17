@@ -205,7 +205,7 @@ class PurchaseOrderServiceIntegrationTest {
                 .build();
 
         BatchStock batchStockDois = new BatchStock()
-                .batchNumber(1)
+                .batchNumber(2)
                 .productId("QJ")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
@@ -429,7 +429,7 @@ class PurchaseOrderServiceIntegrationTest {
         agentRepository.save(agent);
 
         BatchStock batchStock = new BatchStock()
-                .batchNumber(20)
+                .batchNumber(22)
                 .productId("MU")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
@@ -443,7 +443,7 @@ class PurchaseOrderServiceIntegrationTest {
                 .build();
 
         BatchStock batchStockDois = new BatchStock()
-                .batchNumber(21)
+                .batchNumber(23)
                 .productId("CA")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)

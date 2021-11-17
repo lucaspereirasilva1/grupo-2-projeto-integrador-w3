@@ -374,6 +374,8 @@ class InboundOrderServiceIntegrationTest {
         agentRepository.deleteAll();
         batchStockRepository.deleteAll();
         warehouseRepository.deleteAll();
+        sectionCategoryRepository.deleteAll();
+        productRepository.deleteAll();
     }
 
 }

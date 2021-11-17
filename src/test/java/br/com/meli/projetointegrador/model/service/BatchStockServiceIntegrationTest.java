@@ -11,15 +11,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataAccessException;
 import org.springframework.util.ObjectUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -86,7 +84,7 @@ public class BatchStockServiceIntegrationTest {
                 .build();
 
         BatchStock batchStock = new BatchStock()
-                .batchNumber(1)
+                .batchNumber(2)
                 .productId("QJ")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
@@ -127,20 +125,7 @@ public class BatchStockServiceIntegrationTest {
                 .dueDate(LocalDate.now())
                 .build();
 
-        BatchStock batchStock = new BatchStock()
-                .batchNumber(1)
-                .productId("LE")
-                .currentTemperature(10.0F)
-                .minimumTemperature(5.0F)
-                .initialQuantity(1)
-                .currentQuantity(5)
-                .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
-                .dueDate(LocalDate.now())
-                .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
-                .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
-                .build();
-        batchStockRepository.save(batchStock);
+        BatchStock batchStock = batchStockRepository.findAll().get(0);
 
         batchStockService.putAll(Collections.singletonList(batchStock), Collections.singletonList(batchStockDTO),
                 agentDTO , sectionDTO);
@@ -152,7 +137,7 @@ public class BatchStockServiceIntegrationTest {
 
     @Test
     void validListProductIdExpiredDate() {
-
+        batchStockRepository.deleteAll();
         BatchStock batchStock = new BatchStock()
                 .batchNumber(1)
                 .productId("LE")
@@ -184,7 +169,7 @@ public class BatchStockServiceIntegrationTest {
         BatchStockListProductDTO batchStockListProductDTO = new BatchStockListProductDTO()
                 .batchNumber(1)
                 .currentQuantity(5)
-                .dueDate(LocalDate.of(2022, 2, 1))
+                .dueDate(LocalDate.now().plusWeeks(4))
                 .build();
 
         batchStockListProductDTOList.add(batchStockListProductDTO);
@@ -210,7 +195,7 @@ public class BatchStockServiceIntegrationTest {
         BatchStockListProductDTO batchStockListProductDTO = new BatchStockListProductDTO()
                 .batchNumber(1)
                 .currentQuantity(5)
-                .dueDate(LocalDate.of(2022, 2, 1))
+                .dueDate(LocalDate.now().plusWeeks(4))
                 .build();
 
         batchStockListProductDTOList.add(batchStockListProductDTO);
@@ -236,7 +221,7 @@ public class BatchStockServiceIntegrationTest {
         BatchStockListProductDTO batchStockListProductDTO = new BatchStockListProductDTO()
                 .batchNumber(1)
                 .currentQuantity(5)
-                .dueDate(LocalDate.of(2022, 2, 1))
+                .dueDate(LocalDate.now().plusWeeks(4))
                 .build();
 
         batchStockListProductDTOList.add(batchStockListProductDTO);
@@ -285,11 +270,6 @@ public class BatchStockServiceIntegrationTest {
     }
 
     @Test
-    void dueDataProduct() {
-        assertTrue(batchStockService.dueDataProduct(LocalDate.of(2022, 3, 21)));
-    }
-
-    @Test
     void updateBatchStockIntegration() {
         List<ProductPurchaseOrderDTO> listProductPurchaseOrderDTO = new ArrayList<>();
         ProductPurchaseOrderDTO productPurchaseOrderDTO2 = new ProductPurchaseOrderDTO()
@@ -304,61 +284,8 @@ public class BatchStockServiceIntegrationTest {
                 assertEquals(2, b.getCurrentQuantity()));
     }
 
-
-//////////////////////////////////////////
-
     @Test
     void listDueDateDaysTestIntegration(){
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("sao paulo")
-                .build();
-        warehouseRepository.save(warehouse);
-
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("laticinios")
-                .maxLength(10)
-                .warehouse(warehouse)
-                .build();
-        sectionRepository.save(section);
-
-        Agent agent = new Agent().
-                cpf("11122233344").
-                name("lucas").
-                build();
-        agentRepository.save(agent);
-
-        BatchStock batchStockUm = new BatchStock()
-                .batchNumber(2)
-                .productId("QJ")
-                .currentTemperature(10.0F)
-                .minimumTemperature(5.0F)
-                .initialQuantity(1)
-                .currentQuantity(5)
-                .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
-                .dueDate(LocalDate.now().plusWeeks(+2))
-                .agent(agent)
-                .section(section)
-                .build();
-        batchStockRepository.save(batchStockUm);
-
-        BatchStock batchStockDois = new BatchStock()
-                .batchNumber(1)
-                .productId("LE")
-                .currentTemperature(10.0F)
-                .minimumTemperature(5.0F)
-                .initialQuantity(1)
-                .currentQuantity(5)
-                .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
-                .dueDate(LocalDate.now().plusWeeks(+3))
-                .agent(agent)
-                .section(section)
-                .build();
-        batchStockRepository.save(batchStockDois);
-
         BatchStockListDueDateDTO batchStockListDueDateDTO = batchStockService.listDueDateDays(30);
 
         List<BatchStockServiceDueDateDTO> list = batchStockListDueDateDTO.getBatchStock().stream()
@@ -371,27 +298,7 @@ public class BatchStockServiceIntegrationTest {
 
     @Test
     void listDueDateDaysExceptionTestIntegration(){
-
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("sao paulo")
-                .build();
-        warehouseRepository.save(warehouse);
-
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("laticinios")
-                .maxLength(10)
-                .warehouse(warehouse)
-                .build();
-        sectionRepository.save(section);
-
-        Agent agent = new Agent()
-                .cpf("11122233344")
-                .name("lucas")
-                .build();
-        agentRepository.save(agent);
-
+        batchStockRepository.deleteAll();
         BatchStock batchStockUm = new BatchStock()
                 .batchNumber(1)
                 .productId("QJ")
@@ -402,11 +309,10 @@ public class BatchStockServiceIntegrationTest {
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now().plusWeeks(+12))
-                .agent(agent)
-                .section(section)
+                .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
+                .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
                 .build();
         batchStockRepository.save(batchStockUm);
-
 
         ProductExceptionNotFound productExceptionNotFound = assertThrows
                 (ProductExceptionNotFound.class,() -> batchStockService.listDueDateDays(30));
@@ -418,27 +324,7 @@ public class BatchStockServiceIntegrationTest {
 
     @Test
     void listBatchStockDueDateAscTestIntegration(){
-
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("sao paulo")
-                .build();
-        warehouseRepository.save(warehouse);
-
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("laticinios")
-                .maxLength(10)
-                .warehouse(warehouse)
-                .build();
-        sectionRepository.save(section);
-
-        Agent agent = new Agent().
-                cpf("11122233344").
-                name("lucas").
-                build();
-        agentRepository.save(agent);
-
+        batchStockRepository.deleteAll();
         BatchStock batchStockUm = new BatchStock()
                 .batchNumber(1)
                 .productId("QJ")
@@ -449,8 +335,8 @@ public class BatchStockServiceIntegrationTest {
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now().plusWeeks(+1))
-                .agent(agent)
-                .section(section)
+                .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
+                .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
                 .build();
         batchStockRepository.save(batchStockUm);
 
@@ -464,26 +350,10 @@ public class BatchStockServiceIntegrationTest {
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now().plusWeeks(+2))
-                .agent(agent)
-                .section(section)
+                .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
+                .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
                 .build();
         batchStockRepository.save(batchStockDois);
-
-        Product productUm = new Product()
-                .productId("LE")
-                .productName("leite")
-                .section(section)
-                .category(new SectionCategory().name(ESectionCategory.FF))
-                .build();
-        productRepository.save(productUm);
-
-        Product productDois = new Product()
-                .productId("QJ")
-                .productName("queijo")
-                .section(section)
-                .category(new SectionCategory().name(ESectionCategory.FF))
-                .build();
-        productRepository.save(productDois);
 
         BatchStockListDueDateDTO batchStockListDueDateDTO = batchStockService.listBatchStockDueDate
                 (30,"FF","asc");
@@ -493,26 +363,8 @@ public class BatchStockServiceIntegrationTest {
 
     @Test
     void listBatchStockDueDateDescTestIntegration(){
-
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("sao paulo")
-                .build();
-        warehouseRepository.save(warehouse);
-
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("laticinios")
-                .maxLength(10)
-                .warehouse(warehouse)
-                .build();
-        sectionRepository.save(section);
-
-        Agent agent = new Agent().
-                cpf("11122233344").
-                name("lucas").
-                build();
-        agentRepository.save(agent);
+        batchStockRepository.deleteAll();
+        productRepository.deleteAll();
 
         BatchStock batchStockUm = new BatchStock()
                 .batchNumber(1)
@@ -524,8 +376,8 @@ public class BatchStockServiceIntegrationTest {
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now().plusWeeks(+1))
-                .agent(agent)
-                .section(section)
+                .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
+                .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
                 .build();
         batchStockRepository.save(batchStockUm);
 
@@ -539,24 +391,24 @@ public class BatchStockServiceIntegrationTest {
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now().plusWeeks(+2))
-                .agent(agent)
-                .section(section)
+                .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
+                .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
                 .build();
         batchStockRepository.save(batchStockDois);
 
         Product productUm = new Product()
                 .productId("LE")
                 .productName("leite")
-                .section(section)
-                .category(new SectionCategory().name(ESectionCategory.FF))
+                .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
+                .category(sectionCategoryRepository.findByName(ESectionCategory.FF).orElse(new SectionCategory()))
                 .build();
         productRepository.save(productUm);
 
         Product productDois = new Product()
                 .productId("QJ")
                 .productName("queijo")
-                .section(section)
-                .category(new SectionCategory().name(ESectionCategory.FF))
+                .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
+                .category(sectionCategoryRepository.findByName(ESectionCategory.FF).orElse(new SectionCategory()))
                 .build();
         productRepository.save(productDois);
 
@@ -569,57 +421,6 @@ public class BatchStockServiceIntegrationTest {
 
     @Test
     void listBatchStockDueDateExceptionOrderTestIntegration(){
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("sao paulo")
-                .build();
-        warehouseRepository.save(warehouse);
-
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("laticinios")
-                .maxLength(10)
-                .warehouse(warehouse)
-                .build();
-        sectionRepository.save(section);
-
-        Agent agent = new Agent().
-                cpf("11122233344").
-                name("lucas").
-                build();
-        agentRepository.save(agent);
-
-        BatchStock batchStockUm = new BatchStock()
-                .batchNumber(2)
-                .productId("QJ")
-                .currentTemperature(10.0F)
-                .minimumTemperature(5.0F)
-                .initialQuantity(1)
-                .currentQuantity(5)
-                .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
-                .dueDate(LocalDate.now().plusWeeks(+2))
-                .agent(agent)
-                .section(section)
-                .build();
-        batchStockRepository.save(batchStockUm);
-
-        Product productUm = new Product()
-                .productId("LE")
-                .productName("leite")
-                .section(section)
-                .category(new SectionCategory().name(ESectionCategory.FF))
-                .build();
-        productRepository.save(productUm);
-
-        Product productDois = new Product()
-                .productId("QJ")
-                .productName("queijo")
-                .section(section)
-                .category(new SectionCategory().name(ESectionCategory.FF))
-                .build();
-        productRepository.save(productDois);
-
         ProductExceptionNotFound productExceptionNotFound = assertThrows
                 (ProductExceptionNotFound.class,() -> batchStockService.listBatchStockDueDate
                         (30,"FF","a5sc"));
@@ -630,57 +431,6 @@ public class BatchStockServiceIntegrationTest {
 
     @Test
     void listBatchStockDueDateExceptionCategoryTestIntegration(){
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("sao paulo")
-                .build();
-        warehouseRepository.save(warehouse);
-
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("laticinios")
-                .maxLength(10)
-                .warehouse(warehouse)
-                .build();
-        sectionRepository.save(section);
-
-        Agent agent = new Agent().
-                cpf("11122233344").
-                name("lucas").
-                build();
-        agentRepository.save(agent);
-
-        BatchStock batchStockUm = new BatchStock()
-                .batchNumber(2)
-                .productId("QJ")
-                .currentTemperature(10.0F)
-                .minimumTemperature(5.0F)
-                .initialQuantity(1)
-                .currentQuantity(5)
-                .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalDateTime.now())
-                .dueDate(LocalDate.now().plusWeeks(+2))
-                .agent(agent)
-                .section(section)
-                .build();
-        batchStockRepository.save(batchStockUm);
-
-        Product productUm = new Product()
-                .productId("LE")
-                .productName("leite")
-                .section(section)
-                .category(new SectionCategory().name(ESectionCategory.FF))
-                .build();
-        productRepository.save(productUm);
-
-        Product productDois = new Product()
-                .productId("QJ")
-                .productName("queijo")
-                .section(section)
-                .category(new SectionCategory().name(ESectionCategory.FF))
-                .build();
-        productRepository.save(productDois);
-
         ProductExceptionNotFound productExceptionNotFound = assertThrows
                 (ProductExceptionNotFound.class,() -> batchStockService.listBatchStockDueDate
                         (30,"F5","a5sc"));
@@ -689,7 +439,41 @@ public class BatchStockServiceIntegrationTest {
         assertTrue(menssagemEsperada.contains(productExceptionNotFound.getMessage()));
     }
 
-//////////////////////////////////////////
+    @Test
+    void postAllPersistenceError() {
+        SectionDTO sectionDTO = new SectionDTO()
+                .sectionCode("LA")
+                .warehouseCode("SP")
+                .build();
+
+        AgentDTO agentDTO = new AgentDTO()
+                .cpf("11122233344")
+                .name("lucas")
+                .build();
+
+        BatchStock batchStockParam = new BatchStock()
+                .batchNumber(1)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now().plusWeeks(5))
+                .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
+                .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
+                .build();
+
+        DataAccessException dataAccessException = assertThrows
+                (DataAccessException.class,() ->
+                        batchStockService.postAll(Collections.singletonList(batchStockParam), agentDTO, sectionDTO));
+
+        String menssagemEsperada = "Erro durante a persistencia no banco!!!";
+
+        assertTrue(menssagemEsperada.contains(Objects.requireNonNull(dataAccessException.getMessage())));
+    }
+
     void createData() {
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")
@@ -736,7 +520,7 @@ public class BatchStockServiceIntegrationTest {
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())
-                .dueDate(LocalDate.of(2022, 2, 1))
+                .dueDate(LocalDate.now().plusWeeks(4))
                 .agent(agent)
                 .section(section)
                 .build();
@@ -749,5 +533,6 @@ public class BatchStockServiceIntegrationTest {
         agentRepository.deleteAll();
         sectionRepository.deleteAll();
         productRepository.deleteAll();
+        sectionCategoryRepository.deleteAll();
     }
 }

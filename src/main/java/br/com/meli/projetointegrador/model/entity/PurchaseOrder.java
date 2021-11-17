@@ -4,6 +4,7 @@ import br.com.meli.projetointegrador.model.enums.EOrderStatus;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import org.springframework.data.annotation.Reference;
 import org.springframework.data.mongodb.core.mapping.*;
 
 import java.time.LocalDate;
@@ -27,12 +28,14 @@ public class PurchaseOrder {
     private LocalDate date;
 
     @DBRef
+    @Reference
     private Buyer buyer;
 
     private EOrderStatus orderStatus;
 
     @DBRef
     @Field("product")
+    @Reference
     private List<Product> productList;
 
     public PurchaseOrder id(String id) {

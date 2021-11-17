@@ -3,6 +3,7 @@ package br.com.meli.projetointegrador.model.entity;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import org.springframework.data.annotation.Reference;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -40,9 +41,11 @@ public class BatchStock {
     private LocalDate dueDate;
 
     @DBRef
+    @Reference
     private Agent agent;
 
     @DBRef
+    @Reference
     private Section section;
 
     public BatchStock id(String id) {
