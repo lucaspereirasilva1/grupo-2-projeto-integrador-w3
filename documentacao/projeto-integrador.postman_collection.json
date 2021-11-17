@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "d4944e64-3a33-479c-9e62-e79ee98a6186",
+		"_postman_id": "6395cedc-ee75-43f3-8f52-de8511a1dcf8",
 		"name": "projeto-integrador",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -19,7 +19,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"orderNumber\" : 1,\n  \"orderDate\" : \"21/10/2021\",\n  \"section\" : {\n    \"sectionCode\" : \"CO\",\n    \"warehouseCode\" : \"SP\"\n  },\n  \"listBatchStock\" : [ {\n    \"batchNumber\" : 1,\n    \"productId\" : \"CA\",\n    \"currentTemperature\" : 0,\n    \"minimumTemperature\" : -5,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 10,\n    \"manufacturingDate\" : \"2021-10-21\",\n    \"manufacturingTime\" : \"2021-10-21T18:27:04.808669\",\n    \"dueDate\" : \"2022-01-01\"\n  }, {\n    \"batchNumber\" : 2,\n    \"productId\" : \"FR\",\n    \"currentTemperature\" : 0,\n    \"minimumTemperature\" : -5,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 10,\n    \"manufacturingDate\" : \"2021-10-21\",\n    \"manufacturingTime\" : \"2021-10-21T18:27:04.808706\",\n    \"dueDate\" : \"2022-01-01\"\n  } ]\n}",
+					"raw": "{\n  \"orderNumber\" : 1,\n  \"orderDate\" : \"17/11/2021\",\n  \"section\" : {\n    \"sectionCode\" : \"CO\",\n    \"warehouseCode\" : \"SP\"\n  },\n  \"listBatchStock\" : [ {\n    \"batchNumber\" : 1,\n    \"productId\" : \"CA\",\n    \"currentTemperature\" : 0,\n    \"minimumTemperature\" : -5,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 10,\n    \"manufacturingDate\" : \"2021-10-21\",\n    \"manufacturingTime\" : \"18:27:04.808669\",\n    \"dueDate\" : \"2022-01-01\"\n  }, {\n    \"batchNumber\" : 2,\n    \"productId\" : \"FR\",\n    \"currentTemperature\" : 0,\n    \"minimumTemperature\" : -5,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 10,\n    \"manufacturingDate\" : \"2021-10-21\",\n    \"manufacturingTime\" : \"18:27:04.808706\",\n    \"dueDate\" : \"2022-01-01\"\n  } ]\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -59,7 +59,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"username\": \"jhony\",\n  \"email\": \"jhony@gmail.com\",\n  \"password\": \"12345678\",\n  \"roles\": [\"admin\"],\n  \"cpf\": \"11122233344\",\n  \"warehouseCode\": \"SP\"\n}",
+					"raw": "{\n  \"username\": \"lucas\",\n  \"email\": \"lucas@gmail.com\",\n  \"password\": \"12345678\",\n  \"roles\": [\"admin\"],\n  \"cpf\": \"11122233344\",\n  \"warehouseCode\": \"SP\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -99,7 +99,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"username\": \"jhony\",\n  \"password\": \"12345678\"\n}",
+					"raw": "{\n  \"username\": \"lucas\",\n  \"password\": \"12345678\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -127,8 +127,28 @@
 			"request": {
 				"method": "POST",
 				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\n    \"data\": \"21/12/2021\",\n    \"buyerId\": \"61955417a784be30da0afeda\",\n    \"orderStatus\": {\n        \"statusCode\": \"in progress\"\n    },\n    \"products\": [\n        {\n            \"productId\": \"CA\",\n            \"quantity\": 10\n        },\n        {\n            \"productId\": \"FR\",\n            \"quantity\": \n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
 				"url": {
-					"raw": ""
+					"raw": "http://localhost:8080/api/v1/fresh-products/order",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"fresh-products",
+						"order"
+					]
 				}
 			},
 			"response": []
@@ -140,7 +160,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"orderNumber\" : 1,\n  \"orderDate\" : \"10/11/2021\",\n  \"section\" : {\n    \"sectionCode\" : \"CO\",\n    \"warehouseCode\" : \"SP\"\n  },\n  \"listBatchStock\" : [ {\n    \"batchNumber\" : 1,\n    \"productId\" : \"CA\",\n    \"currentTemperature\" : 0,\n    \"minimumTemperature\" : -5,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 10,\n    \"manufacturingDate\" : \"2021-10-21\",\n    \"manufacturingTime\" : \"2021-10-21T18:27:04.808669\",\n    \"dueDate\" : \"2022-01-01\"\n  }, {\n    \"batchNumber\" : 2,\n    \"productId\" : \"FR\",\n    \"currentTemperature\" : 0,\n    \"minimumTemperature\" : -5,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 10,\n    \"manufacturingDate\" : \"2021-10-21\",\n    \"manufacturingTime\" : \"2021-10-21T18:27:04.808706\",\n    \"dueDate\" : \"2022-01-01\"\n  } ]\n}",
+					"raw": "{\n  \"orderNumber\" : 1,\n  \"orderDate\" : \"17/11/2021\",\n  \"section\" : {\n    \"sectionCode\" : \"CO\",\n    \"warehouseCode\" : \"SP\"\n  },\n  \"listBatchStock\" : [ {\n    \"batchNumber\" : 1,\n    \"productId\" : \"CA\",\n    \"currentTemperature\" : 10,\n    \"minimumTemperature\" : 5,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 20,\n    \"manufacturingDate\" : \"2021-10-21\",\n    \"manufacturingTime\" : \"18:27:04.808669\",\n    \"dueDate\" : \"2022-01-01\"\n  }, {\n    \"batchNumber\" : 2,\n    \"productId\" : \"FR\",\n    \"currentTemperature\" : 10,\n    \"minimumTemperature\" : 5,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 20,\n    \"manufacturingDate\" : \"2021-10-21\",\n    \"manufacturingTime\" : \"18:27:04.808706\",\n    \"dueDate\" : \"2022-01-01\"\n  } ]\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -177,7 +197,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": " {\n     \"id\": \"618027c31e0f7e485eee47bf\",\n    \"data\": \"21/12/2021\",\n    \"buyerId\": \"617ae61296739f2d31565e26\",\n    \"orderStatus\": {\n        \"statusCode\": \"order chart\"\n    },\n    \"products\": [\n        {\n            \"productId\": \"LE\",\n            \"quantity\": 0\n        },\n        {\n            \"productId\": \"QJ\",\n            \"quantity\": 2\n        }\n    ]\n}",
+					"raw": " {\n    \"data\": \"21/12/2021\",\n    \"buyerId\": \"61955417a784be30da0afeda\",\n    \"orderStatus\": {\n        \"statusCode\": \"order chart\"\n    },\n    \"products\": [\n        {\n            \"productId\": \"CA\",\n            \"quantity\": 10\n        },\n        {\n            \"productId\": \"FR\",\n            \"quantity\": 10\n        }\n    ]\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -321,7 +341,18 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": ""
+					"raw": "http://localhost:8080/api/v1/fresh-products/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"fresh-products",
+						"products"
+					]
 				}
 			},
 			"response": []
@@ -332,16 +363,6 @@
 				"disableBodyPruning": true
 			},
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqaG9ueSIsImlhdCI6MTYzNjQ3MDYwMywiZXhwIjoxNjM2NTU3MDAzfQ.9OoEAUVG3aQrCuy_10KlepT6cmP3cJ1vV1qsdCAGpOX-9CYtdthsU602H9Q1PKs2h_UZgN1hRUlcv3AmnmzjIA",
-							"type": "string"
-						}
-					]
-				},
 				"method": "GET",
 				"header": [],
 				"body": {
@@ -354,7 +375,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/fresh-products/due-date/list?days=30",
+					"raw": "http://localhost:8080/api/v1/fresh-products/due-date/list?days=300",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -370,7 +391,7 @@
 					"query": [
 						{
 							"key": "days",
-							"value": "30"
+							"value": "300"
 						}
 					]
 				}
@@ -383,16 +404,6 @@
 				"disableBodyPruning": true
 			},
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqaG9ueSIsImlhdCI6MTYzNjQ3MDYwMywiZXhwIjoxNjM2NTU3MDAzfQ.9OoEAUVG3aQrCuy_10KlepT6cmP3cJ1vV1qsdCAGpOX-9CYtdthsU602H9Q1PKs2h_UZgN1hRUlcv3AmnmzjIA",
-							"type": "string"
-						}
-					]
-				},
 				"method": "GET",
 				"header": [],
 				"body": {
@@ -405,7 +416,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/fresh-products/due-date/lists?days=25&category=FF&order=desc",
+					"raw": "http://localhost:8080/api/v1/fresh-products/due-date/lists?days=300&category=FS&order=desc",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -421,11 +432,11 @@
 					"query": [
 						{
 							"key": "days",
-							"value": "25"
+							"value": "300"
 						},
 						{
 							"key": "category",
-							"value": "FF"
+							"value": "FS"
 						},
 						{
 							"key": "order",
@@ -442,7 +453,24 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": ""
+					"raw": "http://localhost:8080/api/v1/fresh-products/order?id=61955e1a35aeee009a83bdf1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"fresh-products",
+						"order"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "61955e1a35aeee009a83bdf1"
+						}
+					]
 				}
 			},
 			"response": []
@@ -460,7 +488,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/fresh-products/warehouse?productId=LE",
+					"raw": "http://localhost:8080/api/v1/fresh-products/warehouse?productId=CA",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -475,7 +503,35 @@
 					"query": [
 						{
 							"key": "productId",
-							"value": "LE"
+							"value": "CA"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "product-list-bycategory",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/fresh-products/list?sectionCategory=0",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"fresh-products",
+						"list"
+					],
+					"query": [
+						{
+							"key": "sectionCategory",
+							"value": "0"
 						}
 					]
 				}
@@ -488,7 +544,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqaG9ueSIsImlhdCI6MTYzNjU3MzI0MywiZXhwIjoxNjM2NjU5NjQzfQ.Wju32IlA-rHJVTErJI9mEne-Dwln-JFRCl5rPRMiCMedlL55gPHq_9RAqfTw1RoO3To4WoAwWctoJzSsTR9h_A",
+				"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWNhcyIsImlhdCI6MTYzNzE3NjM2MCwiZXhwIjoxNjM3MjYyNzYwfQ.KHTzM2pSXKgc7LUvE7Yw1gOyCIH9aOoudk0P1oMN_C7eEB19u3DpApGtKjfdilXE0-uI2K5Vl88mfDvqeOuzIg",
 				"type": "string"
 			}
 		]
