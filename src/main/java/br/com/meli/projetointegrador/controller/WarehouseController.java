@@ -27,6 +27,11 @@ public class WarehouseController {
         this.warehouseService = warehouseService;
     }
 
+    /**
+     * @param productId, id do produdo;
+     * @return ResponseEntity do tipo batchStockResponseWarehousesDTO;
+     * requisito 4 - endpoint 1: Veja quantidade de um determinado produto por armazem.
+     */
     @GetMapping(value = "/warehouse") // Chamada do endpoint: /warehouse?productId=LE
     public ResponseEntity<Object> getQuantityProductsWarehouse(@RequestParam("productId") String productId) {
         BatchStockResponseWarehousesDTO batchStockResponseWarehousesDTO = warehouseService.listQuantityProduct(productId);

@@ -32,6 +32,12 @@ public class InboundOrderController {
         this.agentService = agentService;
     }
 
+    /**
+     * @param inboundOrderDTO, ordem de entrada DTO;
+     * @param cpf, um CPF de agente
+     * @return ResponseEntity.created com listBatchStockDTO
+     * requisito 1 - endpoint 1: Cadastro de lote com produtos que compoe e devolva status 201.
+     */
     @PostMapping(value = "/inboundorder", produces = "application/json")
     public ResponseEntity<List<BatchStockDTO>> post(@Valid @RequestBody InboundOrderDTO inboundOrderDTO,
                                                    UriComponentsBuilder uriComponentsBuilder,
@@ -43,6 +49,12 @@ public class InboundOrderController {
         return ResponseEntity.created(uri).body(listBatchStockDTO);
     }
 
+    /**
+     * @param inboundOrderDTO, ordem de entrada DTO;
+     * @param cpf, um CPF de agente
+     * @return ResponseEntity.created com listBatchStockDTO
+     * requisito 1 - endpoint 2: Caso exista  lote ele deve ser atualizado Cadastro de lote com produtos que compoe e devolva status 201.
+     */
     @PutMapping(value = "/inboundorder", produces = "application/json")
     public ResponseEntity<List<BatchStockDTO>> put(@Valid @RequestBody InboundOrderDTO inboundOrderDTO,
                                                    UriComponentsBuilder uriComponentsBuilder,
