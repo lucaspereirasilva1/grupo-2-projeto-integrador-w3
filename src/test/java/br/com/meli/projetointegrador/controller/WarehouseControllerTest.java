@@ -115,6 +115,14 @@ public class WarehouseControllerTest {
                 .andReturn().getResponse();
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
+
+        MockHttpServletResponse responseNot = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/warehouse")
+                .param("productId", "")
+                .header("Authorization", "Bearer " + tokenTest.getAccessToken())
+                .contentType("application/json"))
+                .andReturn().getResponse();
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), responseNot.getStatus());
     }
 
     void createData() {
