@@ -188,8 +188,8 @@ public class BatchStockService {
                 try {
                     batchStockRepository.save(b);
                 }catch (DataAccessException e) {
-                    logger.error("Erro durante a persistencia no banco!!!", e);
-                    throw new PersistenceException("Erro durante a persistencia no banco!!!");
+                    logger.error(ConstantsUtil.PERSISTENCE_ERROR, e);
+                    throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
                 }
             });
         });
