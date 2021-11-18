@@ -3,8 +3,8 @@ package br.com.meli.projetointegrador.model.entity;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
-import org.springframework.data.annotation.Reference;
-import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
@@ -22,13 +22,15 @@ import java.time.LocalDate;
 
 @Data
 @Document(collection = "product")
+@CompoundIndexes({
+        @CompoundIndex(name = "product_productId", def = "{'productId' : 1}", unique = true)
+})
 public class Product {
 
     @MongoId(FieldType.OBJECT_ID)
     @Setter(AccessLevel.NONE)
     private String id;
 
-    @Indexed(unique = true)
     private String productId;
 
     private String productName;
@@ -36,11 +38,9 @@ public class Product {
     private LocalDate dueDate;
 
     @DBRef
-    @Reference
     private Section section;
 
     @DBRef
-    @Reference
     private SectionCategory category;
 
     /**

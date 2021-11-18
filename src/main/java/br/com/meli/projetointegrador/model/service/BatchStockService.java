@@ -61,7 +61,7 @@ public class BatchStockService {
         listBatchStockDTO.forEach(b -> {
             Product product = productService.find(b.getProductId());
             if (productService.validProductSection(sectionDTO.getSectionCode()) &&
-                sectionService.validSectionLength(product.getSection())) {
+                sectionService.validSectionLength(sectionService.find(sectionDTO.getSectionCode()))) {
                 batchStockList.add(fillBatchStock(b, agentDTO, sectionDTO));
             }
         });

@@ -10,6 +10,7 @@ import org.springframework.test.context.TestPropertySource;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,7 +39,13 @@ class SaveDataRepositoryTest {
     private BuyerRepository buyerRepository;
 
     @Autowired
+    private AgentRepository agentRepository;
+
+    @Autowired
     private WarehouseRepository warehouseRepository;
+
+    @Autowired
+    private BatchStockRepository batchStockRepository;
 
     @Test
     void saveProduct() {
@@ -117,12 +124,37 @@ class SaveDataRepositoryTest {
     @Test
     void sectionSaveTest() {
         Section section = new Section()
-                .sectionCode("MR")
-                .sectionName("mortadela")
-                .warehouse(warehouseRepository.findByWarehouseCode("SP").orElse(new Warehouse()))
+                .sectionCode("LA")
+                .sectionName("laticinios")
+                .warehouse(warehouseRepository.findByWarehouseCode("MG").orElse(new Warehouse()))
                 .maxLength(10)
                 .build();
         sectionRepository.save(section);
+    }
+
+    @Test
+    void batchStockInsert() {
+        Agent agent = new Agent()
+                .name("lucas")
+                .cpf("11122233344")
+                .warehouse(warehouseRepository.findByWarehouseCode("SP").orElse(new Warehouse()))
+                .build();
+        agentRepository.save(agent);
+
+        BatchStock batchStock = new BatchStock()
+                .batchNumber(1)
+                .productId("LE")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.of(2021, 12, 1))
+                .agent(agent)
+                .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
+                .build();
+        batchStockRepository.save(batchStock);
     }
 
 }

@@ -92,7 +92,7 @@ class ScriptCarregamentoBancoTest {
                 .sectionCode("CO")
                 .sectionName("Congelados")
                 .maxLength(10)
-                .warehouse(warehouseMG)
+                .warehouse(warehouse)
                 .build();
 
         sectionRepository.save(sectionCO);
@@ -126,8 +126,6 @@ class ScriptCarregamentoBancoTest {
                 .productPrice(bigDecimal)
                 .dueDate(LocalDate.now().plusWeeks(5))
                 .build();
-
-        productRepository.save(product);
 
         Product productDois = new Product()
                 .productId("DA")

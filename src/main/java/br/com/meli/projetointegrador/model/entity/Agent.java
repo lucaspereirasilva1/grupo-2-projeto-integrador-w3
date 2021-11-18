@@ -3,8 +3,8 @@ package br.com.meli.projetointegrador.model.entity;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
-import org.springframework.data.annotation.Reference;
-import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
@@ -19,6 +19,9 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 
 @Data
 @Document(collection = "agent")
+@CompoundIndexes({
+        @CompoundIndex(name = "agent_cpf", def = "{'cpf' : 1}", unique = true)
+})
 public class Agent {
 
     @MongoId(FieldType.OBJECT_ID)
@@ -26,12 +29,9 @@ public class Agent {
     private String id;
 
     private String name;
-
-    @Indexed(unique = true)
     private String cpf;
 
     @DBRef
-    @Reference
     private Warehouse warehouse;
 
     public Agent id(String id) {

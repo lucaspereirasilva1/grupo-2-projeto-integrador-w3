@@ -3,7 +3,8 @@ package br.com.meli.projetointegrador.model.entity;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
-import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
@@ -24,6 +25,9 @@ import java.util.Set;
 
 @Data
 @Document(collection = "users")
+@CompoundIndexes({
+        @CompoundIndex(name = "users_cpf", def = "{'cpf' : 1}", unique = true)
+})
 public class User {
 
     @MongoId(FieldType.OBJECT_ID)
@@ -45,7 +49,6 @@ public class User {
 
     @NotBlank
     @Size(max = 11)
-    @Indexed(unique = true)
     private String cpf;
 
     @DBRef
