@@ -13,7 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -52,7 +52,7 @@ class WarehouseServiceIntegrationTest {
                 .productId("LA")
                 .currentTemperature(35.5F)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now())
                 .build();
         batchStockRepository.save(batchStock);

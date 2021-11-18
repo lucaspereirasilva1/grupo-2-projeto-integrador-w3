@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -223,7 +224,7 @@ class InboundOrderControllerTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now())
                 .section(section.orElse(new Section()))
                 .agent(agent.orElse(new Agent()))
@@ -238,7 +239,7 @@ class InboundOrderControllerTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now())
                 .section(section.orElse(new Section()))
                 .agent(agent.orElse(new Agent()))

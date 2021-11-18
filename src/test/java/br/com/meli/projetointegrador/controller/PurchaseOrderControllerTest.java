@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -267,7 +267,7 @@ class PurchaseOrderControllerTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now().plusWeeks(4))
                 .agent(agent)
                 .section(section)
@@ -281,7 +281,7 @@ class PurchaseOrderControllerTest {
                 .initialQuantity(1)
                 .currentQuantity(10)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now().plusWeeks(4))
                 .agent(agent)
                 .section(section)

@@ -8,7 +8,6 @@ import br.com.meli.projetointegrador.model.dto.AgentDTO;
 import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
 import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;
 import br.com.meli.projetointegrador.model.entity.InboundOrder;
-import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.repository.InboundOrderRepository;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
@@ -53,17 +52,19 @@ public class InboundOrderService {
      * @return faz o post e retorna a lista salva.
      */
     public List<BatchStockDTO> post(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
-        if (inboundOrderDTO.getOrderDate().isBefore(LocalDate.now())){
+        if (validDate(inboundOrderDTO.getOrderDate())){
             throw new InboundOrderException("Order com data retroativa, favor inserir uma data valida!");
         }
         inboundOrderDTO.getListBatchStockDTO().forEach(b -> {
-            if (b.getDueDate().isBefore(LocalDate.now())) {
+            if (validDate(b.getDueDate())) {
                 throw new InboundOrderException("Estoque com data retroativa: " + b.getDueDate()); }
         });
-        InboundOrder inboundOrder = modelMapper.map(inboundOrderDTO, InboundOrder.class);
-        Section section = sectionService.find(inboundOrderDTO.getSectionDTO().getSectionCode());
-        inboundOrder.section(section);
-        batchStockService.postAll(inboundOrder.getListBatchStock(), agentDTO, inboundOrderDTO.getSectionDTO());
+        InboundOrder inboundOrder = new InboundOrder()
+                .orderNumber(inboundOrderDTO.getOrderNumber())
+                .orderDate(inboundOrderDTO.getOrderDate())
+                .section(sectionService.find(inboundOrderDTO.getSectionDTO().getSectionCode()))
+                .listBatchStock(batchStockService.postAll(inboundOrderDTO.getListBatchStockDTO(), agentDTO, inboundOrderDTO.getSectionDTO()))
+                .build();
         try {
             inboundOrderRepository.save(inboundOrder);
         }catch (DataAccessException e) {
@@ -80,7 +81,7 @@ public class InboundOrderService {
      */
     public List<BatchStockDTO> put(InboundOrderDTO inboundOrderDTO, AgentDTO agentDTO) {
         inboundOrderDTO.getListBatchStockDTO().forEach(b -> {
-            if (b.getDueDate().isBefore(LocalDate.now())) {
+            if (validDate(b.getDueDate())) {
                 throw new InboundOrderException("Estoque com data retroativa: " + b.getDueDate());
             }
         });
@@ -116,6 +117,10 @@ public class InboundOrderService {
             Boolean.FALSE.equals(validAgentIntoWarehouse) ||
             Boolean.FALSE.equals(validSection))
             throw new ValidInputException("Problema na validacao dos dados de entrada!!!");
+    }
+
+    private Boolean validDate(LocalDate date) {
+        return date.isBefore(LocalDate.now());
     }
 
 }

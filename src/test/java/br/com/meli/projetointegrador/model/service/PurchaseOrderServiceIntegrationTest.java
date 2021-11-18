@@ -17,7 +17,6 @@ import org.springframework.util.ObjectUtils;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -199,7 +198,7 @@ class PurchaseOrderServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.of(2022, 1, 3))
                 .agent(agent)
                 .section(section)
@@ -213,7 +212,7 @@ class PurchaseOrderServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(10)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.of(2022, 1, 3))
                 .agent(agent)
                 .section(section)
@@ -298,7 +297,7 @@ class PurchaseOrderServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.of(2022, 1, 3))
                 .agent(agent)
                 .section(section)
@@ -312,7 +311,7 @@ class PurchaseOrderServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(10)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.of(2022, 1, 3))
                 .agent(agent)
                 .section(section)
@@ -437,7 +436,7 @@ class PurchaseOrderServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.of(2022, 1, 3))
                 .agent(agent)
                 .section(section)
@@ -451,7 +450,7 @@ class PurchaseOrderServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(10)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.of(2022, 1, 3))
                 .agent(agent)
                 .section(section)
