@@ -430,12 +430,22 @@ public class BatchStockServiceIntegrationTest {
     }
 
     @Test
+    void listBatchStockDueDateExceptionCategoryNonexistentTestIntegration(){
+        ProductExceptionNotFound productExceptionNotFound = assertThrows
+                (ProductExceptionNotFound.class,() -> batchStockService.listBatchStockDueDate
+                        (30,"F5","asc"));
+
+        String menssagemEsperada = "Nao existe esta categoria!!!";
+        assertTrue(menssagemEsperada.contains(productExceptionNotFound.getMessage()));
+    }
+
+    @Test
     void listBatchStockDueDateExceptionCategoryTestIntegration(){
         ProductExceptionNotFound productExceptionNotFound = assertThrows
                 (ProductExceptionNotFound.class,() -> batchStockService.listBatchStockDueDate
-                        (30,"F5","a5sc"));
+                        (30,"RF","asc"));
 
-        String menssagemEsperada = "Nao existe esta categoria!!!";
+        String menssagemEsperada = "Nao existe estoque com esta categoria!!!";
         assertTrue(menssagemEsperada.contains(productExceptionNotFound.getMessage()));
     }
 

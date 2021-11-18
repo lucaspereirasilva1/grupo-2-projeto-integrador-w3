@@ -23,6 +23,12 @@ class ScriptCarregamentoBancoTest {
     private SectionRepository sectionRepository;
 
     @Autowired
+    private AgentRepository agentRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private ProductRepository productRepository;
 
     @Autowired
@@ -45,6 +51,8 @@ class ScriptCarregamentoBancoTest {
         roleRepository.deleteAll();
         buyerRepository.deleteAll();
         sectionCategoryRepository.deleteAll();
+        userRepository.deleteAll();
+        agentRepository.deleteAll();
 
         BigDecimal bigDecimal = new BigDecimal("45.00");
 
@@ -96,7 +104,6 @@ class ScriptCarregamentoBancoTest {
         SectionCategory sectionCategoryFS = new SectionCategory()
                 .name(ESectionCategory.FS)
                 .build();
-
 
         SectionCategory sectionCategoryRF = new SectionCategory()
                 .name(ESectionCategory.RF)

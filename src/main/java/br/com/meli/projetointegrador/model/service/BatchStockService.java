@@ -288,15 +288,16 @@ public class BatchStockService {
         List<BatchStockServiceDueDateDTO>  batchStockServiceDueDateList = new ArrayList<>();
         if (category.equals("FF")||category.equals("FS")||category.equals("RF")){
             batchStockList.forEach(b -> {
-                 if (LocalDate.now().plusDays(days).isAfter(b.getDueDate()) &&
+                if (LocalDate.now().plusDays(days).isAfter(b.getDueDate()) &&
                          productService.find(b.getProductId()).getCategory().getName().equals(ESectionCategory.valueOf(category))) {
                      newList(batchStockServiceDueDateList,b.getBatchNumber(),b.getProductId(),b.getDueDate(),b.getCurrentQuantity());
                 }
             });
             if (!batchStockServiceDueDateList.isEmpty()) {
                 listAscDesc(order,batchStockListDueDateDTO,batchStockServiceDueDateList);
-            }
                 return batchStockListDueDateDTO;
+            }else
+                throw new ProductExceptionNotFound("Nao existe estoque com esta categoria");
         }else
             throw new ProductExceptionNotFound("Nao existe esta categoria!!!");
 
