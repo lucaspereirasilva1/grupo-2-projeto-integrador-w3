@@ -1201,6 +1201,63 @@ public class BatchStockServiceTest {
     }
 
     @Test
+    void listBatchStockDueDateExceptionCategoryNonexistentTest(){
+        List<BatchStock> batchStockList = new ArrayList<>();
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("laticinios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+
+        Agent agent = new Agent().
+                cpf("11122233344").
+                name("lucas").
+                build();
+
+        BatchStock batchStockUm = new BatchStock()
+                .batchNumber(2)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalTime.now())
+                .dueDate(LocalDate.now().plusWeeks(+2))
+                .agent(agent)
+                .section(section)
+                .build();
+
+         Product productDois = new Product()
+                .productId("QJ")
+                .productName("queijo")
+                .section(section)
+                .category(new SectionCategory().name(ESectionCategory.FF))
+                .build();
+
+        when(mockProductService.find(anyString()))
+                .thenReturn(productDois);
+
+        batchStockList.add(batchStockUm);
+        when(mockBatchStockRepository.findAll()).thenReturn(batchStockList);
+
+        ProductExceptionNotFound productExceptionNotFound = assertThrows
+                (ProductExceptionNotFound.class,() -> batchStockService.listBatchStockDueDate
+                        (30,"F5","asc"));
+
+        String menssagemEsperada = "Nao existe esta categoria!!!";
+
+        assertTrue(menssagemEsperada.contains(productExceptionNotFound.getMessage()));
+    }
+
+    @Test
     void listBatchStockDueDateExceptionCategoryTest(){
         List<BatchStock> batchStockList = new ArrayList<>();
 
@@ -1250,12 +1307,11 @@ public class BatchStockServiceTest {
 
         ProductExceptionNotFound productExceptionNotFound = assertThrows
                 (ProductExceptionNotFound.class,() -> batchStockService.listBatchStockDueDate
-                        (30,"F5","a5sc"));
+                        (30,"FS","asc"));
 
-        String menssagemEsperada = "Nao existe esta categoria!!!";
+        String menssagemEsperada = "Nao existe estoque com esta categoria!!!";
 
         assertTrue(menssagemEsperada.contains(productExceptionNotFound.getMessage()));
-
     }
 
     @Test
