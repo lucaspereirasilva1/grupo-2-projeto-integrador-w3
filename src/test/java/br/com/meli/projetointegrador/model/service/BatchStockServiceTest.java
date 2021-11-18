@@ -1296,7 +1296,7 @@ public class BatchStockServiceTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now().plusWeeks(+2))
                 .agent(agent)
                 .section(section)

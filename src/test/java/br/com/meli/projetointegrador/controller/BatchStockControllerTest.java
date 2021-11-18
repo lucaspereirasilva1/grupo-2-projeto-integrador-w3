@@ -146,7 +146,7 @@ class BatchStockControllerTest {
         setUp();
         MockHttpServletResponse response = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/due-date/lists/")
                 .param("days","30")
-                .param("category","FS")
+                .param("category","FF")
                 .param("order","asc")
                 .header("Authorization", "Bearer " + tokenTest.getAccessToken())
                 .contentType("application/json"))

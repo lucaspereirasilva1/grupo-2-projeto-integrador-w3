@@ -3,7 +3,8 @@ package br.com.meli.projetointegrador.model.entity;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
-import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
@@ -17,6 +18,9 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 
 @Data
 @Document(collection = "buyer")
+@CompoundIndexes({
+        @CompoundIndex(name = "buyer_cpf", def = "{'cpf' : 1}", unique = true)
+})
 public class Buyer {
 
     @MongoId(FieldType.OBJECT_ID)
@@ -24,10 +28,7 @@ public class Buyer {
     private String id;
 
     private String name;
-
-    @Indexed(unique = true)
     private String cpf;
-
 
     public Buyer name(String name) {
         this.name = name;

@@ -3,8 +3,8 @@ package br.com.meli.projetointegrador.model.entity;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
-import org.springframework.data.annotation.Reference;
-import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
@@ -22,15 +22,16 @@ import java.time.LocalDateTime;
 
 @Data
 @Document(collection = "batchstock")
+@CompoundIndexes({
+        @CompoundIndex(name = "batchstock_batchNumber", def = "{'batchNumber' : 1}", unique = true)
+})
 public class BatchStock {
 
     @MongoId(FieldType.OBJECT_ID)
     @Setter(AccessLevel.NONE)
     private String id;
 
-    @Indexed(unique = true)
     private Integer batchNumber;
-
     private String productId;
     private Float currentTemperature;
     private Float minimumTemperature;
@@ -41,11 +42,9 @@ public class BatchStock {
     private LocalDate dueDate;
 
     @DBRef
-    @Reference
     private Agent agent;
 
     @DBRef
-    @Reference
     private Section section;
 
     public BatchStock id(String id) {
