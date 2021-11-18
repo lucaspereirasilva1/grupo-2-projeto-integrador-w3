@@ -16,6 +16,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -73,6 +74,7 @@ public class BatchStockServiceIntegrationTest {
 
     @Test
     void postAllIntegrationTest() {
+        batchStockRepository.deleteAll();
         SectionDTO sectionDTO = new SectionDTO()
                 .sectionCode("LA")
                 .warehouseCode("SP")
@@ -83,7 +85,7 @@ public class BatchStockServiceIntegrationTest {
                 .name("lucas")
                 .build();
 
-        BatchStock batchStock = new BatchStock()
+        BatchStockDTO batchStockDTO = new BatchStockDTO()
                 .batchNumber(2)
                 .productId("QJ")
                 .currentTemperature(10.0F)
@@ -95,10 +97,22 @@ public class BatchStockServiceIntegrationTest {
                 .dueDate(LocalDate.now())
                 .build();
 
-        batchStockService.postAll(Collections.singletonList(batchStock), agentDTO, sectionDTO);
-
-        final Optional<BatchStock> batchStockOptional = batchStockRepository.findById(batchStock.getId());
-        assertTrue(batchStockOptional.isPresent());
+        batchStockService.postAll(Collections.singletonList(batchStockDTO), agentDTO, sectionDTO);
+        final List<BatchStock> batchStockRepositoryAll = batchStockRepository.findAll();
+        assertFalse(batchStockRepositoryAll.isEmpty());
+        batchStockRepositoryAll.forEach(b -> {
+            assertEquals(batchStockDTO.getBatchNumber(), b.getBatchNumber());
+            assertEquals(batchStockDTO.getProductId(), b.getProductId());
+            assertEquals(batchStockDTO.getCurrentTemperature(), b.getCurrentTemperature());
+            assertEquals(batchStockDTO.getMinimumTemperature(), b.getMinimumTemperature());
+            assertEquals(batchStockDTO.getInitialQuantity(), b.getInitialQuantity());
+            assertEquals(batchStockDTO.getCurrentQuantity(), b.getCurrentQuantity());
+            assertEquals(batchStockDTO.getManufacturingDate(), b.getManufacturingDate());
+            assertEquals(LocalTime.of(batchStockDTO.getManufacturingTime().getHour(),
+                    batchStockDTO.getManufacturingTime().getMinute()),
+                    LocalTime.of(b.getManufacturingTime().getHour(),
+                            b.getManufacturingTime().getMinute()));
+        });
     }
 
     @Test
@@ -124,7 +138,7 @@ public class BatchStockServiceIntegrationTest {
                 .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now())
                 .build();
-      
+
         BatchStock batchStock = batchStockRepository.findAll().get(0);
 
         batchStockService.putAll(Collections.singletonList(batchStock), Collections.singletonList(batchStockDTO),
@@ -146,7 +160,7 @@ public class BatchStockServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.of(2021, 12, 1))
                 .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
                 .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
@@ -307,7 +321,7 @@ public class BatchStockServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now().plusWeeks(+12))
                 .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
                 .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
@@ -333,7 +347,7 @@ public class BatchStockServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now().plusWeeks(+1))
                 .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
                 .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
@@ -348,7 +362,7 @@ public class BatchStockServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now().plusWeeks(+2))
                 .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
                 .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
@@ -374,7 +388,7 @@ public class BatchStockServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now().plusWeeks(+1))
                 .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
                 .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
@@ -389,7 +403,7 @@ public class BatchStockServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now().plusWeeks(+2))
                 .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
                 .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
@@ -451,7 +465,7 @@ public class BatchStockServiceIntegrationTest {
                 .name("lucas")
                 .build();
 
-        BatchStock batchStockParam = new BatchStock()
+        BatchStockDTO batchStockParamDTO = new BatchStockDTO()
                 .batchNumber(1)
                 .productId("QJ")
                 .currentTemperature(10.0F)
@@ -461,14 +475,11 @@ public class BatchStockServiceIntegrationTest {
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalTime.now())
                 .dueDate(LocalDate.now().plusWeeks(5))
-                .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
-                .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
-                .manufacturingTime(LocalTime.now())
                 .build();
 
         DataAccessException dataAccessException = assertThrows
                 (DataAccessException.class,() ->
-                        batchStockService.postAll(Collections.singletonList(batchStockParam), agentDTO, sectionDTO));
+                        batchStockService.postAll(Collections.singletonList(batchStockParamDTO), agentDTO, sectionDTO));
 
         String menssagemEsperada = "Erro durante a persistencia no banco!!!";
 
@@ -476,6 +487,7 @@ public class BatchStockServiceIntegrationTest {
     }
 
     void createData() {
+        clearBase();
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")
                 .warehouseName("sao paulo")
@@ -521,7 +533,7 @@ public class BatchStockServiceIntegrationTest {
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
                 .dueDate(LocalDate.now().plusWeeks(4))
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .agent(agent)
                 .section(section)
                 .build();

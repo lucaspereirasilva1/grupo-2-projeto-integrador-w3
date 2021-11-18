@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.dao.DataAccessException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -102,7 +103,7 @@ class InboundOrderServiceTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now())
                 .agent(agent)
                 .section(section)
@@ -119,9 +120,10 @@ class InboundOrderServiceTest {
                 .thenReturn(section);
         when(mockInboundOrderRepository.save(any(InboundOrder.class)))
                 .thenReturn(inboundOrder);
-        doNothing().when(mockBatchStockService).postAll(anyList(),
+        when(mockBatchStockService.postAll(anyList(),
                 any(AgentDTO.class),
-                any(SectionDTO.class));
+                any(SectionDTO.class)))
+                .thenReturn(Collections.singletonList(batchStock));
 
         List<BatchStockDTO> listBatchStockDTO = inboundOrderService.post(inboundOrderDTO, agentDTO);
 
@@ -203,7 +205,7 @@ class InboundOrderServiceTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now())
                 .agent(agent)
                 .section(section)
@@ -233,7 +235,7 @@ class InboundOrderServiceTest {
 
         for (BatchStockDTO b:listBatchStockDTO) {
             if (b.getCurrentQuantity() != 2 |
-            b.getInitialQuantity() != 2) {
+                    b.getInitialQuantity() != 2) {
                 break;
             }else {
                 validUpdate = true;
@@ -637,7 +639,7 @@ class InboundOrderServiceTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now())
                 .agent(agent)
                 .section(section)
