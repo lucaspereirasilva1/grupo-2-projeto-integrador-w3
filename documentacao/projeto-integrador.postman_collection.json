@@ -6,50 +6,6 @@
 	},
 	"item": [
 		{
-			"name": "inbounorder-register",
-			"request": {
-				"method": "POST",
-				"header": [
-					{
-						"key": "",
-						"value": "",
-						"type": "text",
-						"disabled": true
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"orderNumber\" : 1,\n  \"orderDate\" : \"17/11/2021\",\n  \"section\" : {\n    \"sectionCode\" : \"CO\",\n    \"warehouseCode\" : \"SP\"\n  },\n  \"listBatchStock\" : [ {\n    \"batchNumber\" : 1,\n    \"productId\" : \"CA\",\n    \"currentTemperature\" : 0,\n    \"minimumTemperature\" : -5,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 10,\n    \"manufacturingDate\" : \"2021-10-21\",\n    \"manufacturingTime\" : \"18:27:04.808669\",\n    \"dueDate\" : \"2022-01-01\"\n  }, {\n    \"batchNumber\" : 2,\n    \"productId\" : \"FR\",\n    \"currentTemperature\" : 0,\n    \"minimumTemperature\" : -5,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 10,\n    \"manufacturingDate\" : \"2021-10-21\",\n    \"manufacturingTime\" : \"18:27:04.808706\",\n    \"dueDate\" : \"2022-01-01\"\n  } ]\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder?cpf=11122233344",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"fresh-products",
-						"inboundorder"
-					],
-					"query": [
-						{
-							"key": "cpf",
-							"value": "11122233344"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
 			"name": "auth-sigup",
 			"request": {
 				"auth": {
@@ -91,79 +47,6 @@
 					}
 				},
 				"url": "http://localhost:8080/api/auth/signin"
-			},
-			"response": []
-		},
-		{
-			"name": "purchaseorder-register",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": " {\n    \"data\": \"21/12/2021\",\n    \"buyerId\": \"61955417a784be30da0afeda\",\n    \"orderStatus\": {\n        \"statusCode\": \"in progress\"\n    },\n    \"products\": [\n        {\n            \"productId\": \"CA\",\n            \"quantity\": 10\n        },\n        {\n            \"productId\": \"FR\",\n            \"quantity\": 10\n        }\n    ]\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": "http://localhost:8080/api/v1/fresh-products/order"
-			},
-			"response": []
-		},
-		{
-			"name": "inboundorder-modify",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"orderNumber\" : 1,\n  \"orderDate\" : \"17/11/2021\",\n  \"section\" : {\n    \"sectionCode\" : \"CO\",\n    \"warehouseCode\" : \"SP\"\n  },\n  \"listBatchStock\" : [ {\n    \"batchNumber\" : 1,\n    \"productId\" : \"CA\",\n    \"currentTemperature\" : 10,\n    \"minimumTemperature\" : 5,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 20,\n    \"manufacturingDate\" : \"2021-10-21\",\n    \"manufacturingTime\" : \"18:27:04.808669\",\n    \"dueDate\" : \"2022-01-01\"\n  }, {\n    \"batchNumber\" : 2,\n    \"productId\" : \"FR\",\n    \"currentTemperature\" : 10,\n    \"minimumTemperature\" : 5,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 20,\n    \"manufacturingDate\" : \"2021-10-21\",\n    \"manufacturingTime\" : \"18:27:04.808706\",\n    \"dueDate\" : \"2022-01-01\"\n  } ]\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder?cpf=11122233344",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"fresh-products",
-						"inboundorder"
-					],
-					"query": [
-						{
-							"key": "cpf",
-							"value": "11122233344"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "purchaseorder-modify",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": " {\n    \"data\": \"21/12/2021\",\n    \"buyerId\": \"61955417a784be30da0afeda\",\n    \"orderStatus\": {\n        \"statusCode\": \"order chart\"\n    },\n    \"products\": [\n        {\n            \"productId\": \"CA\",\n            \"quantity\": 10\n        },\n        {\n            \"productId\": \"FR\",\n            \"quantity\": 10\n        }\n    ]\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": "http://localhost:8080/api/v1/fresh-products/order"
 			},
 			"response": []
 		},
@@ -222,7 +105,88 @@
 			"response": []
 		},
 		{
-			"name": "product-list",
+			"name": "R1-E1 ->inbounorder-register",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "",
+						"value": "",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"orderNumber\" : 1,\n  \"orderDate\" : \"17/11/2021\",\n  \"section\" : {\n    \"sectionCode\" : \"CO\",\n    \"warehouseCode\" : \"SP\"\n  },\n  \"listBatchStock\" : [ {\n    \"batchNumber\" : 1,\n    \"productId\" : \"CA\",\n    \"currentTemperature\" : 0,\n    \"minimumTemperature\" : -5,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 10,\n    \"manufacturingDate\" : \"2021-10-21\",\n    \"manufacturingTime\" : \"18:27:04.808669\",\n    \"dueDate\" : \"2022-01-01\"\n  }, {\n    \"batchNumber\" : 2,\n    \"productId\" : \"FR\",\n    \"currentTemperature\" : 0,\n    \"minimumTemperature\" : -5,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 10,\n    \"manufacturingDate\" : \"2021-10-21\",\n    \"manufacturingTime\" : \"18:27:04.808706\",\n    \"dueDate\" : \"2022-01-01\"\n  } ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder?cpf=11122233344",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"fresh-products",
+						"inboundorder"
+					],
+					"query": [
+						{
+							"key": "cpf",
+							"value": "11122233344"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "R1-E2 ->inboundorder-modify",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"orderNumber\" : 1,\n  \"orderDate\" : \"17/11/2021\",\n  \"section\" : {\n    \"sectionCode\" : \"CO\",\n    \"warehouseCode\" : \"SP\"\n  },\n  \"listBatchStock\" : [ {\n    \"batchNumber\" : 1,\n    \"productId\" : \"CA\",\n    \"currentTemperature\" : 10,\n    \"minimumTemperature\" : 5,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 20,\n    \"manufacturingDate\" : \"2021-10-21\",\n    \"manufacturingTime\" : \"18:27:04.808669\",\n    \"dueDate\" : \"2022-01-01\"\n  }, {\n    \"batchNumber\" : 2,\n    \"productId\" : \"FR\",\n    \"currentTemperature\" : 10,\n    \"minimumTemperature\" : 5,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 20,\n    \"manufacturingDate\" : \"2021-10-21\",\n    \"manufacturingTime\" : \"18:27:04.808706\",\n    \"dueDate\" : \"2022-01-01\"\n  } ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder?cpf=11122233344",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"fresh-products",
+						"inboundorder"
+					],
+					"query": [
+						{
+							"key": "cpf",
+							"value": "11122233344"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "R2-E1 ->product-list",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -231,7 +195,112 @@
 			"response": []
 		},
 		{
-			"name": "product-lists-id",
+			"name": "R2-E2 ->productList-get",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqaG9ueSIsImlhdCI6MTYzNjAyOTQ2NywiZXhwIjoxNjM2MTE1ODY3fQ.wBcTL40n3LOUU0-FA6UK8OrtdrXmCMyO-DsenSKfrTXEqPLnLT3_39hIUm5SkIrzHolexhxuJhPL0FWT8c7IjA"
+					}
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/fresh-products/list?sectionCategory=FF",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"fresh-products",
+						"list"
+					],
+					"query": [
+						{
+							"key": "sectionCategory",
+							"value": "FF"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "R2-E3 ->purchaseorder-register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\n    \"data\": \"21/12/2021\",\n    \"buyerId\": \"61955417a784be30da0afeda\",\n    \"orderStatus\": {\n        \"statusCode\": \"in progress\"\n    },\n    \"products\": [\n        {\n            \"productId\": \"CA\",\n            \"quantity\": 10\n        },\n        {\n            \"productId\": \"FR\",\n            \"quantity\": 10\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/api/v1/fresh-products/order"
+			},
+			"response": []
+		},
+		{
+			"name": "R2-E4 ->purchaseorder-list",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/fresh-products/order?id=61955e1a35aeee009a83bdf1",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"fresh-products",
+						"order"
+					],
+					"query": [
+						{
+							"key": "id",
+							"value": "61955e1a35aeee009a83bdf1"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "R2-E5 ->purchaseorder-modify",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": " {\n    \"data\": \"21/12/2021\",\n    \"buyerId\": \"61955417a784be30da0afeda\",\n    \"orderStatus\": {\n        \"statusCode\": \"order chart\"\n    },\n    \"products\": [\n        {\n            \"productId\": \"CA\",\n            \"quantity\": 10\n        },\n        {\n            \"productId\": \"FR\",\n            \"quantity\": 10\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "http://localhost:8080/api/v1/fresh-products/order"
+			},
+			"response": []
+		},
+		{
+			"name": "R3-E1 ->product-lists-id",
 			"request": {
 				"method": "GET",
 				"header": [],
@@ -240,7 +309,7 @@
 			"response": []
 		},
 		{
-			"name": "productListByIdOrdenada-get",
+			"name": "R3-E2 ->productListByIdOrdenada-get",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -290,16 +359,42 @@
 			"response": []
 		},
 		{
-			"name": "product-lists-id Copy",
+			"name": "R4-E1 ->productQuantityById-get",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
 			"request": {
 				"method": "GET",
 				"header": [],
-				"url": "http://localhost:8080/api/v1/fresh-products/products"
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/fresh-products/warehouse?productId=CA",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"fresh-products",
+						"warehouse"
+					],
+					"query": [
+						{
+							"key": "productId",
+							"value": "CA"
+						}
+					]
+				}
 			},
 			"response": []
 		},
 		{
-			"name": "product dias",
+			"name": "R5-E1 ->product dias",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -340,7 +435,7 @@
 			"response": []
 		},
 		{
-			"name": "product dias e cat",
+			"name": "R5-E2 ->product dias e cat",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
 			},
@@ -382,69 +477,6 @@
 						{
 							"key": "order",
 							"value": "desc"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "purchaseorder-list",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:8080/api/v1/fresh-products/order?id=61955e1a35aeee009a83bdf1",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"fresh-products",
-						"order"
-					],
-					"query": [
-						{
-							"key": "id",
-							"value": "61955e1a35aeee009a83bdf1"
-						}
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "productQuantityById-get",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": ""
-				},
-				"url": {
-					"raw": "http://localhost:8080/api/v1/fresh-products/warehouse?productId=CA",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"api",
-						"v1",
-						"fresh-products",
-						"warehouse"
-					],
-					"query": [
-						{
-							"key": "productId",
-							"value": "CA"
 						}
 					]
 				}
