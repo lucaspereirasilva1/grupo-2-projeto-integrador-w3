@@ -70,7 +70,6 @@ class ProductRepositoryTest {
         Product product = new Product()
                 .productId("LE")
                 .productName("Leite")
-                .section(section)
                 .productPrice(new BigDecimal("2.0"))
                 .category(sectionCategory)
                 .dueDate(LocalDate.now())

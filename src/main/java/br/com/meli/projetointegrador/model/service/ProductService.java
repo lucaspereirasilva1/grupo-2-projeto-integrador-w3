@@ -87,7 +87,6 @@ public class ProductService {
             ProductDTO productDTO = new ProductDTO()
                     .productId(p.getProductId())
                     .productName(p.getProductName())
-                    .sectionName(p.getSection().getSectionName())
                     .category(p.getCategory().getName())
                     .productPrice(p.getProductPrice())
                     .dueDate(p.getDueDate())

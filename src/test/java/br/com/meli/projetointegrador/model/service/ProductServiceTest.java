@@ -83,7 +83,6 @@ class ProductServiceTest {
         Product product = new Product()
                 .productId("LE")
                 .productName("leite")
-                .section(section)
                 .build();
 
         when(mockProductRepository.findDistinctFirstByProductId(product.getProductId()))
@@ -126,7 +125,6 @@ class ProductServiceTest {
         Product productUm = new Product()
                 .productId("LE")
                 .productName("leite")
-                .section(section)
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
 
@@ -135,7 +133,6 @@ class ProductServiceTest {
         Product productDois = new Product()
                 .productId("LE")
                 .productName("leite")
-                .section(section)
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
 
@@ -183,7 +180,6 @@ class ProductServiceTest {
         Product productUm = new Product()
                 .productId("LE")
                 .productName("leite")
-                .section(section)
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
 
@@ -192,7 +188,6 @@ class ProductServiceTest {
         Product productDois = new Product()
                 .productId("LE")
                 .productName("leite")
-                .section(section)
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
 

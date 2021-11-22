@@ -413,7 +413,6 @@ public class BatchStockServiceIntegrationTest {
         Product productUm = new Product()
                 .productId("LE")
                 .productName("leite")
-                .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
                 .category(sectionCategoryRepository.findByName(ESectionCategory.FF).orElse(new SectionCategory()))
                 .build();
         productRepository.save(productUm);
@@ -421,7 +420,6 @@ public class BatchStockServiceIntegrationTest {
         Product productDois = new Product()
                 .productId("QJ")
                 .productName("queijo")
-                .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
                 .category(sectionCategoryRepository.findByName(ESectionCategory.FF).orElse(new SectionCategory()))
                 .build();
         productRepository.save(productDois);
@@ -530,7 +528,6 @@ public class BatchStockServiceIntegrationTest {
                 .productPrice(new BigDecimal("2.0"))
                 .dueDate(LocalDate.of(2022, 2, 1))
                 .category(sectionCategory)
-                .section(section)
                 .build();
         productRepository.save(product);
 

@@ -62,7 +62,6 @@ public class PurchaseOrderService {
             ProductDTO productDTO = new ProductDTO()
                     .productId(p.getProductId())
                     .productName(p.getProductName())
-                    .sectionName(p.getSection().getSectionName())
                     .productPrice(p.getProductPrice())
                     .dueDate(p.getDueDate())
                     .category(p.getCategory().getName());
