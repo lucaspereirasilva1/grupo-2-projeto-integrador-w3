@@ -56,6 +56,9 @@ class InboundOrderServiceIntegrationTest {
     @Autowired
     private SectionCategoryRepository sectionCategoryRepository;
 
+    @Autowired
+    private SectionByCategoryRepository sectionByCategoryRepository;
+
     @Test
     void postIntegrationTest() {
         clearBase();
@@ -82,9 +85,15 @@ class InboundOrderServiceIntegrationTest {
         agentRepository.save(agent);
 
         SectionCategory sectionCategory = new SectionCategory()
-                .name(ESectionCategory.FF)
+                .name(ESectionCategory.FS)
                 .build();
         sectionCategoryRepository.save(sectionCategory);
+
+        SectionByCategory sectionByCategory = new SectionByCategory()
+                .category(sectionCategory)
+                .section(section)
+                .build();
+        sectionByCategoryRepository.save(sectionByCategory);
 
         Product product = new Product()
                 .productId("QJ")
@@ -162,7 +171,7 @@ class InboundOrderServiceIntegrationTest {
         agentRepository.save(agentBase);
 
         SectionCategory sectionCategory = new SectionCategory()
-                .name(ESectionCategory.FF)
+                .name(ESectionCategory.FS)
                 .build();
         sectionCategoryRepository.save(sectionCategory);
 
@@ -174,6 +183,12 @@ class InboundOrderServiceIntegrationTest {
                 .category(sectionCategory)
                 .build();
         productRepository.save(product);
+
+        SectionByCategory sectionByCategory = new SectionByCategory()
+                .category(sectionCategory)
+                .section(sectionBase)
+                .build();
+        sectionByCategoryRepository.save(sectionByCategory);
 
         SectionDTO sectionDTO = new SectionDTO()
                 .sectionCode("LA")
@@ -374,6 +389,7 @@ class InboundOrderServiceIntegrationTest {
         warehouseRepository.deleteAll();
         sectionCategoryRepository.deleteAll();
         productRepository.deleteAll();
+        sectionByCategoryRepository.deleteAll();
     }
 
 }

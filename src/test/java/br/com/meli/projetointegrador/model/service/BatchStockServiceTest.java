@@ -6,11 +6,11 @@ import br.com.meli.projetointegrador.model.dto.*;
 import br.com.meli.projetointegrador.model.entity.*;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.dao.DataAccessException;
 import org.springframework.util.ObjectUtils;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -34,12 +34,9 @@ public class BatchStockServiceTest {
     private final SectionService mockSectionService = mock(SectionService.class);
     private final AgentService mockAgentService = mock(AgentService.class);
     private final ProductService mockProductService = mock(ProductService.class);
+    private final SectionByCategoryService mockSectionByCategoryService = mock(SectionByCategoryService.class);
     private final BatchStockService batchStockService = new BatchStockService(mockBatchStockRepository,
-            mockSectionService, mockAgentService, mockProductService);
-
-    @BeforeEach
-    void setUp() {
-    }
+            mockSectionService, mockAgentService, mockProductService, mockSectionByCategoryService);
 
     @Test
     void postAllTest() {
@@ -90,7 +87,7 @@ public class BatchStockServiceTest {
 
         when(mockProductService.find(anyString()))
                 .thenReturn(product);
-        when(mockProductService.validProductSection(anyString())).
+        when(mockSectionByCategoryService.validProductSection(any(), any())).
                 thenReturn(true);
         when(mockSectionService.validSectionLength(any(Section.class))).
                 thenReturn(true);
@@ -176,7 +173,17 @@ public class BatchStockServiceTest {
                 .dueDate(LocalDate.now())
                 .build();
 
-        when(mockProductService.validProductSection(anyString())).
+        Product product = new Product()
+                .productId("DA")
+                .productName("danone")
+                .category(new SectionCategory())
+                .productPrice(new BigDecimal("2.0"))
+                .dueDate(LocalDate.now().plusWeeks(5))
+                .build();
+
+        when(mockProductService.find(anyString()))
+                .thenReturn(product);
+        when(mockSectionByCategoryService.validProductSection(any(), any())).
                 thenReturn(true);
         when(mockSectionService.validSectionLength(any(Section.class))).
                 thenReturn(true);
@@ -249,7 +256,18 @@ public class BatchStockServiceTest {
                 .dueDate(LocalDate.now())
                 .build();
 
-        when(mockProductService.validProductSection(anyString())).
+        Product product = new Product()
+                .productId("DA")
+                .productName("danone")
+                .category(new SectionCategory())
+                .productPrice(new BigDecimal("2.0"))
+                .dueDate(LocalDate.now().plusWeeks(5))
+                .build();
+
+        when(mockProductService.find(anyString()))
+                .thenReturn(product);
+
+        when(mockSectionByCategoryService.validProductSection(any(Section.class), any(SectionCategory.class))).
                 thenReturn(true);
         when(mockSectionService.validSectionLength(any(Section.class))).
                 thenReturn(true);
@@ -1359,7 +1377,7 @@ public class BatchStockServiceTest {
 
         when(mockProductService.find(anyString()))
                 .thenReturn(product);
-        when(mockProductService.validProductSection(anyString())).
+        when(mockSectionByCategoryService.validProductSection(any(Section.class), any(SectionCategory.class))).
                 thenReturn(true);
         when(mockSectionService.validSectionLength(any(Section.class))).
                 thenReturn(true);
@@ -1442,7 +1460,7 @@ public class BatchStockServiceTest {
 
         when(mockProductService.find(anyString()))
                 .thenReturn(product);
-        when(mockProductService.validProductSection(anyString())).
+        when(mockSectionByCategoryService.validProductSection(any(Section.class), any(SectionCategory.class))).
                 thenReturn(true);
         when(mockSectionService.validSectionLength(any(Section.class))).
                 thenReturn(true);

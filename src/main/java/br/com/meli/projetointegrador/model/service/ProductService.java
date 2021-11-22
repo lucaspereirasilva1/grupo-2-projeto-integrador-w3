@@ -4,7 +4,6 @@ import br.com.meli.projetointegrador.exception.ProductException;
 import br.com.meli.projetointegrador.exception.ProductExceptionNotFound;
 import br.com.meli.projetointegrador.model.dto.ProductDTO;
 import br.com.meli.projetointegrador.model.entity.Product;
-import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.entity.SectionCategory;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
@@ -25,29 +24,12 @@ import java.util.Optional;
 public class ProductService {
 
     private final ProductRepository productRepository;
-    private final SectionService sectionService;
     private final SectionCategoryService sectionCategoryService;
 
     public ProductService(ProductRepository productRepository,
-                          SectionService sectionService,
                           SectionCategoryService sectionCategoryService) {
         this.productRepository = productRepository;
-        this.sectionService = sectionService;
         this.sectionCategoryService = sectionCategoryService;
-    }
-
-    /**
-     * @param sectionCode, recebe um codigo de section para validar se o produto esta na section correta;
-     * @return true ou exception.
-     */
-    public Boolean validProductSection(String sectionCode){
-        final Section section = sectionService.find(sectionCode);
-        Boolean existsProductBySection = productRepository.existsProductBySection(section);
-        if (Boolean.TRUE.equals(existsProductBySection)){
-            return true;
-        } else {
-            throw new ProductException("Produto nao faz parte do setor, por favor verifique o setor correto!");
-        }
     }
 
     /**

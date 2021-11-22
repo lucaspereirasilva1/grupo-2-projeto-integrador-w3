@@ -76,6 +76,9 @@ class InboundOrderControllerTest {
     @Autowired
     private SectionCategoryRepository sectionCategoryRepository;
 
+    @Autowired
+    private SectionByCategoryRepository sectionByCategoryRepository;
+
 
     @BeforeEach
     void setup() throws Exception{
@@ -117,25 +120,14 @@ class InboundOrderControllerTest {
 
     @Test
     void postTest() throws Exception {
-        productRepository.deleteAll();
-
-        Product productDois = new Product()
-                .productId("MA")
-                .productName("margarina")
-                .productPrice(new BigDecimal("2.0"))
-                .dueDate(LocalDate.now())
-                .category(sectionCategoryRepository.findByName(ESectionCategory.FF).orElse(new SectionCategory()))
-                .build();
-        productRepository.save(productDois);
-
         SectionDTO sectionDTO = new SectionDTO()
-                .sectionCode("CO")
+                .sectionCode("LA")
                 .warehouseCode("SP")
                 .build();
 
         BatchStockDTO batchStockDTO = new BatchStockDTO()
                 .batchNumber(1)
-                .productId("MA")
+                .productId("LE")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
                 .initialQuantity(1)
@@ -280,16 +272,33 @@ class InboundOrderControllerTest {
 
         Section sectionDois = new Section()
                 .sectionCode("CO")
-                .sectionName("laticinios")
+                .sectionName("congelados")
                 .maxLength(10)
                 .warehouse(warehouse)
                 .build();
         sectionRepository.save(sectionDois);
 
         SectionCategory sectionCategory = new SectionCategory()
-                .name(ESectionCategory.FF)
+                .name(ESectionCategory.FS)
                 .build();
         sectionCategoryRepository.save(sectionCategory);
+
+        SectionCategory sectionCategoryFF = new SectionCategory()
+                .name(ESectionCategory.FF)
+                .build();
+        sectionCategoryRepository.save(sectionCategoryFF);
+
+        SectionByCategory sectionByCategory = new SectionByCategory()
+                .category(sectionCategory)
+                .section(section)
+                .build();
+        sectionByCategoryRepository.save(sectionByCategory);
+
+        SectionByCategory sectionByCategoryCO = new SectionByCategory()
+                .category(sectionCategoryFF)
+                .section(sectionDois)
+                .build();
+        sectionByCategoryRepository.save(sectionByCategoryCO);
 
         Product product = new Product()
                 .productId("LE")
@@ -301,8 +310,8 @@ class InboundOrderControllerTest {
         productRepository.save(product);
 
         Product productDois = new Product()
-                .productId("CA")
-                .productName("carne")
+                .productId("MA")
+                .productName("margarina")
                 .productPrice(new BigDecimal("2.0"))
                 .dueDate(LocalDate.now())
                 .category(sectionCategory)
@@ -332,6 +341,7 @@ class InboundOrderControllerTest {
         warehouseRepository.deleteAll();
         sectionCategoryRepository.deleteAll();
         productRepository.deleteAll();
+        sectionByCategoryRepository.deleteAll();
     }
 
 }

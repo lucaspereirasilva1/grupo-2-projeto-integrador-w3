@@ -3,9 +3,7 @@ package br.com.meli.projetointegrador.model.service;
 import br.com.meli.projetointegrador.exception.ProductException;
 import br.com.meli.projetointegrador.exception.ProductExceptionNotFound;
 import br.com.meli.projetointegrador.model.entity.Product;
-import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.entity.SectionCategory;
-import br.com.meli.projetointegrador.model.entity.Warehouse;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
@@ -27,59 +25,11 @@ import static org.mockito.Mockito.*;
 class ProductServiceTest {
 
     private final ProductRepository mockProductRepository = mock(ProductRepository.class);
-    private final SectionService mockSectionService = mock(SectionService.class);
     private final SectionCategoryService mockSectionCategoryService = mock(SectionCategoryService.class);
-    private final ProductService productService = new ProductService(mockProductRepository, mockSectionService, mockSectionCategoryService);
-
-    @Test
-    void validProductSectionExistTest(){
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("Sao Paulo")
-                .build();
-
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("Laticionios")
-                .maxLength(10)
-                .warehouse(warehouse)
-                .build();
-
-        when(mockProductRepository.existsProductBySection(any(Section.class)))
-                .thenReturn(true);
-        when(mockSectionService.find(anyString()))
-                .thenReturn(section);
-
-        assertTrue(productService.validProductSection(section.getSectionCode()));
-    }
-
-    @Test
-    void validProductSectionNotExistTest() {
-        when(mockProductRepository.existsProductBySection(any(Section.class)))
-                .thenReturn(false);
-
-        ProductException productException = assertThrows(ProductException.class, () ->
-                productService.validProductSection("LA"));
-
-        String expectedMessage = "Produto nao faz parte do setor, por favor verifique o setor correto!";
-
-        assertTrue(expectedMessage.contains(productException.getMessage()));
-    }
+    private final ProductService productService = new ProductService(mockProductRepository, mockSectionCategoryService);
 
     @Test
     void findExistTest() {
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("Sao Paulo")
-                .build();
-
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("Laticionios")
-                .warehouse(warehouse)
-                .maxLength(10)
-                .build();
-
         Product product = new Product()
                 .productId("LE")
                 .productName("leite")
@@ -109,18 +59,6 @@ class ProductServiceTest {
     @Test
     void validListProductByCategoryTest(){
         List<Product> productList = new ArrayList<>();
-
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("Sao Paulo")
-                .build();
-
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("Laticionios")
-                .maxLength(10)
-                .warehouse(warehouse)
-                .build();
 
         Product productUm = new Product()
                 .productId("LE")
@@ -166,17 +104,6 @@ class ProductServiceTest {
     void findAllProducts() {
         List<Product> productList = new ArrayList<>();
 
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("Sao Paulo")
-                .build();
-
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("Laticionios")
-                .maxLength(10)
-                .warehouse(warehouse)
-                .build();
         Product productUm = new Product()
                 .productId("LE")
                 .productName("leite")

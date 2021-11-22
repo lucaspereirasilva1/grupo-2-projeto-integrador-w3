@@ -98,19 +98,6 @@ class ProductServiceIntegrationTest {
     }
 
     @Test
-    void validProductExistTest(){
-        assertTrue(productService.validProductSection("LA"));
-    }
-    @Test
-    void validProductNotExistTest(){
-        ProductException productException = assertThrows(ProductException.class, () ->
-                productService.validProductSection("FR"));
-
-        String expectedMessage = "Produto nao faz parte do setor, por favor verifique o setor correto!";
-        assertTrue(expectedMessage.contains(productException.getMessage()));
-    }
-
-    @Test
     void findExistTest() {
         Product productReturn = productService.find("LE");
         assertEquals("LE", productReturn.getProductId());

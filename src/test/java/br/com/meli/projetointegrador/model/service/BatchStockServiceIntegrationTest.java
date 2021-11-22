@@ -54,10 +54,18 @@ public class BatchStockServiceIntegrationTest {
     @Autowired
     private SectionCategoryRepository sectionCategoryRepository;
 
+    @Autowired
+    private SectionByCategoryRepository sectionByCategoryRepository;
+
     @BeforeEach
     void setUp() {
         clearBase();
         createData();
+    }
+
+    @AfterEach
+    void cleanUpDatabase() {
+        clearBase();
     }
 
     @Test
@@ -65,11 +73,6 @@ public class BatchStockServiceIntegrationTest {
         final BatchStockResponseDTO productResponseDTO = batchStockService.listProductId("QJ", "");
         assertFalse(ObjectUtils.isEmpty(productResponseDTO));
         assertEquals("QJ", productResponseDTO.getProductId());
-    }
-
-    @AfterEach
-    void cleanUpDatabase() {
-        clearBase();
     }
 
     @Test
@@ -154,7 +157,7 @@ public class BatchStockServiceIntegrationTest {
         batchStockRepository.deleteAll();
         BatchStock batchStock = new BatchStock()
                 .batchNumber(1)
-                .productId("LE")
+                .productId("QJ")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
                 .initialQuantity(1)
@@ -169,7 +172,7 @@ public class BatchStockServiceIntegrationTest {
 
         ProductExceptionNotFound productExceptionNotFound = assertThrows
                 (ProductExceptionNotFound.class, () ->
-                        batchStockService.listProductId("LE", "asc"));
+                        batchStockService.listProductId("QJ", "asc"));
 
         String menssagemEsperada = "Nao existe estoques vigentes para esse produto, por favor verifique os dados inseridos!!!";
 
@@ -522,6 +525,12 @@ public class BatchStockServiceIntegrationTest {
                 .build();
         sectionCategoryRepository.save(sectionCategory);
 
+        SectionByCategory sectionByCategory = new SectionByCategory()
+                .category(sectionCategory)
+                .section(section)
+                .build();
+        sectionByCategoryRepository.save(sectionByCategory);
+
         Product product = new Product()
                 .productId("QJ")
                 .productName("queijo")
@@ -554,5 +563,6 @@ public class BatchStockServiceIntegrationTest {
         sectionRepository.deleteAll();
         productRepository.deleteAll();
         sectionCategoryRepository.deleteAll();
+        sectionByCategoryRepository.deleteAll();
     }
 }

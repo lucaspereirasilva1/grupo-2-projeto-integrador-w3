@@ -43,6 +43,9 @@ class ScriptCarregamentoBancoTest {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private SectionByCategoryRepository sectionByCategoryRepository;
+
     @Test
     void scriptCarregamentoBanco() {
         productRepository.deleteAll();
@@ -111,6 +114,18 @@ class ScriptCarregamentoBancoTest {
 
         sectionCategoryRepository.saveAll(Arrays.asList(sectionCategoryFF, sectionCategoryFS,
                 sectionCategoryRF));
+
+        SectionByCategory sectionByCategory = new SectionByCategory()
+                .section(sectionCO)
+                .category(sectionCategoryFF)
+                .build();
+        sectionByCategoryRepository.save(sectionByCategory);
+
+        SectionByCategory sectionByCategoryDois = new SectionByCategory()
+                .section(section)
+                .category(sectionCategoryFS)
+                .build();
+        sectionByCategoryRepository.save(sectionByCategoryDois);
 
         Buyer buyer = new Buyer()
                 .name("lucas")
