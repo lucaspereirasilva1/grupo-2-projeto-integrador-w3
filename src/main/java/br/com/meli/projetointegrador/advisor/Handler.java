@@ -95,4 +95,10 @@ public class Handler extends ResponseEntityExceptionHandler{
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
+    @ExceptionHandler(value = BuyerException.class)
+    protected ResponseEntity<Object> handleConflict(BuyerException ex, WebRequest request) {
+        String bodyOfResponse = ex.getMessage();
+        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
 }
