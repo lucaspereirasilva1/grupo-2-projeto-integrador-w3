@@ -56,6 +56,9 @@ class InboundOrderServiceIntegrationTest {
     @Autowired
     private SectionCategoryRepository sectionCategoryRepository;
 
+    @Autowired
+    private SectionByCategoryRepository sectionByCategoryRepository;
+
     @Test
     void postIntegrationTest() {
         clearBase();
@@ -82,14 +85,19 @@ class InboundOrderServiceIntegrationTest {
         agentRepository.save(agent);
 
         SectionCategory sectionCategory = new SectionCategory()
-                .name(ESectionCategory.FF)
+                .name(ESectionCategory.FS)
                 .build();
         sectionCategoryRepository.save(sectionCategory);
+
+        SectionByCategory sectionByCategory = new SectionByCategory()
+                .category(sectionCategory)
+                .section(section)
+                .build();
+        sectionByCategoryRepository.save(sectionByCategory);
 
         Product product = new Product()
                 .productId("QJ")
                 .productName("Leite")
-                .section(section)
                 .productPrice(new BigDecimal("2.0"))
                 .dueDate(LocalDate.now())
                 .category(sectionCategory)
@@ -163,19 +171,24 @@ class InboundOrderServiceIntegrationTest {
         agentRepository.save(agentBase);
 
         SectionCategory sectionCategory = new SectionCategory()
-                .name(ESectionCategory.FF)
+                .name(ESectionCategory.FS)
                 .build();
         sectionCategoryRepository.save(sectionCategory);
 
         Product product = new Product()
                 .productId("LE")
                 .productName("Leite")
-                .section(sectionBase)
                 .productPrice(new BigDecimal("2.0"))
                 .dueDate(LocalDate.now())
                 .category(sectionCategory)
                 .build();
         productRepository.save(product);
+
+        SectionByCategory sectionByCategory = new SectionByCategory()
+                .category(sectionCategory)
+                .section(sectionBase)
+                .build();
+        sectionByCategoryRepository.save(sectionByCategory);
 
         SectionDTO sectionDTO = new SectionDTO()
                 .sectionCode("LA")
@@ -323,7 +336,6 @@ class InboundOrderServiceIntegrationTest {
         Product product = new Product()
                 .productId("LE")
                 .productName("Leite")
-                .section(sectionBase)
                 .productPrice(new BigDecimal("2.0"))
                 .dueDate(LocalDate.now())
                 .category(sectionCategory)
@@ -377,6 +389,7 @@ class InboundOrderServiceIntegrationTest {
         warehouseRepository.deleteAll();
         sectionCategoryRepository.deleteAll();
         productRepository.deleteAll();
+        sectionByCategoryRepository.deleteAll();
     }
 
 }

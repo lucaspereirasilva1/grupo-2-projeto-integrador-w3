@@ -58,6 +58,9 @@ class BatchStockControllerTest {
     private BatchStockRepository batchStockRepository;
 
     @Autowired
+    private SectionByCategoryRepository sectionByCategoryRepository;
+
+    @Autowired
     private RoleRepository roleRepository;
 
     private TokenTest tokenTest = new TokenTest();
@@ -146,7 +149,7 @@ class BatchStockControllerTest {
         setUp();
         MockHttpServletResponse response = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/due-date/lists/")
                 .param("days","30")
-                .param("category","FF")
+                .param("category","FS")
                 .param("order","asc")
                 .header("Authorization", "Bearer " + tokenTest.getAccessToken())
                 .contentType("application/json"))
@@ -178,14 +181,13 @@ class BatchStockControllerTest {
         agentRepository.save(agent);
 
         SectionCategory sectionCategory = new SectionCategory()
-                .name(ESectionCategory.FF)
+                .name(ESectionCategory.FS)
                 .build();
         sectionCategoryRepository.save(sectionCategory);
 
         Product product = new Product()
                 .productId("LE")
                 .productName("leite")
-                .section(section)
                 .productPrice(new BigDecimal("2.0"))
                 .dueDate(LocalDate.now())
                 .category(sectionCategory)
@@ -210,7 +212,6 @@ class BatchStockControllerTest {
         Product productDois = new Product()
                 .productId("QJ")
                 .productName("queijo")
-                .section(section)
                 .productPrice(new BigDecimal("2.0"))
                 .dueDate(LocalDate.now().plusWeeks(+2))
                 .category(sectionCategory)
@@ -231,6 +232,12 @@ class BatchStockControllerTest {
                 .agent(agent)
                 .build();
         batchStockRepository.save(batchStockDois);
+
+        SectionByCategory sectionByCategory = new SectionByCategory()
+                .category(sectionCategory)
+                .section(section)
+                .build();
+        sectionByCategoryRepository.save(sectionByCategory);
 
         Role role = new Role();
         role.setName(ERole.ROLE_USER);

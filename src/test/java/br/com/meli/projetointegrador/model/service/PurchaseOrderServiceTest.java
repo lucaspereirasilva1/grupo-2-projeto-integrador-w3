@@ -76,7 +76,6 @@ class PurchaseOrderServiceTest {
                         .productName("LEITE")
                         .productPrice(new BigDecimal(2))
                         .category(new SectionCategory().name(ESectionCategory.FF))
-                        .section(section)
                         .dueDate(LocalDate.of(2022,11,30)));
         when(mockProductService.find(productPurchaseOrderDTO2.getProductId()))
                 .thenReturn(new Product()
@@ -84,7 +83,6 @@ class PurchaseOrderServiceTest {
                         .productName("QUEIJO")
                         .productPrice(new BigDecimal(3))
                         .category(new SectionCategory().name(ESectionCategory.FF))
-                        .section(section)
                         .dueDate(LocalDate.of(2022,11,30)));
         when(mockBuyerService.find(anyString()))
                 .thenReturn(new Buyer()
@@ -140,7 +138,6 @@ class PurchaseOrderServiceTest {
                         .productName("LEITE")
                         .productPrice(new BigDecimal(2))
                         .category(new SectionCategory().name(ESectionCategory.FF))
-                        .section(section)
                         .dueDate(LocalDate.of(2021,11,30)));
         when(mockProductService.find(productPurchaseOrderDTO2.getProductId()))
                 .thenReturn(new Product()
@@ -148,7 +145,6 @@ class PurchaseOrderServiceTest {
                         .productName("Queijo")
                         .productPrice(new BigDecimal(3))
                         .category(new SectionCategory().name(ESectionCategory.FF))
-                        .section(section)
                         .dueDate(LocalDate.of(2022,11,30)));
         when(mockBuyerService.find(anyString()))
                 .thenReturn(new Buyer()
@@ -203,7 +199,6 @@ class PurchaseOrderServiceTest {
                         .productName("Leite")
                         .productPrice(new BigDecimal(2))
                         .category(new SectionCategory().name(ESectionCategory.FF))
-                        .section(section)
                         .dueDate(LocalDate.of(2021, 1, 3)));
 
         when(mockBuyerService.find(anyString()))
@@ -252,7 +247,6 @@ class PurchaseOrderServiceTest {
         Product product = new Product()
                 .productId("LE")
                 .productName("leite")
-                .section(section)
                 .productPrice(new BigDecimal(2))
                 .dueDate(LocalDate.of(2021,11,30))
                 .category(sectionCategory)
@@ -271,7 +265,6 @@ class PurchaseOrderServiceTest {
         productDTOList.forEach(p -> {
             if (p.getProductId().equals(product.getProductId()) &
                 p.getProductName().equals(product.getProductName()) &
-                p.getSectionName().equals(product.getSection().getSectionName()) &
                 p.getCategory().equals(product.getCategory().getName()) &
                 p.getProductPrice().equals(product.getProductPrice()) &
                 p.getDueDate().equals(product.getDueDate())) {
@@ -334,7 +327,6 @@ class PurchaseOrderServiceTest {
                         .productName("Leite")
                         .productPrice(new BigDecimal(2))
                         .category(new SectionCategory().name(ESectionCategory.FF))
-                        .section(section)
                         .dueDate(LocalDate.of(2022, 12, 3)));
 
         when(mockBuyerService.find(anyString()))
@@ -396,7 +388,6 @@ class PurchaseOrderServiceTest {
                         .productName("carne")
                         .productPrice(new BigDecimal(2))
                         .category(new SectionCategory().name(ESectionCategory.FF))
-                        .section(section)
                         .dueDate(LocalDate.of(2000, 12, 3)));
 
         when(mockBuyerService.find(anyString()))

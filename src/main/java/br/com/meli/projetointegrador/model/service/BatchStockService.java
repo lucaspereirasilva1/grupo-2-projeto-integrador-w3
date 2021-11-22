@@ -7,6 +7,7 @@ import br.com.meli.projetointegrador.exception.ProductExceptionNotFound;
 import br.com.meli.projetointegrador.model.dto.*;
 import br.com.meli.projetointegrador.model.entity.BatchStock;
 import br.com.meli.projetointegrador.model.entity.Product;
+import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import org.slf4j.Logger;
@@ -40,15 +41,18 @@ public class BatchStockService {
     private final AgentService agentService;
     private final ProductService productService;
     private static final Logger logger = LoggerFactory.getLogger(BatchStockService.class);
+    private final SectionByCategoryService sectionByCategoryService;
 
     public BatchStockService(BatchStockRepository batchStockRepository,
                              SectionService sectionService,
                              AgentService agentService,
-                             ProductService productService) {
+                             ProductService productService,
+                             SectionByCategoryService sectionByCategoryService) {
         this.batchStockRepository = batchStockRepository;
         this.sectionService = sectionService;
         this.agentService = agentService;
         this.productService = productService;
+        this.sectionByCategoryService = sectionByCategoryService;
     }
 
     /**
@@ -58,10 +62,11 @@ public class BatchStockService {
      */
     public List<BatchStock> postAll(List<BatchStockDTO> listBatchStockDTO, AgentDTO agentDTO, SectionDTO sectionDTO) {
         List<BatchStock> batchStockList = new ArrayList<>();
+        final Section section = sectionService.find(sectionDTO.getSectionCode());
         listBatchStockDTO.forEach(b -> {
-            Product product = productService.find(b.getProductId());
-            if (productService.validProductSection(sectionDTO.getSectionCode()) &&
-                sectionService.validSectionLength(sectionService.find(sectionDTO.getSectionCode()))) {
+            final Product product = productService.find(b.getProductId());
+            if (sectionByCategoryService.validProductSection(section, product.getCategory()) &&
+                sectionService.validSectionLength(section)) {
                 batchStockList.add(fillBatchStock(b, agentDTO, sectionDTO));
             }
         });
@@ -84,7 +89,8 @@ public class BatchStockService {
                        AgentDTO agentDTO, SectionDTO sectionDTO) {
         final List<BatchStock> batchStockList = new ArrayList<>();
         listBatchStock.forEach(b -> {
-            if (productService.validProductSection(sectionDTO.getSectionCode()) &&
+            final Product product = productService.find(b.getProductId());
+            if (sectionByCategoryService.validProductSection(b.getSection(), product.getCategory()) &&
                     sectionService.validSectionLength(b.getSection())) {
                 Optional<BatchStockDTO> batchStockDTO = listBatchStockDTO.stream()
                         .filter(bd -> bd.getBatchNumber().equals(b.getBatchNumber()))
@@ -135,19 +141,19 @@ public class BatchStockService {
      */
     public BatchStockResponseDTO listProductId(String productId, String order) {
         BatchStockResponseDTO batchStockResponseDTO = new BatchStockResponseDTO();
+        productService.find(productId);
         List<BatchStock> batchStockList = findBatchStock(productId);
         final List<BatchStock> batchStockListNotExpired = batchStockList.stream()
                 .filter(b -> dueDataProduct(b.getDueDate()))
                 .collect(toList());
         if(!batchStockListNotExpired.isEmpty()){
-            Product product = productService.find(productId);
             List<BatchStockListProductDTO> listBatchStockProductDTO = convertDTO(batchStockListNotExpired);
             SectionDTO sectionDTO = new SectionDTO()
-                    .sectionCode(product.getSection().getSectionCode())
-                    .warehouseCode(product.getSection().getWarehouse().getWarehouseCode())
+                    .sectionCode(batchStockListNotExpired.get(0).getSection().getSectionCode())
+                    .warehouseCode(batchStockListNotExpired.get(0).getSection().getWarehouse().getWarehouseCode())
                     .build();
             batchStockResponseDTO.sectionDTO(sectionDTO);
-            batchStockResponseDTO.productId(product.getProductId());
+            batchStockResponseDTO.productId(productId);
             if (!order.equals("")){
                 batchStockResponseDTO.batchStock(ordenar(order,listBatchStockProductDTO));
             }else {

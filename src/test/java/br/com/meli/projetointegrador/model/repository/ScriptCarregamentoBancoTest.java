@@ -43,6 +43,9 @@ class ScriptCarregamentoBancoTest {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private SectionByCategoryRepository sectionByCategoryRepository;
+
     @Test
     void scriptCarregamentoBanco() {
         productRepository.deleteAll();
@@ -112,6 +115,18 @@ class ScriptCarregamentoBancoTest {
         sectionCategoryRepository.saveAll(Arrays.asList(sectionCategoryFF, sectionCategoryFS,
                 sectionCategoryRF));
 
+        SectionByCategory sectionByCategory = new SectionByCategory()
+                .section(sectionCO)
+                .category(sectionCategoryFF)
+                .build();
+        sectionByCategoryRepository.save(sectionByCategory);
+
+        SectionByCategory sectionByCategoryDois = new SectionByCategory()
+                .section(section)
+                .category(sectionCategoryFS)
+                .build();
+        sectionByCategoryRepository.save(sectionByCategoryDois);
+
         Buyer buyer = new Buyer()
                 .name("lucas")
                 .cpf("22233344411")
@@ -121,7 +136,6 @@ class ScriptCarregamentoBancoTest {
         Product product = new Product()
                 .productId("MA")
                 .productName("margarina")
-                .section(section)
                 .category(sectionCategoryFS)
                 .productPrice(bigDecimal)
                 .dueDate(LocalDate.now().plusWeeks(5))
@@ -130,7 +144,6 @@ class ScriptCarregamentoBancoTest {
         Product productDois = new Product()
                 .productId("DA")
                 .productName("danone")
-                .section(section)
                 .category(sectionCategoryFS)
                 .productPrice(bigDecimal)
                 .dueDate(LocalDate.now().plusWeeks(5))
@@ -139,7 +152,6 @@ class ScriptCarregamentoBancoTest {
         Product productTres = new Product()
                 .productId("CA")
                 .productName("carne")
-                .section(sectionCO)
                 .category(sectionCategoryFF)
                 .productPrice(bigDecimal)
                 .dueDate(LocalDate.now().plusWeeks(5))
@@ -148,7 +160,6 @@ class ScriptCarregamentoBancoTest {
         Product productQuatro = new Product()
                 .productId("FR")
                 .productName("frango")
-                .section(sectionCO)
                 .category(sectionCategoryFF)
                 .productPrice(bigDecimal)
                 .dueDate(LocalDate.now().plusWeeks(5))

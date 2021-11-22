@@ -29,7 +29,6 @@ import java.util.Optional;
 @Service
 public class InboundOrderService {
 
-    private final ModelMapper modelMapper = new ModelMapper();
     private final InboundOrderRepository inboundOrderRepository;
     private final BatchStockService batchStockService;
     private final SectionService sectionService;

@@ -85,7 +85,6 @@ class ProductServiceIntegrationTest {
         Product product = new Product()
                 .productId("LE")
                 .productName("Leite")
-                .section(section)
                 .productPrice(new BigDecimal("2.0"))
                 .dueDate(LocalDate.now())
                 .category(sectionCategory)
@@ -96,19 +95,6 @@ class ProductServiceIntegrationTest {
     @AfterEach
     void cleanUpDataBase(){
         clearBase();
-    }
-
-    @Test
-    void validProductExistTest(){
-        assertTrue(productService.validProductSection("LA"));
-    }
-    @Test
-    void validProductNotExistTest(){
-        ProductException productException = assertThrows(ProductException.class, () ->
-                productService.validProductSection("FR"));
-
-        String expectedMessage = "Produto nao faz parte do setor, por favor verifique o setor correto!";
-        assertTrue(expectedMessage.contains(productException.getMessage()));
     }
 
     @Test

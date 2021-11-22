@@ -38,9 +38,6 @@ public class Product {
     private LocalDate dueDate;
 
     @DBRef
-    private Section section;
-
-    @DBRef
     private SectionCategory category;
 
     /**
@@ -70,11 +67,6 @@ public class Product {
 
     public Product dueDate(LocalDate dueDate) {
         this.dueDate = dueDate;
-        return this;
-    }
-
-    public Product section(Section section) {
-        this.section = section;
         return this;
     }
 
