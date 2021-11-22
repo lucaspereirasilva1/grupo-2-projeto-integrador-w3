@@ -85,7 +85,6 @@ class ProductServiceIntegrationTest {
         Product product = new Product()
                 .productId("LE")
                 .productName("Leite")
-                .section(section)
                 .productPrice(new BigDecimal("2.0"))
                 .dueDate(LocalDate.now())
                 .category(sectionCategory)

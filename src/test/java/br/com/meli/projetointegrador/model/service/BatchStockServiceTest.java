@@ -74,7 +74,6 @@ public class BatchStockServiceTest {
         Product product = new Product()
                 .productId("LE")
                 .productName("leite")
-                .section(section)
                 .build();
 
         BatchStockDTO batchStockDTO = new BatchStockDTO()
@@ -399,7 +398,6 @@ public class BatchStockServiceTest {
         Product product = new Product()
                 .productId("QJ")
                 .productName("Queijo")
-                .section(section)
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
 
@@ -547,7 +545,6 @@ public class BatchStockServiceTest {
         Product product = new Product()
                 .productId("QJ")
                 .productName("Queijo")
-                .section(section)
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
 
@@ -638,7 +635,6 @@ public class BatchStockServiceTest {
         Product product = new Product()
                 .productId("QJ")
                 .productName("Queijo")
-                .section(section)
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
 
@@ -729,7 +725,6 @@ public class BatchStockServiceTest {
         Product product = new Product()
                 .productId("QJ")
                 .productName("Queijo")
-                .section(section)
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
 
@@ -795,7 +790,6 @@ public class BatchStockServiceTest {
         Product product = new Product()
                 .productId("QJ")
                 .productName("Queijo")
-                .section(section)
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
 
@@ -1048,14 +1042,12 @@ public class BatchStockServiceTest {
         Product productUm = new Product()
                 .productId("LE")
                 .productName("leite")
-                .section(section)
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
 
         Product productDois = new Product()
                 .productId("QJ")
                 .productName("queijo")
-                .section(section)
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
 
@@ -1125,7 +1117,6 @@ public class BatchStockServiceTest {
         Product productUm = new Product()
                 .productId("LE")
                 .productName("leite")
-                .section(section)
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
 
@@ -1133,7 +1124,6 @@ public class BatchStockServiceTest {
         Product productDois = new Product()
                 .productId("QJ")
                 .productName("queijo")
-                .section(section)
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
 
@@ -1189,8 +1179,7 @@ public class BatchStockServiceTest {
 
         Product productDois = new Product()
                 .productId("QJ")
-                .productName("queijo")
-                .section(section)
+                .productName("queijo")  
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
 
@@ -1248,7 +1237,6 @@ public class BatchStockServiceTest {
         Product productDois = new Product()
                 .productId("QJ")
                 .productName("queijo")
-                .section(section)
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
 
@@ -1305,7 +1293,6 @@ public class BatchStockServiceTest {
          Product productDois = new Product()
                 .productId("QJ")
                 .productName("queijo")
-                .section(section)
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .build();
 
@@ -1356,7 +1343,6 @@ public class BatchStockServiceTest {
         Product product = new Product()
                 .productId("LE")
                 .productName("leite")
-                .section(section)
                 .build();
 
         BatchStockDTO batchStockDTO = new BatchStockDTO()
@@ -1426,7 +1412,6 @@ public class BatchStockServiceTest {
         Product product = new Product()
                 .productId("LE")
                 .productName("leite")
-                .section(section)
                 .build();
 
         BatchStockDTO batchStockDTO = new BatchStockDTO()

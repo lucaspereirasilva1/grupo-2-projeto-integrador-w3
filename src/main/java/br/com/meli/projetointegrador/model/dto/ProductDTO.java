@@ -18,7 +18,6 @@ public class ProductDTO {
 
     private String productId;
     private String productName;
-    private String sectionName;
     private ESectionCategory category;
     private BigDecimal productPrice;
     private LocalDate dueDate;
@@ -30,11 +29,6 @@ public class ProductDTO {
 
     public ProductDTO productName(String productName) {
         this.productName = productName;
-        return this;
-    }
-
-    public ProductDTO sectionName(String sectionName) {
-        this.sectionName = sectionName;
         return this;
     }
 

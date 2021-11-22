@@ -59,7 +59,7 @@ public class BatchStockService {
     public List<BatchStock> postAll(List<BatchStockDTO> listBatchStockDTO, AgentDTO agentDTO, SectionDTO sectionDTO) {
         List<BatchStock> batchStockList = new ArrayList<>();
         listBatchStockDTO.forEach(b -> {
-            Product product = productService.find(b.getProductId());
+            productService.find(b.getProductId());
             if (productService.validProductSection(sectionDTO.getSectionCode()) &&
                 sectionService.validSectionLength(sectionService.find(sectionDTO.getSectionCode()))) {
                 batchStockList.add(fillBatchStock(b, agentDTO, sectionDTO));
@@ -135,19 +135,19 @@ public class BatchStockService {
      */
     public BatchStockResponseDTO listProductId(String productId, String order) {
         BatchStockResponseDTO batchStockResponseDTO = new BatchStockResponseDTO();
+        productService.find(productId);
         List<BatchStock> batchStockList = findBatchStock(productId);
         final List<BatchStock> batchStockListNotExpired = batchStockList.stream()
                 .filter(b -> dueDataProduct(b.getDueDate()))
                 .collect(toList());
         if(!batchStockListNotExpired.isEmpty()){
-            Product product = productService.find(productId);
             List<BatchStockListProductDTO> listBatchStockProductDTO = convertDTO(batchStockListNotExpired);
             SectionDTO sectionDTO = new SectionDTO()
-                    .sectionCode(product.getSection().getSectionCode())
-                    .warehouseCode(product.getSection().getWarehouse().getWarehouseCode())
+                    .sectionCode(batchStockListNotExpired.get(0).getSection().getSectionCode())
+                    .warehouseCode(batchStockListNotExpired.get(0).getSection().getWarehouse().getWarehouseCode())
                     .build();
             batchStockResponseDTO.sectionDTO(sectionDTO);
-            batchStockResponseDTO.productId(product.getProductId());
+            batchStockResponseDTO.productId(productId);
             if (!order.equals("")){
                 batchStockResponseDTO.batchStock(ordenar(order,listBatchStockProductDTO));
             }else {

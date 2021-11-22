@@ -51,8 +51,6 @@ class SaveDataRepositoryTest {
     void saveProduct() {
         productRepository.deleteAll();
 
-        final Optional<Section> section = sectionRepository.findBySectionCode("LA");
-
         SectionCategory sectionCategory = new SectionCategory()
                 .name(ESectionCategory.FF)
                 .build();
@@ -60,7 +58,6 @@ class SaveDataRepositoryTest {
         Product product = new Product()
                 .productId("MA")
                 .productName("leite")
-                .section(section.orElse(new Section()))
                 .category(sectionCategory)
                 .dueDate(LocalDate.now())
                 .productPrice(new BigDecimal("2.0"))
@@ -70,7 +67,6 @@ class SaveDataRepositoryTest {
         Product productUm = new Product()
                 .productId("QJ")
                 .productName("queijo")
-                .section(section.orElse(new Section()))
                 .category(sectionCategory)
                 .dueDate(LocalDate.now())
                 .productPrice(new BigDecimal("2.0"))
@@ -104,7 +100,6 @@ class SaveDataRepositoryTest {
         Product product = new Product()
                 .productId("MR")
                 .productName("mortadela")
-                .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
                 .dueDate(LocalDate.now())
                 .productPrice(new BigDecimal("2.0"))
                 .category(sectionCategoryRepository.findByName(ESectionCategory.FF).orElse(new SectionCategory()))
