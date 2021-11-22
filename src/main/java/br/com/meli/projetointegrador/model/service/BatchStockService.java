@@ -223,7 +223,7 @@ public class BatchStockService {
                         .sorted(Comparator.comparing(BatchStockListProductDTO::getDueDate)).collect(toList());
             }
             default:
-                throw new ProductExceptionNotFound("Codigo do filtro nao existe!");
+                throw new ProductExceptionNotFound("Codigo de ordenacao nao existe!");
         }
     }
 
@@ -280,7 +280,7 @@ public class BatchStockService {
                     .sorted(Comparator.comparing(BatchStockServiceDueDateDTO::getDueDate)).collect(toList()));
             return batchStockListDueDateDTO;
         } else {
-            throw new ProductExceptionNotFound("Nao existe estoque com este filtro!!!");
+            throw new ProductExceptionNotFound("Nao existe estoque neste periodo de dias!!!");
         }
     }
 
