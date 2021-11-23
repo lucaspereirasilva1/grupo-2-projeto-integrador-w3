@@ -73,7 +73,7 @@ public class SectionByCategoryServiceIntegrationTest {
         ProductException productException = assertThrows(ProductException.class, () ->
                 sectionByCategoryService.validProductSection(sectionCO, sectionCategory.orElse(new SectionCategory())));
 
-        String expectedMessage = "Produto nao faz parte do setor, por favor verifique o setor correto!";
+        String expectedMessage = "Categoria e setor nao parametrizados!!! Por gentileza verificar o base";
         assertTrue(expectedMessage.contains(productException.getMessage()));
     }
 
