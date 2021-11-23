@@ -155,7 +155,7 @@ class PurchaseOrderControllerTest {
         final Optional<Buyer> buyer = buyerRepository.findByCpf("22233344411");
         ProductPurchaseOrderDTO productPurchaseOrderDTO1 = new ProductPurchaseOrderDTO()
                 .productId("LE")
-                .quantity(5)
+                .quantity(3)
                 .build();
         ProductPurchaseOrderDTO productPurchaseOrderDTO2 = new ProductPurchaseOrderDTO()
                 .productId("QJ")
@@ -262,7 +262,7 @@ class PurchaseOrderControllerTest {
                 .productId("LE")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
-                .initialQuantity(1)
+                .initialQuantity(5)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())
@@ -276,7 +276,7 @@ class PurchaseOrderControllerTest {
                 .productId("QJ")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
-                .initialQuantity(1)
+                .initialQuantity(10)
                 .currentQuantity(10)
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())

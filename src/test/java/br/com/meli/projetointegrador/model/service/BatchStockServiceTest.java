@@ -361,11 +361,11 @@ public class BatchStockServiceTest {
         List<ProductPurchaseOrderDTO> listProductPurchaseOrderDTO = new ArrayList<>();
         ProductPurchaseOrderDTO productPurchaseOrderDTO1 = new ProductPurchaseOrderDTO()
                 .productId("LE")
-                .quantity(5)
+                .quantity(1)
                 .build();
         ProductPurchaseOrderDTO productPurchaseOrderDTO2 = new ProductPurchaseOrderDTO()
                 .productId("QJ")
-                .quantity(3)
+                .quantity(1)
                 .build();
         listProductPurchaseOrderDTO.add(productPurchaseOrderDTO1);
         listProductPurchaseOrderDTO.add(productPurchaseOrderDTO2);
@@ -393,7 +393,7 @@ public class BatchStockServiceTest {
                 .productId("QJ")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
-                .initialQuantity(1)
+                .initialQuantity(2)
                 .currentQuantity(2)
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())
@@ -407,7 +407,7 @@ public class BatchStockServiceTest {
                 .productId("QJ")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
-                .initialQuantity(1)
+                .initialQuantity(2)
                 .currentQuantity(2)
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())
