@@ -5,18 +5,19 @@ import br.com.meli.projetointegrador.model.dto.OrderStatusDTO;
 import br.com.meli.projetointegrador.model.dto.ProductDTO;
 import br.com.meli.projetointegrador.model.dto.ProductPurchaseOrderDTO;
 import br.com.meli.projetointegrador.model.dto.PurchaseOrderDTO;
-import br.com.meli.projetointegrador.model.entity.*;
+import br.com.meli.projetointegrador.model.entity.Buyer;
+import br.com.meli.projetointegrador.model.entity.Product;
+import br.com.meli.projetointegrador.model.entity.PurchaseOrder;
+import br.com.meli.projetointegrador.model.entity.SectionCategory;
 import br.com.meli.projetointegrador.model.enums.EOrderStatus;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.PurchaseOrderRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.dao.DataAccessException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -58,16 +59,28 @@ class PurchaseOrderServiceTest {
                 .orderStatus(new OrderStatusDTO().statusCode(EOrderStatus.IN_PROGRESS))
                 .listProductPurchaseOrderDTO(listProductPurchaseOrderDTO);
 
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("Sao Paulo")
+        Buyer buyer = new Buyer()
+                .name("lucas")
+                .cpf("22233344411")
                 .build();
 
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("Laticionios")
-                .maxLength(10)
-                .warehouse(warehouse)
+        SectionCategory sectionCategory = new SectionCategory()
+                .name(ESectionCategory.FF)
+                .build();
+
+        Product product = new Product()
+                .productId("LE")
+                .productName("leite")
+                .productPrice(new BigDecimal(2))
+                .dueDate(LocalDate.now().plusWeeks(3))
+                .category(sectionCategory)
+                .build();
+
+        PurchaseOrder purchaseOrder = new PurchaseOrder()
+                .date(LocalDate.now())
+                .buyer(buyer)
+                .orderStatus(EOrderStatus.ORDER_CHART)
+                .productList(Collections.singletonList(product))
                 .build();
 
         when(mockProductService.find(productPurchaseOrderDTO1.getProductId()))
@@ -91,7 +104,8 @@ class PurchaseOrderServiceTest {
                         .build());
         when(mockPurchaseOrderRepository.save(any(PurchaseOrder.class)))
                 .thenReturn(new PurchaseOrder());
-
+        when(mockPurchaseOrderRepository.findById(anyString()))
+                .thenReturn(Optional.of(purchaseOrder));
         when(mockBatchStockService.dueDataProduct(any(LocalDate.class)))
                 .thenReturn(true);
 
@@ -120,16 +134,28 @@ class PurchaseOrderServiceTest {
                 .orderStatus(new OrderStatusDTO().statusCode(EOrderStatus.IN_PROGRESS))
                 .listProductPurchaseOrderDTO(listProductPurchaseOrderDTO);
 
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("Sao Paulo")
+        Buyer buyer = new Buyer()
+                .name("lucas")
+                .cpf("22233344411")
                 .build();
 
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("Laticionios")
-                .maxLength(10)
-                .warehouse(warehouse)
+        SectionCategory sectionCategory = new SectionCategory()
+                .name(ESectionCategory.FF)
+                .build();
+
+        Product product = new Product()
+                .productId("LE")
+                .productName("leite")
+                .productPrice(new BigDecimal(2))
+                .dueDate(LocalDate.now().plusWeeks(3))
+                .category(sectionCategory)
+                .build();
+
+        PurchaseOrder purchaseOrder = new PurchaseOrder()
+                .date(LocalDate.now())
+                .buyer(buyer)
+                .orderStatus(EOrderStatus.ORDER_CHART)
+                .productList(Collections.singletonList(product))
                 .build();
 
         when(mockProductService.find(productPurchaseOrderDTO1.getProductId()))
@@ -153,9 +179,10 @@ class PurchaseOrderServiceTest {
                         .build());
         when(mockPurchaseOrderRepository.save(any(PurchaseOrder.class)))
                 .thenReturn(new PurchaseOrder());
-
         when(mockBatchStockService.dueDataProduct(any(LocalDate.class)))
                 .thenReturn(true);
+        when(mockPurchaseOrderRepository.findById(anyString()))
+                .thenReturn(Optional.of(purchaseOrder));
 
         BigDecimal total = purchaseOrderService.save(purchaseOrderDTO);
         assertEquals(new BigDecimal(19),total);
@@ -181,18 +208,6 @@ class PurchaseOrderServiceTest {
                 .orderStatus(new OrderStatusDTO().statusCode(EOrderStatus.IN_PROGRESS))
                 .listProductPurchaseOrderDTO(listProductPurchaseOrderDTO);
 
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("Sao Paulo")
-                .build();
-
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("Laticionios")
-                .maxLength(10)
-                .warehouse(warehouse)
-                .build();
-
         when(mockProductService.find(productPurchaseOrderDTO1.getProductId()))
                 .thenReturn(new Product()
                         .productId("LE")
@@ -200,7 +215,6 @@ class PurchaseOrderServiceTest {
                         .productPrice(new BigDecimal(2))
                         .category(new SectionCategory().name(ESectionCategory.FF))
                         .dueDate(LocalDate.of(2021, 1, 3)));
-
         when(mockBuyerService.find(anyString()))
                 .thenReturn(new Buyer()
                         .name("lucas")
@@ -223,17 +237,6 @@ class PurchaseOrderServiceTest {
     @Test
     void showOrderProduct() {
         AtomicReference<Boolean> valid = new AtomicReference<>(false);
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("Sao Paulo")
-                .build();
-
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("Laticionios")
-                .warehouse(warehouse)
-                .maxLength(10)
-                .build();
 
         Buyer buyer = new Buyer()
                 .name("lucas")
@@ -309,18 +312,6 @@ class PurchaseOrderServiceTest {
                 .orderStatus(new OrderStatusDTO().statusCode(EOrderStatus.IN_PROGRESS))
                 .listProductPurchaseOrderDTO(listProductPurchaseOrderDTO);
 
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("Sao Paulo")
-                .build();
-
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("Laticionios")
-                .maxLength(10)
-                .warehouse(warehouse)
-                .build();
-
         when(mockProductService.find(productPurchaseOrderDTO1.getProductId()))
                 .thenReturn(new Product()
                         .productId("LE")
@@ -370,18 +361,6 @@ class PurchaseOrderServiceTest {
                 .orderStatus(new OrderStatusDTO().statusCode(EOrderStatus.IN_PROGRESS))
                 .listProductPurchaseOrderDTO(listProductPurchaseOrderDTO);
 
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("Sao Paulo")
-                .build();
-
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("Laticionios")
-                .maxLength(10)
-                .warehouse(warehouse)
-                .build();
-
         when(mockProductService.find(productPurchaseOrderDTO1.getProductId()))
                 .thenReturn(new Product()
                         .productId("CA")
@@ -409,6 +388,169 @@ class PurchaseOrderServiceTest {
         String mensagemRecebida = purchaseOrderException.getMessage();
 
         assertTrue(mensagemEsperada.contains(mensagemRecebida));
+    }
+
+    @Test
+    void productPricePersistenceExceptionTest(){
+        List<ProductPurchaseOrderDTO> listProductPurchaseOrderDTO = new ArrayList<>();
+        ProductPurchaseOrderDTO productPurchaseOrderDTO1 = new ProductPurchaseOrderDTO()
+                .productId("LE")
+                .quantity(5)
+                .build();
+        ProductPurchaseOrderDTO productPurchaseOrderDTO2 = new ProductPurchaseOrderDTO()
+                .productId("QJ")
+                .quantity(3)
+                .build();
+        listProductPurchaseOrderDTO.add(productPurchaseOrderDTO1);
+        listProductPurchaseOrderDTO.add(productPurchaseOrderDTO2);
+
+        PurchaseOrderDTO purchaseOrderDTO = new PurchaseOrderDTO()
+                .data(LocalDate.now())
+                .buyerId("1")
+                .orderStatus(new OrderStatusDTO().statusCode(EOrderStatus.IN_PROGRESS))
+                .listProductPurchaseOrderDTO(listProductPurchaseOrderDTO);
+
+        Buyer buyer = new Buyer()
+                .name("lucas")
+                .cpf("22233344411")
+                .build();
+
+        SectionCategory sectionCategory = new SectionCategory()
+                .name(ESectionCategory.FF)
+                .build();
+
+        Product product = new Product()
+                .productId("LE")
+                .productName("leite")
+                .productPrice(new BigDecimal(2))
+                .dueDate(LocalDate.now().plusWeeks(3))
+                .category(sectionCategory)
+                .build();
+
+        PurchaseOrder purchaseOrder = new PurchaseOrder()
+                .date(LocalDate.now())
+                .buyer(buyer)
+                .orderStatus(EOrderStatus.ORDER_CHART)
+                .productList(Collections.singletonList(product))
+                .build();
+
+        when(mockProductService.find(productPurchaseOrderDTO1.getProductId()))
+                .thenReturn(new Product()
+                        .productId("LE")
+                        .productName("LEITE")
+                        .productPrice(new BigDecimal(2))
+                        .category(new SectionCategory().name(ESectionCategory.FF))
+                        .dueDate(LocalDate.of(2022,11,30)));
+        when(mockProductService.find(productPurchaseOrderDTO2.getProductId()))
+                .thenReturn(new Product()
+                        .productId("QJ")
+                        .productName("QUEIJO")
+                        .productPrice(new BigDecimal(3))
+                        .category(new SectionCategory().name(ESectionCategory.FF))
+                        .dueDate(LocalDate.of(2022,11,30)));
+        when(mockBuyerService.find(anyString()))
+                .thenReturn(new Buyer()
+                        .name("lucas")
+                        .cpf("22233344411")
+                        .build());
+        when(mockPurchaseOrderRepository.findById(anyString()))
+                .thenReturn(Optional.of(purchaseOrder));
+        when(mockBatchStockService.dueDataProduct(any(LocalDate.class)))
+                .thenReturn(true);
+
+        when(mockPurchaseOrderRepository.save(any(PurchaseOrder.class)))
+                .thenThrow(new DataAccessException("") {
+                });
+
+        DataAccessException dataAccessException = assertThrows
+                (DataAccessException.class,() ->
+                        purchaseOrderService.save(purchaseOrderDTO));
+
+        String menssagemEsperada = "Erro durante a persistencia no banco!!!";
+
+        assertTrue(menssagemEsperada.contains(Objects.requireNonNull(dataAccessException.getMessage())));
+    }
+
+    @Test
+    void productPriceIdPersistenceExceptionTest(){
+        List<ProductPurchaseOrderDTO> listProductPurchaseOrderDTO = new ArrayList<>();
+        ProductPurchaseOrderDTO productPurchaseOrderDTO1 = new ProductPurchaseOrderDTO()
+                .productId("LE")
+                .quantity(5)
+                .build();
+        ProductPurchaseOrderDTO productPurchaseOrderDTO2 = new ProductPurchaseOrderDTO()
+                .productId("QJ")
+                .quantity(3)
+                .build();
+        listProductPurchaseOrderDTO.add(productPurchaseOrderDTO1);
+        listProductPurchaseOrderDTO.add(productPurchaseOrderDTO2);
+
+        PurchaseOrderDTO purchaseOrderDTO = new PurchaseOrderDTO()
+                .id("1")
+                .data(LocalDate.now())
+                .buyerId("1")
+                .orderStatus(new OrderStatusDTO().statusCode(EOrderStatus.IN_PROGRESS))
+                .listProductPurchaseOrderDTO(listProductPurchaseOrderDTO);
+
+        Buyer buyer = new Buyer()
+                .name("lucas")
+                .cpf("22233344411")
+                .build();
+
+        SectionCategory sectionCategory = new SectionCategory()
+                .name(ESectionCategory.FF)
+                .build();
+
+        Product product = new Product()
+                .productId("LE")
+                .productName("leite")
+                .productPrice(new BigDecimal(2))
+                .dueDate(LocalDate.now().plusWeeks(3))
+                .category(sectionCategory)
+                .build();
+
+        PurchaseOrder purchaseOrder = new PurchaseOrder()
+                .date(LocalDate.now())
+                .buyer(buyer)
+                .orderStatus(EOrderStatus.ORDER_CHART)
+                .productList(Collections.singletonList(product))
+                .build();
+
+        when(mockProductService.find(productPurchaseOrderDTO1.getProductId()))
+                .thenReturn(new Product()
+                        .productId("LE")
+                        .productName("LEITE")
+                        .productPrice(new BigDecimal(2))
+                        .category(new SectionCategory().name(ESectionCategory.FF))
+                        .dueDate(LocalDate.of(2022,11,30)));
+        when(mockProductService.find(productPurchaseOrderDTO2.getProductId()))
+                .thenReturn(new Product()
+                        .productId("QJ")
+                        .productName("QUEIJO")
+                        .productPrice(new BigDecimal(3))
+                        .category(new SectionCategory().name(ESectionCategory.FF))
+                        .dueDate(LocalDate.of(2022,11,30)));
+        when(mockBuyerService.find(anyString()))
+                .thenReturn(new Buyer()
+                        .name("lucas")
+                        .cpf("22233344411")
+                        .build());
+        when(mockPurchaseOrderRepository.findById(anyString()))
+                .thenReturn(Optional.of(purchaseOrder));
+        when(mockBatchStockService.dueDataProduct(any(LocalDate.class)))
+                .thenReturn(true);
+
+        when(mockPurchaseOrderRepository.save(any(PurchaseOrder.class)))
+                .thenThrow(new DataAccessException("") {
+                });
+
+        DataAccessException dataAccessException = assertThrows
+                (DataAccessException.class,() ->
+                        purchaseOrderService.save(purchaseOrderDTO));
+
+        String menssagemEsperada = "Erro durante a persistencia no banco!!!";
+
+        assertTrue(menssagemEsperada.contains(Objects.requireNonNull(dataAccessException.getMessage())));
     }
 
 }

@@ -287,6 +287,76 @@ public class BatchStockServiceTest {
     }
 
     @Test
+    void updateBatchStockIdTest() {
+        List<ProductPurchaseOrderDTO> listProductPurchaseOrderDTO = new ArrayList<>();
+        ProductPurchaseOrderDTO productPurchaseOrderDTO1 = new ProductPurchaseOrderDTO()
+                .productId("LE")
+                .quantity(1)
+                .build();
+        ProductPurchaseOrderDTO productPurchaseOrderDTO2 = new ProductPurchaseOrderDTO()
+                .productId("QJ")
+                .quantity(1)
+                .build();
+        listProductPurchaseOrderDTO.add(productPurchaseOrderDTO1);
+        listProductPurchaseOrderDTO.add(productPurchaseOrderDTO2);
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("Sao Paulo")
+                .build();
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("Laticionios")
+                .warehouse(warehouse)
+                .maxLength(10)
+                .build();
+
+        Agent agent = new Agent()
+                .name("lucas")
+                .cpf("11122233344")
+                .warehouse(warehouse)
+                .build();
+
+        BatchStock batchStock = new BatchStock()
+                .batchNumber(1)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(2)
+                .currentQuantity(2)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .agent(agent)
+                .section(section)
+                .build();
+
+        BatchStock batchStockDois = new BatchStock()
+                .batchNumber(2)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(2)
+                .currentQuantity(2)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .agent(agent)
+                .section(section)
+                .build();
+
+        when(mockBatchStockRepository.findAllByProductId(anyString()))
+                .thenReturn(Arrays.asList(batchStock, batchStockDois));
+        when(mockBatchStockRepository.save(any(BatchStock.class)))
+                .thenReturn(new BatchStock());
+
+        batchStockService.updateBatchStock(listProductPurchaseOrderDTO, "teste");
+        verify(mockBatchStockRepository, times(listProductPurchaseOrderDTO.size())).findAllByProductId(anyString());
+        verify(mockBatchStockRepository, times(listProductPurchaseOrderDTO.size() + listProductPurchaseOrderDTO.size())).save(any(BatchStock.class));
+    }
+
+    @Test
     void updateBatchStockTest() {
         List<ProductPurchaseOrderDTO> listProductPurchaseOrderDTO = new ArrayList<>();
         ProductPurchaseOrderDTO productPurchaseOrderDTO1 = new ProductPurchaseOrderDTO()
@@ -351,9 +421,10 @@ public class BatchStockServiceTest {
         when(mockBatchStockRepository.save(any(BatchStock.class)))
                 .thenReturn(new BatchStock());
 
-        batchStockService.updateBatchStock(listProductPurchaseOrderDTO);
+        batchStockService.updateBatchStock(listProductPurchaseOrderDTO, "");
         verify(mockBatchStockRepository, times(listProductPurchaseOrderDTO.size())).findAllByProductId(anyString());
-        verify(mockBatchStockRepository, times(listProductPurchaseOrderDTO.size() + listProductPurchaseOrderDTO.size())).save(any(BatchStock.class));
+        verify(mockBatchStockRepository, times(listProductPurchaseOrderDTO.size() +
+                listProductPurchaseOrderDTO.size())).save(any(BatchStock.class));
     }
 
     @Test
@@ -844,7 +915,7 @@ public class BatchStockServiceTest {
 
         BatchStockException batchStockException = assertThrows
                 (BatchStockException.class,() ->
-                        batchStockService.updateBatchStock(listProductPurchaseOrderDTO));
+                        batchStockService.updateBatchStock(listProductPurchaseOrderDTO, ""));
 
         String menssagemEsperada = "Nao foi encontrado estoque para esse produto!!!";
 
@@ -1478,6 +1549,81 @@ public class BatchStockServiceTest {
                                 Collections.singletonList(batchStockDTO),
                                 agentDTO,
                                 sectionDTO));
+
+        String menssagemEsperada = "Erro durante a persistencia no banco!!!";
+
+        assertTrue(menssagemEsperada.contains(Objects.requireNonNull(dataAccessException.getMessage())));
+    }
+
+    @Test
+    void updateBatchStockPersistenceError() {
+        List<ProductPurchaseOrderDTO> listProductPurchaseOrderDTO = new ArrayList<>();
+        ProductPurchaseOrderDTO productPurchaseOrderDTO1 = new ProductPurchaseOrderDTO()
+                .productId("LE")
+                .quantity(1)
+                .build();
+        ProductPurchaseOrderDTO productPurchaseOrderDTO2 = new ProductPurchaseOrderDTO()
+                .productId("QJ")
+                .quantity(1)
+                .build();
+        listProductPurchaseOrderDTO.add(productPurchaseOrderDTO1);
+        listProductPurchaseOrderDTO.add(productPurchaseOrderDTO2);
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("Sao Paulo")
+                .build();
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("Laticionios")
+                .warehouse(warehouse)
+                .maxLength(10)
+                .build();
+
+        Agent agent = new Agent()
+                .name("lucas")
+                .cpf("11122233344")
+                .warehouse(warehouse)
+                .build();
+
+        BatchStock batchStock = new BatchStock()
+                .batchNumber(1)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(2)
+                .currentQuantity(2)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .agent(agent)
+                .section(section)
+                .build();
+
+        BatchStock batchStockDois = new BatchStock()
+                .batchNumber(2)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(2)
+                .currentQuantity(2)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .agent(agent)
+                .section(section)
+                .build();
+
+        when(mockBatchStockRepository.findAllByProductId(anyString()))
+                .thenReturn(Arrays.asList(batchStock, batchStockDois));
+        when(mockBatchStockRepository.save(any(BatchStock.class)))
+                .thenThrow(new DataAccessException("") {
+                });
+
+        DataAccessException dataAccessException = assertThrows
+                (DataAccessException.class,() ->
+                        batchStockService.updateBatchStock(listProductPurchaseOrderDTO, ""));
 
         String menssagemEsperada = "Erro durante a persistencia no banco!!!";
 

@@ -191,7 +191,7 @@ class PurchaseOrderServiceIntegrationTest {
                 .productId("LE")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
-                .initialQuantity(1)
+                .initialQuantity(5)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())
@@ -205,7 +205,7 @@ class PurchaseOrderServiceIntegrationTest {
                 .productId("QJ")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
-                .initialQuantity(1)
+                .initialQuantity(10)
                 .currentQuantity(10)
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())
@@ -219,6 +219,7 @@ class PurchaseOrderServiceIntegrationTest {
 
         assertFalse(ObjectUtils.isEmpty(total));
         assertEquals(new BigDecimal(19), total);
+        assertEquals(0, batchStockRepository.findAll().get(0).getCurrentQuantity());
     }
 
     @Test
@@ -287,8 +288,8 @@ class PurchaseOrderServiceIntegrationTest {
                 .productId("MU")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
-                .initialQuantity(1)
-                .currentQuantity(5)
+                .initialQuantity(10)
+                .currentQuantity(10)
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.of(2022, 1, 3))
@@ -301,7 +302,7 @@ class PurchaseOrderServiceIntegrationTest {
                 .productId("CA")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
-                .initialQuantity(1)
+                .initialQuantity(10)
                 .currentQuantity(10)
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())
@@ -344,6 +345,7 @@ class PurchaseOrderServiceIntegrationTest {
         assertEquals(purchaseOrderPutDTO.getBuyerId(), purchaseOrder.getBuyer().getId());
         assertEquals(purchaseOrderPutDTO.getData(), purchaseOrder.getDate());
         assertEquals(purchaseOrderPutDTO.getOrderStatus().getStatusCode(), purchaseOrder.getOrderStatus());
+        assertEquals(5, batchStockRepository.findAll().get(0).getCurrentQuantity());
     }
 
     @Test

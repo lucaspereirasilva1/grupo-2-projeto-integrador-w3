@@ -279,7 +279,7 @@ public class BatchStockServiceIntegrationTest {
 
         BatchStockException batchStockException = assertThrows
                 (BatchStockException.class,() ->
-                        batchStockService.updateBatchStock(listProductPurchaseOrderDTO));
+                        batchStockService.updateBatchStock(listProductPurchaseOrderDTO, ""));
 
         String menssagemEsperada = "Nao foi encontrado estoque para esse produto!!!";
 
@@ -295,7 +295,7 @@ public class BatchStockServiceIntegrationTest {
                 .build();
         listProductPurchaseOrderDTO.add(productPurchaseOrderDTO2);
 
-        batchStockService.updateBatchStock(listProductPurchaseOrderDTO);
+        batchStockService.updateBatchStock(listProductPurchaseOrderDTO, "");
 
         batchStockRepository.findAllByProductId(productPurchaseOrderDTO2.getProductId()).forEach(b ->
                 assertEquals(2, b.getCurrentQuantity()));
@@ -497,6 +497,20 @@ public class BatchStockServiceIntegrationTest {
         assertTrue(menssagemEsperada.contains(Objects.requireNonNull(dataAccessException.getMessage())));
     }
 
+    @Test
+    void updateBatchStockIdTest() {
+        List<ProductPurchaseOrderDTO> listProductPurchaseOrderDTO = new ArrayList<>();
+        ProductPurchaseOrderDTO productPurchaseOrderDTO2 = new ProductPurchaseOrderDTO()
+                .productId("QJ")
+                .quantity(1)
+                .build();
+        listProductPurchaseOrderDTO.add(productPurchaseOrderDTO2);
+
+        batchStockService.updateBatchStock(listProductPurchaseOrderDTO, "teste");
+        final List<BatchStock> batchStockRepositoryAll = batchStockRepository.findAll();
+        assertEquals(4, batchStockRepositoryAll.get(0).getCurrentQuantity());
+    }
+
     void createData() {
         clearBase();
         Warehouse warehouse = new Warehouse()
@@ -545,7 +559,7 @@ public class BatchStockServiceIntegrationTest {
                 .productId("QJ")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
-                .initialQuantity(1)
+                .initialQuantity(5)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
                 .dueDate(LocalDate.now().plusWeeks(4))

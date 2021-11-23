@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -185,14 +186,20 @@ public class BatchStockService {
     /**
      * @param productList recebe uma lista de ProductPurchaseOrder;
      */
-    public void updateBatchStock(List<ProductPurchaseOrderDTO> productList) {
+    public void updateBatchStock(List<ProductPurchaseOrderDTO> productList, String id) {
         productList.forEach(p -> {
             final List<BatchStock> listBatchStock = batchStockRepository.findAllByProductId(p.getProductId());
             if (listBatchStock.isEmpty()) {
                 throw new BatchStockException("Nao foi encontrado estoque para esse produto!!!");
             }
             listBatchStock.forEach(b -> {
-                b.setCurrentQuantity(b.getCurrentQuantity()-p.getQuantity());
+                if (!ObjectUtils.isEmpty(id)) {
+                    Integer currentQuantity = b.getInitialQuantity();
+                    b.setCurrentQuantity(currentQuantity - p.getQuantity());
+                } else {
+                    b.setCurrentQuantity(b.getCurrentQuantity() - p.getQuantity());
+                }
+                validQuantity(b.getCurrentQuantity());
                 try {
                     batchStockRepository.save(b);
                 }catch (DataAccessException e) {
@@ -351,5 +358,11 @@ public class BatchStockService {
         batchStockServiceDueDateDTO.quantity(quantity);
         batchStockServiceDueDateList.add(batchStockServiceDueDateDTO);
         return batchStockServiceDueDateList;
+    }
+
+    private void validQuantity(Integer quantity) {
+        if (quantity < 0) {
+            throw new BatchStockException("Nao possui essa quantidade suficiente em estoque!!!");
+        }
     }
 }
