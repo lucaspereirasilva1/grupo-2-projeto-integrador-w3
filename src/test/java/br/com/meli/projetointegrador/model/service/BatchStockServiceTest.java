@@ -148,6 +148,7 @@ public class BatchStockServiceTest {
                 build();
 
         BatchStock batchStock = new BatchStock()
+                .id("1")
                 .batchNumber(1)
                 .productId("QJ")
                 .currentTemperature(10.0F)
@@ -176,7 +177,7 @@ public class BatchStockServiceTest {
         Product product = new Product()
                 .productId("DA")
                 .productName("danone")
-                .category(new SectionCategory())
+                .category(new SectionCategory().name(ESectionCategory.FF).build())
                 .productPrice(new BigDecimal("2.0"))
                 .dueDate(LocalDate.now().plusWeeks(5))
                 .build();
@@ -192,11 +193,10 @@ public class BatchStockServiceTest {
         when(mockAgentService.find(anyString()))
                 .thenReturn(agent);
 
-
         batchStockService.putAll(Collections.singletonList(batchStock), Collections.singletonList(batchStockDTO)
                 ,agentDTO, sectionDTO);
 
-        verify(mockBatchStockRepository, times(1)).saveAll(anyList());
+        verify(mockBatchStockRepository, times(1)).save(any(BatchStock.class));
     }
 
     @Test
@@ -275,15 +275,18 @@ public class BatchStockServiceTest {
                 .thenReturn(batchStock);
         when(mockAgentService.find(anyString()))
                 .thenReturn(agent);
+        when(mockBatchStockRepository.saveAll(anyList()))
+                .thenThrow(new DataAccessException("") {
+                });
 
-        BatchStockException batchStockException = assertThrows
-                (BatchStockException.class,() ->
+        DataAccessException dataAccessException = assertThrows
+                (DataAccessException.class,() ->
                         batchStockService.putAll(Collections.singletonList(batchStock), Collections.singletonList(batchStockDTO)
                                 ,agentDTO, sectionDTO));
 
-        String menssagemEsperada = "Divergencia entre dados de entrada e do banco!!!";
+        String menssagemEsperada = "Erro durante a persistencia no banco!!!";
 
-        assertTrue(menssagemEsperada.contains(batchStockException.getMessage()));
+        assertTrue(menssagemEsperada.contains(Objects.requireNonNull(dataAccessException.getMessage())));
     }
 
     @Test
@@ -889,7 +892,7 @@ public class BatchStockServiceTest {
                 (ProductExceptionNotFound.class,() ->
                         batchStockService.listProductId("QJ","T"));
 
-        String menssagemEsperada = "Codigo do filtro nao existe!";
+        String menssagemEsperada = "Codigo de ordenacao nao existe!";
 
         assertTrue(menssagemEsperada.contains(productExceptionNotFound.getMessage()));
     }
@@ -1074,7 +1077,7 @@ public class BatchStockServiceTest {
         ProductExceptionNotFound productExceptionNotFound = assertThrows
                 (ProductExceptionNotFound.class,() -> batchStockService.listDueDateDays(30));
 
-        String menssagemEsperada = "Nao existe estoque com este filtro!!!";
+        String menssagemEsperada = "Nao existe estoque neste periodo de dias!!!";
 
         assertTrue(menssagemEsperada.contains(productExceptionNotFound.getMessage()));
     }
@@ -1531,7 +1534,7 @@ public class BatchStockServiceTest {
 
         when(mockProductService.find(anyString()))
                 .thenReturn(product);
-        when(mockSectionByCategoryService.validProductSection(any(Section.class), any(SectionCategory.class))).
+        when(mockSectionByCategoryService.validProductSection(any(), any())).
                 thenReturn(true);
         when(mockSectionService.validSectionLength(any(Section.class))).
                 thenReturn(true);
@@ -1539,7 +1542,7 @@ public class BatchStockServiceTest {
                 thenReturn(agent);
         when(mockSectionService.find(anyString())).
                 thenReturn(section);
-        when(mockBatchStockRepository.saveAll(anyList()))
+        when(mockBatchStockRepository.save(any(BatchStock.class)))
                 .thenThrow(new DataAccessException("") {
                 });
 

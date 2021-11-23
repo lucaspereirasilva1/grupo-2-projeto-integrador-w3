@@ -202,7 +202,7 @@ class InboundOrderServiceTest {
                 .productId("QJ")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
-                .initialQuantity(1)
+                .initialQuantity(5)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())
@@ -218,12 +218,41 @@ class InboundOrderServiceTest {
                 .listBatchStock(Collections.singletonList(batchStock))
                 .build();
 
+        BatchStock batchStockDois = new BatchStock()
+                .batchNumber(2)
+                .productId("LE")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(5)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .agent(agent)
+                .section(section)
+                .build();
+
+        BatchStock batchStockUm = new BatchStock()
+                .batchNumber(3)
+                .productId("MA")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(5)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .agent(agent)
+                .section(section)
+                .build();
+
         when(mockInboundOrderRepository.findByOrderNumber(anyInt()))
                 .thenReturn(Optional.of(inboundOrder));
-        doNothing().when(mockBatchStockService).putAll(anyList(),
+        when(mockBatchStockService.putAll(anyList(),
                 anyList(),
                 any(AgentDTO.class),
-                any(SectionDTO.class));
+                any(SectionDTO.class)))
+                .thenReturn(Arrays.asList(batchStockDois, batchStockUm));
 
         List<BatchStockDTO> listBatchStockDTO = inboundOrderService.put(inboundOrderDTO, agentDTO);
 
@@ -288,12 +317,59 @@ class InboundOrderServiceTest {
                 name("lucas").
                 cpf("11122233344");
 
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+
+        Agent agent = new Agent().
+                cpf("11122233344").
+                name("lucas")
+                .warehouse(warehouse)
+                .build();
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("laticinios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+
+        BatchStock batchStock = new BatchStock()
+                .batchNumber(1)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(5)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .agent(agent)
+                .section(section)
+                .build();
+
+        BatchStock batchStockUm = new BatchStock()
+                .batchNumber(2)
+                .productId("LE")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(5)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .agent(agent)
+                .section(section)
+                .build();
+
         when(mockInboundOrderRepository.findByOrderNumber(anyInt()))
                 .thenReturn(Optional.empty());
-        doNothing().when(mockBatchStockService).putAll(anyList(),
+        when(mockBatchStockService.putAll(anyList(),
                 anyList(),
                 any(AgentDTO.class),
-                any(SectionDTO.class));
+                any(SectionDTO.class)))
+                .thenReturn(Arrays.asList(batchStock, batchStockUm));
 
         InboundOrderException inboundOrderException = assertThrows
                 (InboundOrderException.class,() -> inboundOrderService.put(inboundOrderDTO, agentDTO));

@@ -7,9 +7,9 @@ import br.com.meli.projetointegrador.exception.ValidInputException;
 import br.com.meli.projetointegrador.model.dto.AgentDTO;
 import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
 import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;
+import br.com.meli.projetointegrador.model.entity.BatchStock;
 import br.com.meli.projetointegrador.model.entity.InboundOrder;
 import br.com.meli.projetointegrador.model.repository.InboundOrderRepository;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -89,9 +89,10 @@ public class InboundOrderService {
             InboundOrder inboundOrder = inboundOrderCheck.get();
             inboundOrder.orderNumber(inboundOrderDTO.getOrderNumber());
             inboundOrder.orderDate(inboundOrderDTO.getOrderDate());
-            batchStockService.putAll(inboundOrder.getListBatchStock(),
+            final List<BatchStock> batchStockList = batchStockService.putAll(inboundOrder.getListBatchStock(),
                     inboundOrderDTO.getListBatchStockDTO(), agentDTO
                     , inboundOrderDTO.getSectionDTO());
+            inboundOrder.listBatchStock(batchStockList);
             try {
                 inboundOrderRepository.save(inboundOrder);
             }catch (DataAccessException e) {

@@ -263,7 +263,7 @@ public class BatchStockServiceIntegrationTest {
                 (ProductExceptionNotFound.class,() ->
                         batchStockService.listProductId("QJ","T"));
 
-        String menssagemEsperada = "Codigo do filtro nao existe!";
+        String menssagemEsperada = "Codigo de ordenacao nao existe!";
 
         assertTrue(menssagemEsperada.contains(productExceptionNotFound.getMessage()));
     }
@@ -334,7 +334,7 @@ public class BatchStockServiceIntegrationTest {
         ProductExceptionNotFound productExceptionNotFound = assertThrows
                 (ProductExceptionNotFound.class,() -> batchStockService.listDueDateDays(30));
 
-        String menssagemEsperada = "Nao existe estoque com este filtro!!!";
+        String menssagemEsperada = "Nao existe estoque neste periodo de dias!!!";
 
         assertTrue(menssagemEsperada.contains(productExceptionNotFound.getMessage()));
     }

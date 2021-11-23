@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -207,11 +208,35 @@ class InboundOrderServiceIntegrationTest {
                 .dueDate(LocalDate.now())
                 .build();
 
+        BatchStockDTO batchStockDTODois = new BatchStockDTO()
+                .batchNumber(2)
+                .productId("LE")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalTime.now())
+                .dueDate(LocalDate.now())
+                .build();
+
+        BatchStockDTO batchStockDTOTres = new BatchStockDTO()
+                .batchNumber(3)
+                .productId("LE")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalTime.now())
+                .dueDate(LocalDate.now())
+                .build();
+
         InboundOrderDTO inboundOrderDTO = new InboundOrderDTO()
                 .orderNumber(1)
                 .orderDate(LocalDate.now())
                 .sectionDTO(sectionDTO)
-                .batchStockDTO(Collections.singletonList(batchStockDTO))
+                .batchStockDTO(Arrays.asList(batchStockDTO, batchStockDTODois, batchStockDTOTres))
                 .build();
 
         AgentDTO agentDTO = new AgentDTO().
@@ -228,7 +253,7 @@ class InboundOrderServiceIntegrationTest {
                 .productId("LE")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
-                .initialQuantity(1)
+                .initialQuantity(5)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
                 .manufacturingTime(LocalDateTime.now())
@@ -236,13 +261,27 @@ class InboundOrderServiceIntegrationTest {
                 .section(section.orElse(new Section()))
                 .agent(agent.orElse(new Agent()))
                 .build();
-        batchStockRepository.saveAll(Collections.singletonList(batchStock));
+
+        BatchStock batchStockUm = new BatchStock()
+                .batchNumber(2)
+                .productId("LE")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(5)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now())
+                .section(section.orElse(new Section()))
+                .agent(agent.orElse(new Agent()))
+                .build();
+        batchStockRepository.saveAll(Arrays.asList(batchStock, batchStockUm));
 
         InboundOrder inboundOrder = new InboundOrder()
                 .orderNumber(1)
                 .orderDate(LocalDate.now())
                 .section(section.orElse(new Section()))
-                .listBatchStock(Collections.singletonList(batchStock))
+                .listBatchStock(Arrays.asList(batchStock, batchStockUm))
                 .build();
         inboundOrderRepository.save(inboundOrder);
 

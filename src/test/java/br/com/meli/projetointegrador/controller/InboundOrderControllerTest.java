@@ -23,7 +23,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -241,7 +244,7 @@ class InboundOrderControllerTest {
                 .orderNumber(1)
                 .orderDate(LocalDate.now())
                 .section(section.orElse(new Section()))
-                .listBatchStock(Collections.singletonList(batchStock))
+                .listBatchStock(Arrays.asList(batchStock, batchStockUm))
                 .build();
         inboundOrderRepository.save(inboundOrder);
 

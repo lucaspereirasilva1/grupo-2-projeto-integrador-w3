@@ -18,10 +18,7 @@ import org.springframework.util.ObjectUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -86,30 +83,31 @@ public class BatchStockService {
      * @param agentDTO agente recebido do controller;
      * @param sectionDTO section recebida do controller;
      */
-    public void putAll(final List<BatchStock> listBatchStock, List<BatchStockDTO> listBatchStockDTO,
+    public List<BatchStock> putAll(final List<BatchStock> listBatchStock, List<BatchStockDTO> listBatchStockDTO,
                        AgentDTO agentDTO, SectionDTO sectionDTO) {
-        final List<BatchStock> batchStockList = new ArrayList<>();
-        listBatchStock.forEach(b -> {
-            final Product product = productService.find(b.getProductId());
-            if (sectionByCategoryService.validProductSection(b.getSection(), product.getCategory()) &&
-                    sectionService.validSectionLength(b.getSection())) {
-                Optional<BatchStockDTO> batchStockDTO = listBatchStockDTO.stream()
-                        .filter(bd -> bd.getBatchNumber().equals(b.getBatchNumber()))
-                        .findFirst();
-                if (batchStockDTO.isEmpty()) {
-                    throw new BatchStockException("Divergencia entre dados de entrada e do banco!!!");
+        List<BatchStock> batchStockList = new ArrayList<>();
+        for (BatchStockDTO dto : listBatchStockDTO) {
+            final Product product = productService.find(dto.getProductId());
+            final Optional<BatchStock> optionalBatchStock = listBatchStock.stream().
+                    filter(b -> b.getBatchNumber().equals(dto.getBatchNumber())).
+                    findFirst();
+            if (optionalBatchStock.isPresent()) {
+                if (sectionByCategoryService.validProductSection(optionalBatchStock.get().getSection(), product.getCategory()) &&
+                        sectionService.validSectionLength(optionalBatchStock.get().getSection())) {
+                    final BatchStock batchStock = fillBatchStock(dto, agentDTO, sectionDTO);
+                    batchStock.id(optionalBatchStock.get().getId());
+                    try {
+                        batchStockList.add(batchStockRepository.save(batchStock));
+                    } catch (DataAccessException e) {
+                        logger.error(ConstantsUtil.PERSISTENCE_ERROR, e);
+                        throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
+                    }
                 }
-                final BatchStock batchStock = fillBatchStock(batchStockDTO.get(), agentDTO, sectionDTO);
-                batchStock.id(b.getId());
-                batchStockList.add(batchStock);
+            } else {
+                batchStockList.add(postAll(Collections.singletonList(dto), agentDTO, sectionDTO).get(0));
             }
-        });
-        try {
-            batchStockRepository.saveAll(batchStockList);
-        }catch (DataAccessException e) {
-            logger.error(ConstantsUtil.PERSISTENCE_ERROR, e);
-            throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
         }
+        return batchStockList;
     }
 
     /**
