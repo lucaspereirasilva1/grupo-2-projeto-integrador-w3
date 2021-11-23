@@ -34,7 +34,7 @@ public class SignupRequest {
     private String cpf;
 
     @NotBlank
-    @Size(min = 1, max = 2)
+    @Size(min = 1, max = 3)
     private String warehouseCode;
 
     public String getUsername() {

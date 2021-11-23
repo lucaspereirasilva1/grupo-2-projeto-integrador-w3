@@ -43,7 +43,7 @@ public class SectionByCategoryServiceTest {
                 .section(section)
                 .build();
 
-        when(mockSectionByCategoryRepository.findByCategory(any(SectionCategory.class)))
+        when(mockSectionByCategoryRepository.findByCategoryAndSection(any(),any()))
                 .thenReturn(Optional.of(sectionByCategory));
 
         assertTrue(sectionByCategoryService.validProductSection(section, sectionCategory));
@@ -54,13 +54,6 @@ public class SectionByCategoryServiceTest {
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")
                 .warehouseName("sao paulo")
-                .build();
-
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("laticinios")
-                .maxLength(10)
-                .warehouse(warehouse)
                 .build();
 
         Section sectionCO = new Section()
@@ -74,18 +67,13 @@ public class SectionByCategoryServiceTest {
                 .name(ESectionCategory.FS)
                 .build();
 
-        SectionByCategory sectionByCategory = new SectionByCategory()
-                .category(sectionCategoryFS)
-                .section(section)
-                .build();
-
-        when(mockSectionByCategoryRepository.findByCategory(any(SectionCategory.class)))
-                .thenReturn(Optional.of(sectionByCategory));
+        when(mockSectionByCategoryRepository.findByCategoryAndSection(any(SectionCategory.class),any(Section.class)))
+                .thenReturn(Optional.empty());
 
         ProductException productException = assertThrows(ProductException.class, () ->
                 sectionByCategoryService.validProductSection(sectionCO, sectionCategoryFS));
 
-        String expectedMessage = "Produto nao faz parte do setor, por favor verifique o setor correto!";
+        String expectedMessage = "Categoria e setor nao parametrizados!!! Por gentileza verificar o base";
         assertTrue(expectedMessage.contains(productException.getMessage()));
     }
 
@@ -107,7 +95,7 @@ public class SectionByCategoryServiceTest {
                 .name(ESectionCategory.FS)
                 .build();
 
-        when(mockSectionByCategoryRepository.findByCategory(any(SectionCategory.class)))
+        when(mockSectionByCategoryRepository.findByCategoryAndSection(any(),any()))
                 .thenReturn(Optional.empty());
 
         ProductException productException = assertThrows(ProductException.class, () ->

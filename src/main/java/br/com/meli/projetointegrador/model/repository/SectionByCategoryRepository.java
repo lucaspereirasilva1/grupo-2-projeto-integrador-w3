@@ -1,5 +1,6 @@
 package br.com.meli.projetointegrador.model.repository;
 
+import br.com.meli.projetointegrador.model.entity.Section;
 import br.com.meli.projetointegrador.model.entity.SectionByCategory;
 import br.com.meli.projetointegrador.model.entity.SectionCategory;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -10,6 +11,6 @@ import java.util.Optional;
 @Repository
 public interface SectionByCategoryRepository extends MongoRepository<SectionByCategory, String> {
 
-    Optional<SectionByCategory> findByCategory(SectionCategory sectionCategory);
+    Optional<SectionByCategory> findByCategoryAndSection(SectionCategory sectionCategory, Section section);
 
 }
