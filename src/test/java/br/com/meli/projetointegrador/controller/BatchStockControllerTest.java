@@ -158,6 +158,19 @@ class BatchStockControllerTest {
         assertEquals(HttpStatus.OK.value(), response.getStatus());
     }
 
+
+    @Test
+    void getProductOrderDyasSection() throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/due-date/section/")
+                        .param("days","30")
+                        .param("section","LA")
+                        .header("Authorization", "Bearer " + tokenTest.getAccessToken())
+                        .contentType("application/json"))
+                .andReturn().getResponse();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+    }
+
     void createData() {
         Warehouse warehouse = new Warehouse()
                 .warehouseCode("SP")

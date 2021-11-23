@@ -19,5 +19,6 @@ public interface BatchStockRepository extends MongoRepository<BatchStock, String
 
     Long countBySection(Section section);
     List<BatchStock> findAllByProductId(String productId);
+    List<BatchStock> findAllBySection (Section section);
     
 }

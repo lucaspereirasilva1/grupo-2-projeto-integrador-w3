@@ -7,6 +7,7 @@ import br.com.meli.projetointegrador.model.entity.*;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.BatchStockRepository;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.dao.DataAccessException;
 import org.springframework.util.ObjectUtils;
 
@@ -1482,6 +1483,170 @@ public class BatchStockServiceTest {
         String menssagemEsperada = "Erro durante a persistencia no banco!!!";
 
         assertTrue(menssagemEsperada.contains(Objects.requireNonNull(dataAccessException.getMessage())));
+    }
+
+    @Test
+    void listBatchStockDueDateSectionTest() {
+
+        List<BatchStock> batchStockList = new ArrayList<>();
+        List<Product> productList = new ArrayList<>();
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("laticinios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+
+        Agent agent = new Agent().
+                cpf("11122233344").
+                name("lucas").
+                build();
+
+        BatchStock batchStockUm = new BatchStock()
+                .batchNumber(1)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now().plusWeeks(+1))
+                .agent(agent)
+                .section(section)
+                .build();
+
+        BatchStock batchStockDois = new BatchStock()
+                .batchNumber(2)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now().plusWeeks(+2))
+                .agent(agent)
+                .section(section)
+                .build();
+
+        Product productUm = new Product()
+                .productId("LE")
+                .productName("leite")
+                .category(new SectionCategory().name(ESectionCategory.FF))
+                .build();
+
+        Product productDois = new Product()
+                .productId("QJ")
+                .productName("queijo")
+                .category(new SectionCategory().name(ESectionCategory.FF))
+                .build();
+
+        productList.add(productUm);
+        productList.add(productDois);
+
+        batchStockList.add(batchStockUm);
+        batchStockList.add(batchStockDois);
+
+        when(mockSectionService.find(anyString())).thenReturn(section);
+        Mockito.when(mockBatchStockRepository.findAllBySection(any(Section.class))).thenReturn(batchStockList);
+
+        BatchStockListDueDateDTO batchStockListDueDateDTO = batchStockService.listBatchStockSection
+                (30, "LA");
+
+        assertTrue(batchStockListDueDateDTO.getBatchStock().get(0).getDueDate().isBefore(batchStockListDueDateDTO.getBatchStock().get(1).getDueDate()));
+    }
+
+    @Test
+    void listBatchStockDueDateSectionExceptionDateTest() {
+
+        List<BatchStock> batchStockList = new ArrayList<>();
+        List<Product> productList = new ArrayList<>();
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("laticinios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+
+        Agent agent = new Agent().
+                cpf("11122233344").
+                name("lucas").
+                build();
+
+        BatchStock batchStockUm = new BatchStock()
+                .batchNumber(1)
+                .productId("QJ")
+                .currentTemperature(10.0F)
+                .minimumTemperature(5.0F)
+                .initialQuantity(1)
+                .currentQuantity(5)
+                .manufacturingDate(LocalDate.now())
+                .manufacturingTime(LocalDateTime.now())
+                .dueDate(LocalDate.now().plusWeeks(+10))
+                .agent(agent)
+                .section(section)
+                .build();
+
+        Product productUm = new Product()
+                .productId("LE")
+                .productName("leite")
+              //  .section(section)
+                .category(new SectionCategory().name(ESectionCategory.FF))
+                .build();
+
+        productList.add(productUm);
+        batchStockList.add(batchStockUm);
+
+        when(mockSectionService.find(anyString())).thenReturn(section);
+        Mockito.when(mockBatchStockRepository.findAllBySection(any(Section.class))).thenReturn(batchStockList);
+        ProductExceptionNotFound productExceptionNotFound = assertThrows
+                (ProductExceptionNotFound.class, () -> batchStockService.listBatchStockSection
+                        (30, "LE"));
+
+        String menssagemEsperada = "Nao existe dias com este filtro!!!";
+
+        assertTrue(menssagemEsperada.contains(productExceptionNotFound.getMessage()));
+    }
+
+    @Test
+    void listBatchStockDueDateSectionExceptionSectionTest() {
+
+        List<BatchStock> batchStockList = new ArrayList<>();
+
+        Warehouse warehouse = new Warehouse()
+                .warehouseCode("SP")
+                .warehouseName("sao paulo")
+                .build();
+
+        Section section = new Section()
+                .sectionCode("LA")
+                .sectionName("laticinios")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+
+        when(mockSectionService.find(anyString())).thenReturn(section);
+        Mockito.when(mockBatchStockRepository.findAllBySection(any(Section.class))).thenReturn(batchStockList);
+        ProductExceptionNotFound productExceptionNotFound = assertThrows
+                (ProductExceptionNotFound.class, () -> batchStockService.listBatchStockSection
+                        (30, "LE"));
+
+        String menssagemEsperada = "Nao existe estoque para a secao informada!!!";
+
+        assertTrue(menssagemEsperada.contains(productExceptionNotFound.getMessage()));
     }
 
 }

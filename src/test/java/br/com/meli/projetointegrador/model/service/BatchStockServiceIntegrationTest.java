@@ -465,6 +465,74 @@ public class BatchStockServiceIntegrationTest {
     }
 
     @Test
+    void listBatchStockDueDateSectionTestIntegration() {
+
+    batchStockRepository.deleteAll();
+    productRepository.deleteAll();
+
+    BatchStock batchStockUm = new BatchStock()
+            .batchNumber(1)
+            .productId("QJ")
+            .currentTemperature(10.0F)
+            .minimumTemperature(5.0F)
+            .initialQuantity(1)
+            .currentQuantity(5)
+            .manufacturingDate(LocalDate.now())
+            .manufacturingTime(LocalDateTime.now())
+            .dueDate(LocalDate.now().plusWeeks(+2))
+            .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
+            .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
+            .build();
+        batchStockRepository.save(batchStockUm);
+
+    BatchStock batchStockDois = new BatchStock()
+            .batchNumber(2)
+            .productId("QJ")
+            .currentTemperature(10.0F)
+            .minimumTemperature(5.0F)
+            .initialQuantity(1)
+            .currentQuantity(5)
+            .manufacturingDate(LocalDate.now())
+            .manufacturingTime(LocalDateTime.now())
+            .dueDate(LocalDate.now().plusWeeks(+2))
+            .agent(agentRepository.findByCpf("11122233344").orElse(new Agent()))
+            .section(sectionRepository.findBySectionCode("LA").orElse(new Section()))
+            .build();
+        batchStockRepository.save(batchStockDois);
+
+    Product productUm = new Product()
+            .productId("LA")
+            .productName("leite")
+            .category(sectionCategoryRepository.findByName(ESectionCategory.FF).orElse(new SectionCategory()))
+            .build();
+        productRepository.save(productUm);
+
+    Product productDois = new Product()
+            .productId("QJ")
+            .productName("queijo")
+            .category(sectionCategoryRepository.findByName(ESectionCategory.FF).orElse(new SectionCategory()))
+            .build();
+        productRepository.save(productDois);
+
+    BatchStockListDueDateDTO batchStockListDueDateDTO = batchStockService.listBatchStockSection
+            (100,"LA");
+
+    assertTrue(batchStockListDueDateDTO.getBatchStock().get(0).getDueDate().isBefore(LocalDate.now().plusDays(101)));
+}
+
+    @Test
+    void listBatchStockDueDateSectionExceptionDateTestIntegration() {
+        ProductExceptionNotFound productExceptionNotFound = assertThrows
+                (ProductExceptionNotFound.class, () -> batchStockService.listBatchStockSection
+                        (30, "CO"));
+
+        String menssagemEsperada = "Nao existe estoque para a secao informada!!!";
+        assertTrue(menssagemEsperada.contains(productExceptionNotFound.getMessage()));
+    }
+
+
+
+    @Test
     void postAllPersistenceError() {
         SectionDTO sectionDTO = new SectionDTO()
                 .sectionCode("LA")
@@ -519,6 +587,14 @@ public class BatchStockServiceIntegrationTest {
                 .warehouse(warehouse)
                 .build();
         sectionRepository.save(section);
+
+        Section sectionUm = new Section()
+                .sectionCode("CO")
+                .sectionName("congelados")
+                .maxLength(10)
+                .warehouse(warehouse)
+                .build();
+        sectionRepository.save(sectionUm);
 
         SectionCategory sectionCategory = new SectionCategory()
                 .name(ESectionCategory.FF)

@@ -14,7 +14,6 @@ import java.util.List;
 @Data
 public class BatchStockListDueDateDTO {
 
-
     private List<BatchStockServiceDueDateDTO> batchStock;
 
     public BatchStockListDueDateDTO(List<BatchStockServiceDueDateDTO> batchStock) {
