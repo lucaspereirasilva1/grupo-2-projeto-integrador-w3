@@ -50,6 +50,7 @@ public class BatchStockDTO {
     private LocalTime manufacturingTime;
 
     @NotNull(message = "dueDate cannot be null")
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern="dd/MM/yyyy")
     private LocalDate dueDate;
 
     public BatchStockDTO batchNumber(Integer batchNumber) {
