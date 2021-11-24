@@ -21,8 +21,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -75,6 +79,9 @@ class InboundOrderControllerTest {
     @Autowired
     private SectionCategoryRepository sectionCategoryRepository;
 
+    @Autowired
+    private SectionByCategoryRepository sectionByCategoryRepository;
+
 
     @BeforeEach
     void setup() throws Exception{
@@ -116,26 +123,14 @@ class InboundOrderControllerTest {
 
     @Test
     void postTest() throws Exception {
-        productRepository.deleteAll();
-
-        Product productDois = new Product()
-                .productId("MA")
-                .productName("margarina")
-                .section(sectionRepository.findBySectionCode("CO").orElse(new Section()))
-                .productPrice(new BigDecimal("2.0"))
-                .dueDate(LocalDate.now())
-                .category(sectionCategoryRepository.findByName(ESectionCategory.FF).orElse(new SectionCategory()))
-                .build();
-        productRepository.save(productDois);
-
         SectionDTO sectionDTO = new SectionDTO()
-                .sectionCode("CO")
+                .sectionCode("LA")
                 .warehouseCode("SP")
                 .build();
 
         BatchStockDTO batchStockDTO = new BatchStockDTO()
                 .batchNumber(1)
-                .productId("MA")
+                .productId("LE")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
                 .initialQuantity(1)
@@ -223,7 +218,7 @@ class InboundOrderControllerTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now())
                 .section(section.orElse(new Section()))
                 .agent(agent.orElse(new Agent()))
@@ -238,7 +233,7 @@ class InboundOrderControllerTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now())
                 .section(section.orElse(new Section()))
                 .agent(agent.orElse(new Agent()))
@@ -249,7 +244,7 @@ class InboundOrderControllerTest {
                 .orderNumber(1)
                 .orderDate(LocalDate.now())
                 .section(section.orElse(new Section()))
-                .listBatchStock(Collections.singletonList(batchStock))
+                .listBatchStock(Arrays.asList(batchStock, batchStockUm))
                 .build();
         inboundOrderRepository.save(inboundOrder);
 
@@ -280,21 +275,37 @@ class InboundOrderControllerTest {
 
         Section sectionDois = new Section()
                 .sectionCode("CO")
-                .sectionName("laticinios")
+                .sectionName("congelados")
                 .maxLength(10)
                 .warehouse(warehouse)
                 .build();
         sectionRepository.save(sectionDois);
 
         SectionCategory sectionCategory = new SectionCategory()
-                .name(ESectionCategory.FF)
+                .name(ESectionCategory.FS)
                 .build();
         sectionCategoryRepository.save(sectionCategory);
+
+        SectionCategory sectionCategoryFF = new SectionCategory()
+                .name(ESectionCategory.FF)
+                .build();
+        sectionCategoryRepository.save(sectionCategoryFF);
+
+        SectionByCategory sectionByCategory = new SectionByCategory()
+                .category(sectionCategory)
+                .section(section)
+                .build();
+        sectionByCategoryRepository.save(sectionByCategory);
+
+        SectionByCategory sectionByCategoryCO = new SectionByCategory()
+                .category(sectionCategoryFF)
+                .section(sectionDois)
+                .build();
+        sectionByCategoryRepository.save(sectionByCategoryCO);
 
         Product product = new Product()
                 .productId("LE")
                 .productName("leite")
-                .section(section)
                 .productPrice(new BigDecimal("2.0"))
                 .dueDate(LocalDate.now())
                 .category(sectionCategory)
@@ -302,9 +313,8 @@ class InboundOrderControllerTest {
         productRepository.save(product);
 
         Product productDois = new Product()
-                .productId("CA")
-                .productName("carne")
-                .section(sectionDois)
+                .productId("MA")
+                .productName("margarina")
                 .productPrice(new BigDecimal("2.0"))
                 .dueDate(LocalDate.now())
                 .category(sectionCategory)
@@ -334,6 +344,7 @@ class InboundOrderControllerTest {
         warehouseRepository.deleteAll();
         sectionCategoryRepository.deleteAll();
         productRepository.deleteAll();
+        sectionByCategoryRepository.deleteAll();
     }
 
 }

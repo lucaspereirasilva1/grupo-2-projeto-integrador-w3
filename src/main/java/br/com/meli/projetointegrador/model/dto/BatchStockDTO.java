@@ -1,5 +1,6 @@
 package br.com.meli.projetointegrador.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.validation.constraints.*;
@@ -41,12 +42,15 @@ public class BatchStockDTO {
     private Integer currentQuantity;
 
     @NotNull(message = "manufacturingDate cannot be null")
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern="dd/MM/yyyy")
     private LocalDate manufacturingDate;
 
     @NotNull(message = "manufacturingTime cannot be null")
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern="HH:mm")
     private LocalTime manufacturingTime;
 
     @NotNull(message = "dueDate cannot be null")
+    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern="dd/MM/yyyy")
     private LocalDate dueDate;
 
     public BatchStockDTO batchNumber(Integer batchNumber) {

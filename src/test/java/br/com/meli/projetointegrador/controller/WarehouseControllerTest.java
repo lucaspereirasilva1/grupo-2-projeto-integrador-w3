@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -115,6 +115,14 @@ public class WarehouseControllerTest {
                 .andReturn().getResponse();
 
         assertEquals(HttpStatus.OK.value(), response.getStatus());
+
+        MockHttpServletResponse responseNot = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/warehouse")
+                .param("productId", "")
+                .header("Authorization", "Bearer " + tokenTest.getAccessToken())
+                .contentType("application/json"))
+                .andReturn().getResponse();
+
+        assertEquals(HttpStatus.NOT_FOUND.value(), responseNot.getStatus());
     }
 
     void createData() {
@@ -147,7 +155,6 @@ public class WarehouseControllerTest {
         Product product = new Product()
                 .productId("LE")
                 .productName("leite")
-                .section(section)
                 .productPrice(new BigDecimal("2.0"))
                 .dueDate(LocalDate.now())
                 .category(sectionCategory)
@@ -162,7 +169,7 @@ public class WarehouseControllerTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.of(2022,  12,  1))
                 .section(section)
                 .agent(agent)

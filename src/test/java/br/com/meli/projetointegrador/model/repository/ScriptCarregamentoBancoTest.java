@@ -23,6 +23,12 @@ class ScriptCarregamentoBancoTest {
     private SectionRepository sectionRepository;
 
     @Autowired
+    private AgentRepository agentRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
     private ProductRepository productRepository;
 
     @Autowired
@@ -37,6 +43,9 @@ class ScriptCarregamentoBancoTest {
     @Autowired
     private RoleRepository roleRepository;
 
+    @Autowired
+    private SectionByCategoryRepository sectionByCategoryRepository;
+
     @Test
     void scriptCarregamentoBanco() {
         productRepository.deleteAll();
@@ -45,6 +54,8 @@ class ScriptCarregamentoBancoTest {
         roleRepository.deleteAll();
         buyerRepository.deleteAll();
         sectionCategoryRepository.deleteAll();
+        userRepository.deleteAll();
+        agentRepository.deleteAll();
 
         BigDecimal bigDecimal = new BigDecimal("45.00");
 
@@ -57,37 +68,61 @@ class ScriptCarregamentoBancoTest {
         Role roleAdmin = new Role(ERole.ROLE_ADMIN);
         roleRepository.save(roleAdmin);
 
-        Warehouse warehouse = new Warehouse()
-                .warehouseCode("SP")
-                .warehouseName("sao paulo")
+        Warehouse warehouseSP = new Warehouse()
+                .warehouseCode("SP1")
+                .warehouseName("Sao Paulo")
                 .build();
-
-        warehouseRepository.save(warehouse);
+        warehouseRepository.save(warehouseSP);
 
         Warehouse warehouseMG = new Warehouse()
-                .warehouseCode("MG")
+                .warehouseCode("MG1")
                 .warehouseName("Minas Gerais")
                 .build();
-
         warehouseRepository.save(warehouseMG);
 
-        Section section = new Section()
-                .sectionCode("LA")
-                .sectionName("laticinios")
-                .maxLength(10)
-                .warehouse(warehouse)
+        Warehouse warehousePR = new Warehouse()
+                .warehouseCode("PR1")
+                .warehouseName("Parana")
                 .build();
+        warehouseRepository.save(warehousePR);
 
-        sectionRepository.save(section);
+        Warehouse warehouseRS = new Warehouse()
+                .warehouseCode("RS1")
+                .warehouseName("Minas Gerais")
+                .build();
+        warehouseRepository.save(warehouseRS);
+
+        Section sectionLA = new Section()
+                .sectionCode("LA1")
+                .sectionName("Laticinios")
+                .maxLength(10)
+                .warehouse(warehouseSP)
+                .build();
+        sectionRepository.save(sectionLA);
 
         Section sectionCO = new Section()
-                .sectionCode("CO")
+                .sectionCode("CO1")
                 .sectionName("Congelados")
+                .maxLength(10)
+                .warehouse(warehouseSP)
+                .build();
+        sectionRepository.save(sectionCO);
+
+        Section sectionVE = new Section()
+                .sectionCode("VE1")
+                .sectionName("Verduras")
                 .maxLength(10)
                 .warehouse(warehouseMG)
                 .build();
+        sectionRepository.save(sectionVE);
 
-        sectionRepository.save(sectionCO);
+        Section sectionFR = new Section()
+                .sectionCode("FR1")
+                .sectionName("Frutas")
+                .maxLength(10)
+                .warehouse(warehousePR)
+                .build();
+        sectionRepository.save(sectionFR);
 
         SectionCategory sectionCategoryFF = new SectionCategory()
                 .name(ESectionCategory.FF)
@@ -97,7 +132,6 @@ class ScriptCarregamentoBancoTest {
                 .name(ESectionCategory.FS)
                 .build();
 
-
         SectionCategory sectionCategoryRF = new SectionCategory()
                 .name(ESectionCategory.RF)
                 .build();
@@ -105,45 +139,81 @@ class ScriptCarregamentoBancoTest {
         sectionCategoryRepository.saveAll(Arrays.asList(sectionCategoryFF, sectionCategoryFS,
                 sectionCategoryRF));
 
-        Buyer buyer = new Buyer()
-                .name("lucas")
-                .cpf("22233344411")
+        SectionByCategory sectionByCategory = new SectionByCategory()
+                .section(sectionCO)
+                .category(sectionCategoryFF)
                 .build();
-        buyerRepository.save(buyer);
+        sectionByCategoryRepository.save(sectionByCategory);
+
+        SectionByCategory sectionByCategoryDois = new SectionByCategory()
+                .section(sectionLA)
+                .category(sectionCategoryFS)
+                .build();
+        sectionByCategoryRepository.save(sectionByCategoryDois);
+
+        SectionByCategory sectionByCategoryTres = new SectionByCategory()
+                .section(sectionVE)
+                .category(sectionCategoryFF)
+                .build();
+        sectionByCategoryRepository.save(sectionByCategoryTres);
+
+        SectionByCategory sectionByCategoryQuatro = new SectionByCategory()
+                .section(sectionFR)
+                .category(sectionCategoryFS)
+                .build();
+        sectionByCategoryRepository.save(sectionByCategoryQuatro);
+
+        Buyer buyerLucas = new Buyer()
+                .name("lucas")
+                .cpf("11111111111")
+                .build();
+        buyerRepository.save(buyerLucas);
+
+        Buyer buyerJhony = new Buyer()
+                .name("jhony")
+                .cpf("22222222222")
+                .build();
+        buyerRepository.save(buyerJhony);
+
+        Buyer buyerEd = new Buyer()
+                .name("ednobre")
+                .cpf("33333333333")
+                .build();
+        buyerRepository.save(buyerEd);
+
+        Buyer buyerRafa = new Buyer()
+                .name("rafa")
+                .cpf("44444444444")
+                .build();
+        buyerRepository.save(buyerRafa);
 
         Product product = new Product()
-                .productId("MA")
+                .productId("MA1")
                 .productName("margarina")
-                .section(section)
                 .category(sectionCategoryFS)
                 .productPrice(bigDecimal)
                 .dueDate(LocalDate.now().plusWeeks(5))
                 .build();
 
-        productRepository.save(product);
-
         Product productDois = new Product()
-                .productId("DA")
+                .productId("DA1")
                 .productName("danone")
-                .section(section)
                 .category(sectionCategoryFS)
                 .productPrice(bigDecimal)
                 .dueDate(LocalDate.now().plusWeeks(5))
                 .build();
 
         Product productTres = new Product()
-                .productId("CA")
+                .productId("CA1")
                 .productName("carne")
-                .section(sectionCO)
                 .category(sectionCategoryFF)
                 .productPrice(bigDecimal)
                 .dueDate(LocalDate.now().plusWeeks(5))
                 .build();
 
         Product productQuatro = new Product()
-                .productId("FR")
+                .productId("FR1")
                 .productName("frango")
-                .section(sectionCO)
                 .category(sectionCategoryFF)
                 .productPrice(bigDecimal)
                 .dueDate(LocalDate.now().plusWeeks(5))

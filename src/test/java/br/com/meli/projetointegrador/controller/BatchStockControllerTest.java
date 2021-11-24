@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -56,6 +56,9 @@ class BatchStockControllerTest {
 
     @Autowired
     private BatchStockRepository batchStockRepository;
+
+    @Autowired
+    private SectionByCategoryRepository sectionByCategoryRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -178,14 +181,13 @@ class BatchStockControllerTest {
         agentRepository.save(agent);
 
         SectionCategory sectionCategory = new SectionCategory()
-                .name(ESectionCategory.FF)
+                .name(ESectionCategory.FS)
                 .build();
         sectionCategoryRepository.save(sectionCategory);
 
         Product product = new Product()
                 .productId("LE")
                 .productName("leite")
-                .section(section)
                 .productPrice(new BigDecimal("2.0"))
                 .dueDate(LocalDate.now())
                 .category(sectionCategory)
@@ -200,7 +202,7 @@ class BatchStockControllerTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.of(2022,  12,  1))
                 .section(section)
                 .agent(agent)
@@ -210,7 +212,6 @@ class BatchStockControllerTest {
         Product productDois = new Product()
                 .productId("QJ")
                 .productName("queijo")
-                .section(section)
                 .productPrice(new BigDecimal("2.0"))
                 .dueDate(LocalDate.now().plusWeeks(+2))
                 .category(sectionCategory)
@@ -225,12 +226,18 @@ class BatchStockControllerTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now().plusWeeks(+2))
                 .section(section)
                 .agent(agent)
                 .build();
         batchStockRepository.save(batchStockDois);
+
+        SectionByCategory sectionByCategory = new SectionByCategory()
+                .category(sectionCategory)
+                .section(section)
+                .build();
+        sectionByCategoryRepository.save(sectionByCategory);
 
         Role role = new Role();
         role.setName(ERole.ROLE_USER);

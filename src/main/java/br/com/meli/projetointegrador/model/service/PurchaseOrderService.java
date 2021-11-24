@@ -62,7 +62,6 @@ public class PurchaseOrderService {
             ProductDTO productDTO = new ProductDTO()
                     .productId(p.getProductId())
                     .productName(p.getProductName())
-                    .sectionName(p.getSection().getSectionName())
                     .productPrice(p.getProductPrice())
                     .dueDate(p.getDueDate())
                     .category(p.getCategory().getName());
@@ -91,9 +90,14 @@ public class PurchaseOrderService {
                 throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
             }
             purchaseOrderRepository.save(purchaseOrder);
-            batchStockService.updateBatchStock(purchaseOrderDTO.getListProductPurchaseOrderDTO());
+            batchStockService.updateBatchStock(purchaseOrderDTO.getListProductPurchaseOrderDTO(), "");
         }else {
             final List<Product> productListPut = calculeTotal(purchaseOrderDTO);
+            final Optional<PurchaseOrder> purchaseOrderOptional = purchaseOrderRepository.findById(purchaseOrderDTO.getId());
+            if (purchaseOrderOptional.isEmpty()) {
+                throw new PurchaseOrderException("Ordem de compra nao existe!!! Por gentileza inserir um id valido");
+            }
+            purchaseOrder = purchaseOrderOptional.get();
             purchaseOrder.productList(productListPut);
             purchaseOrder.date(purchaseOrderDTO.getData());
             purchaseOrder.buyer(buyerService.find(purchaseOrderDTO.getBuyerId()));
@@ -105,7 +109,7 @@ public class PurchaseOrderService {
                 logger.error(ConstantsUtil.PERSISTENCE_ERROR, e);
                 throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
             }
-            batchStockService.updateBatchStock(purchaseOrderDTO.getListProductPurchaseOrderDTO());
+            batchStockService.updateBatchStock(purchaseOrderDTO.getListProductPurchaseOrderDTO(), purchaseOrderDTO.getId());
         }
         return total;
     }

@@ -17,7 +17,6 @@ import org.springframework.util.ObjectUtils;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -87,7 +86,6 @@ class PurchaseOrderServiceIntegrationTest {
         Product product = new Product()
                 .productId("LE")
                 .productName("leite")
-                .section(section)
                 .productPrice(new BigDecimal(2))
                 .dueDate(LocalDate.of(2022,11,30))
                 .category(sectionCategory)
@@ -96,7 +94,6 @@ class PurchaseOrderServiceIntegrationTest {
         Product productUm = new Product()
                 .productId("QJ")
                 .productName("queijo")
-                .section(section)
                 .productPrice(new BigDecimal(3))
                 .dueDate(LocalDate.of(2022,11,30))
                 .category(sectionCategory)
@@ -152,7 +149,6 @@ class PurchaseOrderServiceIntegrationTest {
         Product product = new Product()
                 .productId("LE")
                 .productName("leite")
-                .section(section)
                 .productPrice(new BigDecimal(2))
                 .dueDate(LocalDate.of(2022,11,30))
                 .category(sectionCategory)
@@ -161,7 +157,6 @@ class PurchaseOrderServiceIntegrationTest {
         Product productUm = new Product()
                 .productId("QJ")
                 .productName("queijo")
-                .section(section)
                 .productPrice(new BigDecimal(3))
                 .dueDate(LocalDate.of(2022,11,30))
                 .category(sectionCategory)
@@ -196,10 +191,10 @@ class PurchaseOrderServiceIntegrationTest {
                 .productId("LE")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
-                .initialQuantity(1)
+                .initialQuantity(5)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.of(2022, 1, 3))
                 .agent(agent)
                 .section(section)
@@ -210,10 +205,10 @@ class PurchaseOrderServiceIntegrationTest {
                 .productId("QJ")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
-                .initialQuantity(1)
+                .initialQuantity(10)
                 .currentQuantity(10)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.of(2022, 1, 3))
                 .agent(agent)
                 .section(section)
@@ -224,6 +219,7 @@ class PurchaseOrderServiceIntegrationTest {
 
         assertFalse(ObjectUtils.isEmpty(total));
         assertEquals(new BigDecimal(19), total);
+        assertEquals(0, batchStockRepository.findAll().get(0).getCurrentQuantity());
     }
 
     @Test
@@ -258,7 +254,6 @@ class PurchaseOrderServiceIntegrationTest {
         Product product = new Product()
                 .productId("MU")
                 .productName("mussarela")
-                .section(section)
                 .productPrice(new BigDecimal(2))
                 .dueDate(LocalDate.of(2022,11,30))
                 .category(sectionCategory)
@@ -267,7 +262,6 @@ class PurchaseOrderServiceIntegrationTest {
         Product productUm = new Product()
                 .productId("CA")
                 .productName("carne")
-                .section(section)
                 .productPrice(new BigDecimal(3))
                 .dueDate(LocalDate.of(2022,11,30))
                 .category(sectionCategory)
@@ -276,7 +270,6 @@ class PurchaseOrderServiceIntegrationTest {
         Product productTres = new Product()
                 .productId("ME")
                 .productName("melao")
-                .section(section)
                 .productPrice(new BigDecimal(3))
                 .dueDate(LocalDate.of(2000,11,30))
                 .category(sectionCategory)
@@ -295,10 +288,10 @@ class PurchaseOrderServiceIntegrationTest {
                 .productId("MU")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
-                .initialQuantity(1)
-                .currentQuantity(5)
+                .initialQuantity(10)
+                .currentQuantity(10)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.of(2022, 1, 3))
                 .agent(agent)
                 .section(section)
@@ -309,10 +302,10 @@ class PurchaseOrderServiceIntegrationTest {
                 .productId("CA")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
-                .initialQuantity(1)
+                .initialQuantity(10)
                 .currentQuantity(10)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.of(2022, 1, 3))
                 .agent(agent)
                 .section(section)
@@ -352,6 +345,7 @@ class PurchaseOrderServiceIntegrationTest {
         assertEquals(purchaseOrderPutDTO.getBuyerId(), purchaseOrder.getBuyer().getId());
         assertEquals(purchaseOrderPutDTO.getData(), purchaseOrder.getDate());
         assertEquals(purchaseOrderPutDTO.getOrderStatus().getStatusCode(), purchaseOrder.getOrderStatus());
+        assertEquals(5, batchStockRepository.findAll().get(0).getCurrentQuantity());
     }
 
     @Test
@@ -397,7 +391,6 @@ class PurchaseOrderServiceIntegrationTest {
         Product product = new Product()
                 .productId("MU")
                 .productName("mussarela")
-                .section(section)
                 .productPrice(new BigDecimal(2))
                 .dueDate(LocalDate.of(2022,11,30))
                 .category(sectionCategory)
@@ -406,7 +399,6 @@ class PurchaseOrderServiceIntegrationTest {
         Product productUm = new Product()
                 .productId("CA")
                 .productName("carne")
-                .section(section)
                 .productPrice(new BigDecimal(3))
                 .dueDate(LocalDate.of(2022,11,30))
                 .category(sectionCategory)
@@ -415,7 +407,6 @@ class PurchaseOrderServiceIntegrationTest {
         Product productTres = new Product()
                 .productId("ME")
                 .productName("melao")
-                .section(section)
                 .productPrice(new BigDecimal(3))
                 .dueDate(LocalDate.of(2000,11,30))
                 .category(sectionCategory)
@@ -437,7 +428,7 @@ class PurchaseOrderServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.of(2022, 1, 3))
                 .agent(agent)
                 .section(section)
@@ -451,7 +442,7 @@ class PurchaseOrderServiceIntegrationTest {
                 .initialQuantity(1)
                 .currentQuantity(10)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.of(2022, 1, 3))
                 .agent(agent)
                 .section(section)

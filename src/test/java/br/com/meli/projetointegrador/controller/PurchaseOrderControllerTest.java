@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -155,7 +155,7 @@ class PurchaseOrderControllerTest {
         final Optional<Buyer> buyer = buyerRepository.findByCpf("22233344411");
         ProductPurchaseOrderDTO productPurchaseOrderDTO1 = new ProductPurchaseOrderDTO()
                 .productId("LE")
-                .quantity(5)
+                .quantity(3)
                 .build();
         ProductPurchaseOrderDTO productPurchaseOrderDTO2 = new ProductPurchaseOrderDTO()
                 .productId("QJ")
@@ -236,7 +236,6 @@ class PurchaseOrderControllerTest {
         Product product = new Product()
                 .productId("LE")
                 .productName("leite")
-                .section(section)
                 .productPrice(new BigDecimal(2))
                 .dueDate(LocalDate.of(2022,11,30))
                 .category(sectionCategory)
@@ -245,7 +244,6 @@ class PurchaseOrderControllerTest {
         Product productUm = new Product()
                 .productId("QJ")
                 .productName("queijo")
-                .section(section)
                 .productPrice(new BigDecimal(3))
                 .dueDate(LocalDate.of(2022,11,30))
                 .category(sectionCategory)
@@ -264,10 +262,10 @@ class PurchaseOrderControllerTest {
                 .productId("LE")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
-                .initialQuantity(1)
+                .initialQuantity(5)
                 .currentQuantity(5)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now().plusWeeks(4))
                 .agent(agent)
                 .section(section)
@@ -278,10 +276,10 @@ class PurchaseOrderControllerTest {
                 .productId("QJ")
                 .currentTemperature(10.0F)
                 .minimumTemperature(5.0F)
-                .initialQuantity(1)
+                .initialQuantity(10)
                 .currentQuantity(10)
                 .manufacturingDate(LocalDate.now())
-                .manufacturingTime(LocalTime.now())
+                .manufacturingTime(LocalDateTime.now())
                 .dueDate(LocalDate.now().plusWeeks(4))
                 .agent(agent)
                 .section(section)

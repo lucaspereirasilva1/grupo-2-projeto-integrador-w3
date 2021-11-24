@@ -3,15 +3,15 @@ package br.com.meli.projetointegrador.model.entity;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
-import org.springframework.data.annotation.Reference;
-import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.FieldType;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
 /**
  * @author Jhony Zuim / Lucas Pereira / Edmilson Nobre / Rafael Vicente
@@ -22,30 +22,29 @@ import java.time.LocalTime;
 
 @Data
 @Document(collection = "batchstock")
+@CompoundIndexes({
+        @CompoundIndex(name = "batchstock_batchNumber", def = "{'batchNumber' : 1}", unique = true)
+})
 public class BatchStock {
 
     @MongoId(FieldType.OBJECT_ID)
     @Setter(AccessLevel.NONE)
     private String id;
 
-    @Indexed(unique = true)
     private Integer batchNumber;
-
     private String productId;
     private Float currentTemperature;
     private Float minimumTemperature;
     private Integer initialQuantity;
     private Integer currentQuantity;
     private LocalDate manufacturingDate;
-    private LocalTime manufacturingTime;
+    private LocalDateTime manufacturingTime;
     private LocalDate dueDate;
 
     @DBRef
-    @Reference
     private Agent agent;
 
     @DBRef
-    @Reference
     private Section section;
 
     public BatchStock id(String id) {
@@ -88,7 +87,7 @@ public class BatchStock {
         return this;
     }
 
-    public BatchStock manufacturingTime(LocalTime manufacturingTime) {
+    public BatchStock manufacturingTime(LocalDateTime manufacturingTime) {
         this.manufacturingTime = manufacturingTime;
         return this;
     }
