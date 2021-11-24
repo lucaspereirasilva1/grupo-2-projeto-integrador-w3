@@ -320,4 +320,20 @@ class PromoServiceTest {
         assertTrue(menssagemEsperada.contains(Objects.requireNonNull(promoException.getMessage())));
     }
 
+    @Test
+    void updatePromoInvalidDiscountTest() {
+        PromoRequestDTO promoDTO = new PromoRequestDTO()
+                .productId("CA1")
+                .percentDiscount(0.01)
+                .build();
+
+        PromoException promoException = assertThrows
+                (PromoException.class,() ->
+                        promoService.updatePromo(promoDTO));
+
+        String menssagemEsperada = "Valor do desconto de vencimento deve ser 0.05, 0.15 ou 0.25!!!";
+
+        assertTrue(menssagemEsperada.contains(Objects.requireNonNull(promoException.getMessage())));
+    }
+
 }

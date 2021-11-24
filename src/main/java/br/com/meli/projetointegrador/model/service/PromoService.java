@@ -76,6 +76,11 @@ public class PromoService {
     }
 
     public PromoResponseDTO updatePromo(PromoRequestDTO promoRequestDTO) {
+        if (promoRequestDTO.getPercentDiscount() != 0.05 &&
+                promoRequestDTO.getPercentDiscount() != 0.15 &&
+                promoRequestDTO.getPercentDiscount() != 0.25){
+            throw new PromoException("Valor do desconto de vencimento deve ser 0.05, 0.15 ou 0.25!!!");
+        }
         final Promo promo = find(promoRequestDTO.getProductId());
         final Product product = productService.find(promoRequestDTO.getProductId());
         BigDecimal finalValue = updatePercentDiscount(promo.getOriginalValue()
