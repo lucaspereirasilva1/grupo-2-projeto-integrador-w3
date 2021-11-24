@@ -1,16 +1,21 @@
 package br.com.meli.projetointegrador.model.service;
 
-import br.com.meli.projetointegrador.exception.ProductException;
 import br.com.meli.projetointegrador.exception.PromoException;
+import br.com.meli.projetointegrador.model.dto.PromoRequestDTO;
+import br.com.meli.projetointegrador.model.dto.PromoResponseDTO;
+import br.com.meli.projetointegrador.model.entity.BatchStock;
 import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.entity.Promo;
 import br.com.meli.projetointegrador.model.entity.SectionCategory;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.PromoRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.dao.DataAccessException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -40,10 +45,10 @@ class PromoServiceTest {
                         .productDueDate(product.getDueDate())
                         .originalValue(product.getProductPrice())
                         .percentDiscount(0.05)
-                        .finalValue(new BigDecimal("42.750"))
+                        .finalValue(new BigDecimal("42.75"))
                         .build());
         BigDecimal pricePromo =  promoService.apllyPromo("CA1");
-        assertEquals(new BigDecimal("42.750"), pricePromo);
+        assertEquals(new BigDecimal("42.75"), pricePromo);
     }
 
     @Test
@@ -65,11 +70,11 @@ class PromoServiceTest {
                         .productDueDate(product.getDueDate())
                         .originalValue(product.getProductPrice())
                         .percentDiscount(0.15)
-                        .finalValue(new BigDecimal("38.250"))
+                        .finalValue(new BigDecimal("38.25"))
                         .build());
 
         BigDecimal pricePromo =  promoService.apllyPromo("CA1");
-        assertEquals(new BigDecimal("38.250"), pricePromo);
+        assertEquals(new BigDecimal("38.25"), pricePromo);
     }
 
     @Test
@@ -91,11 +96,11 @@ class PromoServiceTest {
                         .productDueDate(product.getDueDate())
                         .originalValue(product.getProductPrice())
                         .percentDiscount(0.25)
-                        .finalValue(new BigDecimal("33.750"))
+                        .finalValue(new BigDecimal("33.75"))
                         .build());
 
         BigDecimal pricePromo =  promoService.apllyPromo("CA1");
-        assertEquals(new BigDecimal("33.750"), pricePromo);
+        assertEquals(new BigDecimal("33.75"), pricePromo);
     }
 
     @Test
@@ -118,6 +123,201 @@ class PromoServiceTest {
         String expectedMessage = "Produto nao apto a promocao de vencimento!!!";
 
         assertTrue(expectedMessage.contains(promoException.getMessage()));
+    }
+
+    @Test
+    void updatePromoTest() {
+        PromoRequestDTO promoDTO = new PromoRequestDTO()
+                .productId("CA1")
+                .percentDiscount(0.25)
+                .build();
+
+        Promo promo = new Promo()
+                .productId("CA1")
+                .productDueDate(LocalDate.now().plusDays(5))
+                .originalValue(new BigDecimal("45"))
+                .percentDiscount(0.15)
+                .finalValue(new BigDecimal("42.75"))
+                .build();
+
+        Product product = new Product()
+                .productId("CA1")
+                .productName("carne")
+                .category(new SectionCategory().name(ESectionCategory.FF))
+                .productPrice(new BigDecimal("45.0"))
+                .dueDate(LocalDate.now().plusDays(5))
+                .build();
+
+        when(mockProductService.find(anyString()))
+                .thenReturn(product);
+        when(mockPromoRepository.findByProductId(anyString()))
+                .thenReturn(Optional.of(promo));
+        doNothing().when(mockProductService).save(any(Product.class));
+
+        PromoResponseDTO promoResponseDTO = promoService.updatePromo(promoDTO);
+        assertEquals(new BigDecimal("33.75"), promoResponseDTO.getFinalValue());
+    }
+
+    @Test
+    void updatePromoExceptionProductTest() {
+        Promo promo = new Promo()
+                .productId("CA1")
+                .productDueDate(LocalDate.now().plusDays(5))
+                .originalValue(new BigDecimal("45"))
+                .percentDiscount(0.15)
+                .finalValue(new BigDecimal("42.75"))
+                .build();
+
+        Product product = new Product()
+                .productId("CA1")
+                .productName("carne")
+                .category(new SectionCategory().name(ESectionCategory.FF))
+                .productPrice(new BigDecimal("45"))
+                .dueDate(LocalDate.now().plusDays(5))
+                .build();
+
+        when(mockProductService.find(anyString()))
+                .thenReturn(product);
+        when(mockPromoRepository.findByProductId(anyString()))
+                .thenReturn(Optional.of(promo));
+        doThrow(new DataAccessException("") {
+        }).when(mockProductService).save(product);
+
+        DataAccessException dataAccessException = assertThrows
+                (DataAccessException.class,() ->
+                        promoService.apllyPromo("CA1"));
+
+        String menssagemEsperada = "Erro durante a persistencia no banco!!!";
+
+        assertTrue(menssagemEsperada.contains(Objects.requireNonNull(dataAccessException.getMessage())));
+    }
+
+    @Test
+    void updatePromoExceptionPromoTest() {
+        Promo promo = new Promo()
+                .productId("CA1")
+                .productDueDate(LocalDate.now().plusDays(5))
+                .originalValue(new BigDecimal("45"))
+                .percentDiscount(0.15)
+                .finalValue(new BigDecimal("42.75"))
+                .build();
+
+        Product product = new Product()
+                .productId("CA1")
+                .productName("carne")
+                .category(new SectionCategory().name(ESectionCategory.FF))
+                .productPrice(new BigDecimal("45"))
+                .dueDate(LocalDate.now().plusDays(5))
+                .build();
+
+        when(mockProductService.find(anyString()))
+                .thenReturn(product);
+        when(mockPromoRepository.findByProductId(anyString()))
+                .thenReturn(Optional.of(promo));
+        when(mockPromoRepository.save(any(Promo.class)))
+                .thenThrow(new DataAccessException("") {
+                });
+
+        DataAccessException dataAccessException = assertThrows
+                (DataAccessException.class,() ->
+                        promoService.apllyPromo("CA1"));
+
+        String menssagemEsperada = "Erro durante a persistencia no banco!!!";
+
+        assertTrue(menssagemEsperada.contains(Objects.requireNonNull(dataAccessException.getMessage())));
+    }
+
+    @Test
+    void updatePromoExceptionTest() {
+        PromoRequestDTO promoDTO = new PromoRequestDTO()
+                .productId("CA1")
+                .percentDiscount(0.25)
+                .build();
+
+        Promo promo = new Promo()
+                .productId("CA1")
+                .productDueDate(LocalDate.now().plusDays(5))
+                .originalValue(new BigDecimal("45"))
+                .percentDiscount(0.15)
+                .finalValue(new BigDecimal("42.75"))
+                .build();
+
+        Product product = new Product()
+                .productId("CA1")
+                .productName("carne")
+                .category(new SectionCategory().name(ESectionCategory.FF))
+                .productPrice(new BigDecimal("45.0"))
+                .dueDate(LocalDate.now().plusDays(5))
+                .build();
+
+        when(mockProductService.find(anyString()))
+                .thenReturn(product);
+        when(mockPromoRepository.findByProductId(anyString()))
+                .thenReturn(Optional.of(promo));
+        doThrow(new DataAccessException("") {
+        }).when(mockProductService).save(product);
+
+        DataAccessException dataAccessException = assertThrows
+                (DataAccessException.class,() ->
+                        promoService.updatePromo(promoDTO));
+
+        String menssagemEsperada = "Erro durante a persistencia no banco!!!";
+
+        assertTrue(menssagemEsperada.contains(Objects.requireNonNull(dataAccessException.getMessage())));
+    }
+
+    @Test
+    void updatePromoExceptionPromoSaveTest() {
+        PromoRequestDTO promoDTO = new PromoRequestDTO()
+                .productId("CA1")
+                .percentDiscount(0.25)
+                .build();
+
+        Promo promo = new Promo()
+                .productId("CA1")
+                .productDueDate(LocalDate.now().plusDays(5))
+                .originalValue(new BigDecimal("45"))
+                .percentDiscount(0.15)
+                .finalValue(new BigDecimal("42.75"))
+                .build();
+
+        Product product = new Product()
+                .productId("CA1")
+                .productName("carne")
+                .category(new SectionCategory().name(ESectionCategory.FF))
+                .productPrice(new BigDecimal("45.0"))
+                .dueDate(LocalDate.now().plusDays(5))
+                .build();
+
+        when(mockProductService.find(anyString()))
+                .thenReturn(product);
+        when(mockPromoRepository.findByProductId(anyString()))
+                .thenReturn(Optional.of(promo));
+        when(mockPromoRepository.save(any(Promo.class)))
+                .thenThrow(new DataAccessException("") {
+                });
+
+        DataAccessException dataAccessException = assertThrows
+                (DataAccessException.class,() ->
+                        promoService.updatePromo(promoDTO));
+
+        String menssagemEsperada = "Erro durante a persistencia no banco!!!";
+
+        assertTrue(menssagemEsperada.contains(Objects.requireNonNull(dataAccessException.getMessage())));
+    }
+
+    @Test
+    void findExceptionTest() {
+        when(mockPromoRepository.findByProductId(anyString()))
+                .thenReturn(Optional.empty());
+
+        PromoException promoException = assertThrows
+                (PromoException.class,() ->
+                        promoService.find("CA1"));
+
+        String menssagemEsperada = "Codigo do produto invalido!!!";
+
+        assertTrue(menssagemEsperada.contains(Objects.requireNonNull(promoException.getMessage())));
     }
 
 }

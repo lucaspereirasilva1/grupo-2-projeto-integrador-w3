@@ -101,4 +101,10 @@ public class Handler extends ResponseEntityExceptionHandler{
         return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
     }
 
+    @ExceptionHandler(value = PromoException.class)
+    protected ResponseEntity<Object> handleConflict(PromoException ex, WebRequest request) {
+        String bodyOfResponse = ex.getMessage();
+        return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
+    }
+
 }

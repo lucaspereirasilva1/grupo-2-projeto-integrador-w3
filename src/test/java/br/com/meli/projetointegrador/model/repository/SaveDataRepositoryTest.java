@@ -112,7 +112,7 @@ class SaveDataRepositoryTest {
                 .productName("frango sadia")
                 .category(sectionCategoryRepository.findByName(ESectionCategory.FS).orElse(new SectionCategory()))
                 .productPrice(bigDecimal)
-                .dueDate(LocalDate.now().plusWeeks(5))
+                .dueDate(LocalDate.now().plusDays(5))
                 .build();
 
         Product productTres = new Product()
@@ -120,10 +120,22 @@ class SaveDataRepositoryTest {
                 .productName("frango friboi")
                 .category(sectionCategoryRepository.findByName(ESectionCategory.FS).orElse(new SectionCategory()))
                 .productPrice(bigDecimal)
-                .dueDate(LocalDate.now().plusWeeks(3))
+                .dueDate(LocalDate.now().plusDays(3))
                 .build();
 
         productRepository.saveAll(Arrays.asList(product, productDois, productTres));
+    }
+
+    @Test
+    void productOneTest() {
+        Product product = new Product()
+                .productId("MA2")
+                .productName("margarina vigor")
+                .category(sectionCategoryRepository.findByName(ESectionCategory.RF).orElse(new SectionCategory()))
+                .productPrice(new BigDecimal("5.0"))
+                .dueDate(LocalDate.now().plusDays(3))
+                .build();
+        productRepository.save(product);
     }
 
     @Test

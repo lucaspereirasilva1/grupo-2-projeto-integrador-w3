@@ -2,14 +2,11 @@ package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.PromoException;
 import br.com.meli.projetointegrador.model.entity.Product;
-import br.com.meli.projetointegrador.model.entity.Promo;
-import br.com.meli.projetointegrador.model.entity.SectionByCategory;
 import br.com.meli.projetointegrador.model.entity.SectionCategory;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
 import br.com.meli.projetointegrador.model.repository.PromoRepository;
 import br.com.meli.projetointegrador.model.repository.SectionCategoryRepository;
-import org.apache.commons.lang.text.StrBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +17,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @SpringBootTest
 class PromoServiceIntegrationTest {
@@ -72,9 +68,9 @@ class PromoServiceIntegrationTest {
     @Test
     void apllyPromoTenPercentTest() {
         BigDecimal pricePromo =  promoService.apllyPromo("CA1");
-        assertEquals(new BigDecimal("42.750"), pricePromo);
+        assertEquals(new BigDecimal("42.75"), pricePromo);
         assertFalse(promoRepository.findAll().isEmpty());
-        assertEquals(new BigDecimal("42.750"), productRepository.findDistinctFirstByProductId("CA1").orElse(new Product()).getProductPrice());
+        assertEquals(new BigDecimal("42.75"), productRepository.findDistinctFirstByProductId("CA1").orElse(new Product()).getProductPrice());
     }
 
     @Test
@@ -83,9 +79,14 @@ class PromoServiceIntegrationTest {
                 promoService.apllyPromo("CA2"));
 
         String expectedMessage = "Produto nao apto a promocao de vencimento!!!";
-
         assertTrue(expectedMessage.contains(promoException.getMessage()));
     }
+
+//    @Test
+//    void updatePromoTest() {
+//        PromoDTO promoDTO;
+//        promoService.updatePromo(promoDTO);
+//    }
 
     private void clearBase() {
         productRepository.deleteAll();

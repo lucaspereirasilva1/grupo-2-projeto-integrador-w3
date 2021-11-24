@@ -1,19 +1,29 @@
 package br.com.meli.projetointegrador.model.service;
 
+import br.com.meli.projetointegrador.exception.PersistenceException;
 import br.com.meli.projetointegrador.exception.PromoException;
+import br.com.meli.projetointegrador.model.dto.PromoRequestDTO;
+import br.com.meli.projetointegrador.model.dto.PromoResponseDTO;
 import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.entity.Promo;
 import br.com.meli.projetointegrador.model.repository.PromoRepository;
+import br.com.meli.projetointegrador.utils.ConstantsUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Optional;
 
 @Service
 public class PromoService {
 
     private final ProductService productService;
     private final PromoRepository promoRepository;
+    private static final Logger logger = LoggerFactory.getLogger(PromoService.class);
 
     public PromoService(ProductService productService, PromoRepository promoRepository) {
         this.productService = productService;
@@ -31,11 +41,21 @@ public class PromoService {
                 .build();
         final BigDecimal finalValue = product.getProductPrice()
                 .subtract(product.getProductPrice()
-                        .multiply(BigDecimal.valueOf(discount)));
+                        .multiply(BigDecimal.valueOf(discount))).setScale(2, RoundingMode.HALF_EVEN);
         product.setProductPrice(finalValue);
         promo.setFinalValue(finalValue);
-        productService.save(product);
-        promoRepository.save(promo);
+        try {
+            productService.save(product);
+        }catch (DataAccessException e) {
+            logger.error(ConstantsUtil.PERSISTENCE_ERROR, e);
+            throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
+        }
+        try {
+            promoRepository.save(promo);
+        }catch (DataAccessException e) {
+            logger.error(ConstantsUtil.PERSISTENCE_ERROR, e);
+            throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
+        }
         return finalValue;
     }
 
@@ -55,4 +75,43 @@ public class PromoService {
         }
     }
 
+    public PromoResponseDTO updatePromo(PromoRequestDTO promoRequestDTO) {
+        final Promo promo = find(promoRequestDTO.getProductId());
+        final Product product = productService.find(promoRequestDTO.getProductId());
+        BigDecimal finalValue = updatePercentDiscount(promo.getOriginalValue()
+                ,promoRequestDTO.getPercentDiscount()).setScale(2, RoundingMode.HALF_EVEN);
+        promo.setFinalValue(finalValue);
+        product.setProductPrice(finalValue);
+        try {
+            promoRepository.save(promo);
+        }catch (DataAccessException e) {
+            logger.error(ConstantsUtil.PERSISTENCE_ERROR, e);
+            throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
+        }
+        try {
+            productService.save(product);
+        }catch (DataAccessException e) {
+            logger.error(ConstantsUtil.PERSISTENCE_ERROR, e);
+            throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
+        }
+        return new PromoResponseDTO()
+                .productId(promoRequestDTO.getProductId())
+                .productDueDate(promo.getProductDueDate())
+                .originalValue(promo.getOriginalValue())
+                .percentDiscount(promoRequestDTO.getPercentDiscount())
+                .finalValue(finalValue)
+                .build();
+    }
+
+    private BigDecimal updatePercentDiscount(BigDecimal finalValue, Double percentDiscount) {
+        return finalValue.subtract(finalValue.multiply(BigDecimal.valueOf(percentDiscount)));
+    }
+
+    public Promo find(String productId) {
+        final Optional<Promo> promo = promoRepository.findByProductId(productId);
+        if (promo.isEmpty()) {
+            throw new PromoException("Codigo do produto invalido!!!");
+        }
+        return promo.get();
+    }
 }
