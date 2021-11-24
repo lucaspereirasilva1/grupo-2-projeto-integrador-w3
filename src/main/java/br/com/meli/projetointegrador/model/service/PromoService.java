@@ -23,30 +23,30 @@ public class PromoService {
     public BigDecimal apllyPromo(String productId) {
         final Product product = productService.find(productId);
         final Double discount = percentDiscount(product.getDueDate());
-        final BigDecimal finalValue = product.getProductPrice()
-                .subtract(product.getProductPrice()
-                        .multiply(BigDecimal.valueOf(discount)));
-        product.setProductPrice(finalValue);
         final Promo promo = new Promo()
                 .productId(productId)
                 .productDueDate(product.getDueDate())
                 .originalValue(product.getProductPrice())
                 .percentDiscount(discount)
-                .finalValue(finalValue)
                 .build();
+        final BigDecimal finalValue = product.getProductPrice()
+                .subtract(product.getProductPrice()
+                        .multiply(BigDecimal.valueOf(discount)));
+        product.setProductPrice(finalValue);
+        promo.setFinalValue(finalValue);
         promoRepository.save(promo);
         return finalValue;
     }
 
     private Double percentDiscount(LocalDate dueDate) {
         if (dueDate.equals(LocalDate.now().plusWeeks(1))) {
-            return 0.15;
+            return 0.05;
         } else {
             if (dueDate.equals(LocalDate.now().plusDays(5))) {
-                return 0.25;
+                return 0.15;
             } else {
                 if (dueDate.equals(LocalDate.now().plusDays(3))) {
-                    return 0.35;
+                    return 0.25;
                 } else {
                     throw new PromoException("Produto nao apto a promocao de vencimento!!!");
                 }

@@ -1,6 +1,6 @@
 package br.com.meli.projetointegrador.model.service;
 
-import Utils.ConstantsUtil;
+import br.com.meli.projetointegrador.utils.ConstantsUtil;
 import br.com.meli.projetointegrador.exception.PersistenceException;
 import br.com.meli.projetointegrador.exception.PurchaseOrderException;
 import br.com.meli.projetointegrador.model.dto.ProductDTO;

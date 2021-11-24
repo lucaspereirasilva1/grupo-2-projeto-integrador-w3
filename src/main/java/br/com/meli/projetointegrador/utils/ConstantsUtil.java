@@ -1,4 +1,4 @@
-package Utils;
+package br.com.meli.projetointegrador.utils;
 
 public class ConstantsUtil {
 
