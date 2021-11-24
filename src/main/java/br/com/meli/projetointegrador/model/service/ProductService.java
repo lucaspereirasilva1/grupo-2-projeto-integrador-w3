@@ -82,4 +82,8 @@ public class ProductService {
         return converteProductlist(productRepository.findAll());
     }
 
+    public void save(Product product) {
+        productRepository.save(product);
+    }
+
 }

@@ -33,6 +33,7 @@ class PromoServiceTest {
 
         when(mockProductService.find(anyString()))
                 .thenReturn(product);
+        doNothing().when(mockProductService).save(any(Product.class));
         when(mockPromoRepository.save(any(Promo.class)))
                 .thenReturn(new Promo()
                         .productId(product.getProductId())
@@ -41,7 +42,6 @@ class PromoServiceTest {
                         .percentDiscount(0.05)
                         .finalValue(new BigDecimal("42.750"))
                         .build());
-
         BigDecimal pricePromo =  promoService.apllyPromo("CA1");
         assertEquals(new BigDecimal("42.750"), pricePromo);
     }
@@ -58,6 +58,7 @@ class PromoServiceTest {
 
         when(mockProductService.find(anyString()))
                 .thenReturn(product);
+        doNothing().when(mockProductService).save(any(Product.class));
         when(mockPromoRepository.save(any(Promo.class)))
                 .thenReturn(new Promo()
                         .productId(product.getProductId())
@@ -83,6 +84,7 @@ class PromoServiceTest {
 
         when(mockProductService.find(anyString()))
                 .thenReturn(product);
+        doNothing().when(mockProductService).save(any(Product.class));
         when(mockPromoRepository.save(any(Promo.class)))
                 .thenReturn(new Promo()
                         .productId(product.getProductId())
@@ -108,6 +110,7 @@ class PromoServiceTest {
 
         when(mockProductService.find(anyString()))
                 .thenReturn(product);
+        doNothing().when(mockProductService).save(any(Product.class));
 
         PromoException promoException = assertThrows(PromoException.class, () ->
                 promoService.apllyPromo("CA1"));

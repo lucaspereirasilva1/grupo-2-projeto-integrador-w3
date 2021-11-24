@@ -11,6 +11,7 @@ import org.springframework.test.context.TestPropertySource;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -97,14 +98,32 @@ class SaveDataRepositoryTest {
 
     @Test
     void productTest() {
+        BigDecimal bigDecimal = new BigDecimal("45.00");
         Product product = new Product()
-                .productId("MR")
-                .productName("mortadela")
-                .dueDate(LocalDate.now())
-                .productPrice(new BigDecimal("2.0"))
-                .category(sectionCategoryRepository.findByName(ESectionCategory.FF).orElse(new SectionCategory()))
+                .productId("CA1")
+                .productName("carne")
+                .category(sectionCategoryRepository.findByName(ESectionCategory.FS).orElse(new SectionCategory()))
+                .productPrice(bigDecimal)
+                .dueDate(LocalDate.now().plusWeeks(1))
                 .build();
-        productRepository.save(product);
+
+        Product productDois = new Product()
+                .productId("FR1")
+                .productName("frango sadia")
+                .category(sectionCategoryRepository.findByName(ESectionCategory.FS).orElse(new SectionCategory()))
+                .productPrice(bigDecimal)
+                .dueDate(LocalDate.now().plusWeeks(5))
+                .build();
+
+        Product productTres = new Product()
+                .productId("FR2")
+                .productName("frango friboi")
+                .category(sectionCategoryRepository.findByName(ESectionCategory.FS).orElse(new SectionCategory()))
+                .productPrice(bigDecimal)
+                .dueDate(LocalDate.now().plusWeeks(3))
+                .build();
+
+        productRepository.saveAll(Arrays.asList(product, productDois, productTres));
     }
 
     @Test

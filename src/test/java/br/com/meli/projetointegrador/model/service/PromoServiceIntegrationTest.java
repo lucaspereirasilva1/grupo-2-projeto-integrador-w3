@@ -72,8 +72,9 @@ class PromoServiceIntegrationTest {
     @Test
     void apllyPromoTenPercentTest() {
         BigDecimal pricePromo =  promoService.apllyPromo("CA1");
-        assertEquals(new BigDecimal("38.250"), pricePromo);
+        assertEquals(new BigDecimal("42.750"), pricePromo);
         assertFalse(promoRepository.findAll().isEmpty());
+        assertEquals(new BigDecimal("42.750"), productRepository.findDistinctFirstByProductId("CA1").orElse(new Product()).getProductPrice());
     }
 
     @Test

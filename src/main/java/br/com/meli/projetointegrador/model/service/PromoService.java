@@ -34,6 +34,7 @@ public class PromoService {
                         .multiply(BigDecimal.valueOf(discount)));
         product.setProductPrice(finalValue);
         promo.setFinalValue(finalValue);
+        productService.save(product);
         promoRepository.save(promo);
         return finalValue;
     }
