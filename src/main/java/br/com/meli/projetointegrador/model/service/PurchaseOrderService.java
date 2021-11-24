@@ -135,4 +135,10 @@ public class PurchaseOrderService {
         }
         return productList;
     }
+
+    public BigDecimal delete(PurchaseOrderDTO purchaseOrderDTO) {
+        PurchaseOrder purchaseOrder = new PurchaseOrder();
+        total = new BigDecimal(0);
+        return total;
+    }
 }
