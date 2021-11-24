@@ -1,7 +1,10 @@
 package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.PromoException;
+import br.com.meli.projetointegrador.model.dto.PromoRequestDTO;
+import br.com.meli.projetointegrador.model.dto.PromoResponseDTO;
 import br.com.meli.projetointegrador.model.entity.Product;
+import br.com.meli.projetointegrador.model.entity.Promo;
 import br.com.meli.projetointegrador.model.entity.SectionCategory;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
@@ -15,8 +18,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class PromoServiceIntegrationTest {
@@ -50,6 +58,15 @@ class PromoServiceIntegrationTest {
                 .build();
         productRepository.save(product);
 
+        Product productFr1 = new Product()
+                .productId("FR1")
+                .productName("frango")
+                .category(sectionCategory)
+                .productPrice(new BigDecimal("45.0"))
+                .dueDate(LocalDate.now().plusWeeks(1))
+                .build();
+        productRepository.save(productFr1);
+
         Product productDois = new Product()
                 .productId("CA2")
                 .productName("carne")
@@ -58,6 +75,15 @@ class PromoServiceIntegrationTest {
                 .dueDate(LocalDate.now().plusWeeks(2))
                 .build();
         productRepository.save(productDois);
+
+        Promo promo = new Promo()
+                .productId("FR1")
+                .productDueDate(LocalDate.now().plusDays(5))
+                .originalValue(new BigDecimal("45"))
+                .percentDiscount(0.15)
+                .finalValue(new BigDecimal("42.75"))
+                .build();
+        promoRepository.save(promo);
     }
 
     @AfterEach
@@ -82,11 +108,22 @@ class PromoServiceIntegrationTest {
         assertTrue(expectedMessage.contains(promoException.getMessage()));
     }
 
-//    @Test
-//    void updatePromoTest() {
-//        PromoDTO promoDTO;
-//        promoService.updatePromo(promoDTO);
-//    }
+    @Test
+    void updatePromoTest() {
+        PromoRequestDTO promoDTO = new PromoRequestDTO()
+                .productId("FR1")
+                .percentDiscount(0.25)
+                .build();
+
+        PromoResponseDTO promoResponseDTO = promoService.updatePromo(promoDTO);
+        assertEquals(new BigDecimal("33.75"), promoResponseDTO.getFinalValue());
+    }
+
+    @Test
+    void findTest() {
+        final Promo promo = promoService.find("FR1");
+        assertEquals("FR1", promo.getProductId());
+    }
 
     private void clearBase() {
         productRepository.deleteAll();

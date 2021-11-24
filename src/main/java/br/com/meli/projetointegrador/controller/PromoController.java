@@ -1,8 +1,6 @@
 package br.com.meli.projetointegrador.controller;
 
-import br.com.meli.projetointegrador.model.dto.AgentDTO;
-import br.com.meli.projetointegrador.model.dto.BatchStockDTO;
-import br.com.meli.projetointegrador.model.dto.InboundOrderDTO;
+import br.com.meli.projetointegrador.model.dto.*;
 import br.com.meli.projetointegrador.model.service.PromoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +27,14 @@ public class PromoController {
         final BigDecimal bigDecimal = promoService.apllyPromo(productId);
         URI uri = uriComponentsBuilder.path("/promocomingdue/1").buildAndExpand(1).toUri();
         return ResponseEntity.created(uri).body(bigDecimal);
+    }
+
+    @PutMapping(value = "/updatepromo", produces = "application/json")
+    public ResponseEntity<PromoResponseDTO> put(@Valid @RequestBody PromoRequestDTO promoRequestDTO,
+                                                    UriComponentsBuilder uriComponentsBuilder) {
+        final PromoResponseDTO promoResponseDTO = promoService.updatePromo(promoRequestDTO);
+        URI uri = uriComponentsBuilder.path("/updatepromo/1").buildAndExpand(1).toUri();
+        return ResponseEntity.created(uri).body(promoResponseDTO);
     }
 
 }

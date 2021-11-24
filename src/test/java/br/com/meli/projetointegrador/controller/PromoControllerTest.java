@@ -1,6 +1,7 @@
 package br.com.meli.projetointegrador.controller;
 
 import br.com.meli.projetointegrador.model.dto.LoginRequest;
+import br.com.meli.projetointegrador.model.dto.PromoRequestDTO;
 import br.com.meli.projetointegrador.model.dto.SignupRequest;
 import br.com.meli.projetointegrador.model.dto.TokenTest;
 import br.com.meli.projetointegrador.model.entity.*;
@@ -26,9 +27,8 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -107,6 +107,22 @@ public class PromoControllerTest {
         assertEquals(HttpStatus.CREATED.value(), response.getStatus());
     }
 
+    @Test
+    void updatePromoControllerTest() throws Exception {
+        PromoRequestDTO promoDTO = new PromoRequestDTO()
+                .productId("FR1")
+                .percentDiscount(0.25)
+                .build();
+
+        MockHttpServletResponse response = mockMvc.perform(put("http://localhost:8080/api/v1/fresh-products/updatepromo/")
+                .header("Authorization", "Bearer " + tokenTest.getAccessToken())
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(promoDTO)))
+                .andReturn().getResponse();
+
+        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+    }
+
     private void createData() {
         SectionCategory sectionCategory = new SectionCategory()
                 .name(ESectionCategory.FS)
@@ -136,6 +152,24 @@ public class PromoControllerTest {
                 .dueDate(LocalDate.now().plusWeeks(2))
                 .build();
         productRepository.save(productDois);
+
+        Product productTres = new Product()
+                .productId("FR1")
+                .productName("frango")
+                .category(sectionCategory)
+                .productPrice(new BigDecimal("45.0"))
+                .dueDate(LocalDate.now().plusWeeks(2))
+                .build();
+        productRepository.save(productTres);
+
+        Promo promo = new Promo()
+                .productId("FR1")
+                .productDueDate(LocalDate.now().plusDays(5))
+                .originalValue(new BigDecimal("45"))
+                .percentDiscount(0.15)
+                .finalValue(new BigDecimal("42.75"))
+                .build();
+        promoRepository.save(promo);
 
         Role role = new Role();
         role.setName(ERole.ROLE_USER);
