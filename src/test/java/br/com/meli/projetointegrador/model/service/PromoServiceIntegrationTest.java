@@ -18,6 +18,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -76,6 +78,15 @@ class PromoServiceIntegrationTest {
                 .build();
         productRepository.save(productDois);
 
+        Product productTres = new Product()
+                .productId("FR2")
+                .productName("frango sadia")
+                .category(sectionCategory)
+                .productPrice(new BigDecimal("45.0"))
+                .dueDate(LocalDate.now().plusWeeks(2))
+                .build();
+        productRepository.save(productTres);
+
         Promo promo = new Promo()
                 .productId("FR1")
                 .productDueDate(LocalDate.now().plusDays(5))
@@ -84,6 +95,15 @@ class PromoServiceIntegrationTest {
                 .finalValue(new BigDecimal("42.75"))
                 .build();
         promoRepository.save(promo);
+
+        Promo promoDois = new Promo()
+                .productId("FR2")
+                .productDueDate(LocalDate.now().plusDays(5))
+                .originalValue(new BigDecimal("45"))
+                .percentDiscount(0.20)
+                .finalValue(new BigDecimal("42.75"))
+                .build();
+        promoRepository.save(promoDois);
     }
 
     @AfterEach
@@ -123,6 +143,13 @@ class PromoServiceIntegrationTest {
     void findTest() {
         final Promo promo = promoService.find("FR1");
         assertEquals("FR1", promo.getProductId());
+    }
+
+    @Test
+    void listPromoByDiscountTest() {
+        List<PromoResponseDTO> promoResponseDTOS = promoService.listByDiscount();
+        assertEquals(2, promoResponseDTOS.size());
+        assertEquals(0.20, promoResponseDTOS.get(0).getPercentDiscount());
     }
 
     private void clearBase() {

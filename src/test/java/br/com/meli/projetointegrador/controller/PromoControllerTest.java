@@ -123,6 +123,16 @@ public class PromoControllerTest {
         assertEquals(HttpStatus.CREATED.value(), response.getStatus());
     }
 
+    @Test
+    void listPromoByDiscountControllerTest() throws Exception {
+        MockHttpServletResponse response = mockMvc.perform(get("http://localhost:8080/api/v1/fresh-products/listbydiscount")
+                .header("Authorization", "Bearer " + tokenTest.getAccessToken())
+                .contentType("application/json"))
+                .andReturn().getResponse();
+
+        assertEquals(HttpStatus.OK.value(), response.getStatus());
+    }
+
     private void createData() {
         SectionCategory sectionCategory = new SectionCategory()
                 .name(ESectionCategory.FS)

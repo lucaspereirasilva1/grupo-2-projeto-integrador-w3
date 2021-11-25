@@ -37,4 +37,10 @@ public class PromoController {
         return ResponseEntity.created(uri).body(promoResponseDTO);
     }
 
+    @GetMapping(value = "/listbydiscount") // Chamada do endpoint: /lists?productId=LE ou DA
+    public ResponseEntity<List<PromoResponseDTO>> listByDiscount() {
+        List<PromoResponseDTO> promoResponseDTOList = promoService.listByDiscount();
+        return ResponseEntity.ok(promoResponseDTOList);
+    }
+
 }

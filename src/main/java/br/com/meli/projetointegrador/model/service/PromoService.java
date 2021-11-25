@@ -8,6 +8,8 @@ import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.entity.Promo;
 import br.com.meli.projetointegrador.model.repository.PromoRepository;
 import br.com.meli.projetointegrador.utils.ConstantsUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
@@ -16,13 +18,18 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PromoService {
 
     private final ProductService productService;
     private final PromoRepository promoRepository;
+    private final ModelMapper modelMapper = new ModelMapper();
     private static final Logger logger = LoggerFactory.getLogger(PromoService.class);
 
     public PromoService(ProductService productService, PromoRepository promoRepository) {
@@ -119,4 +126,21 @@ public class PromoService {
         }
         return promo.get();
     }
+
+    public List<PromoResponseDTO> listByDiscount() {
+        final List<Promo> promoList = promoRepository.findAll();
+        if (promoList.isEmpty()) {
+            throw new PromoException("Nenhuma promocao de vencimento cadastrada!!!");
+        }
+        promoList.sort((Promo p1, Promo p2) -> p2.getPercentDiscount().compareTo(p1.getPercentDiscount()));
+        return conveterListaDTO(promoList, PromoResponseDTO.class);
+    }
+
+    private <S, T> List<T> conveterListaDTO(List<S> entrada, Class<T> saida) {
+        return entrada
+                .stream()
+                .map(element -> modelMapper.map(element, saida))
+                .collect(Collectors.toList());
+    }
+
 }

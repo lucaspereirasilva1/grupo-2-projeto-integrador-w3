@@ -14,8 +14,7 @@ import org.springframework.dao.DataAccessException;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -333,6 +332,44 @@ class PromoServiceTest {
 
         String menssagemEsperada = "Valor do desconto de vencimento deve ser 0.05, 0.15 ou 0.25!!!";
 
+        assertTrue(menssagemEsperada.contains(Objects.requireNonNull(promoException.getMessage())));
+    }
+
+    @Test
+    void listPromoByDiscountTest() {
+        Promo promo = new Promo()
+                .productId("CA1")
+                .productDueDate(LocalDate.now().plusDays(5))
+                .originalValue(new BigDecimal("45"))
+                .percentDiscount(0.15)
+                .finalValue(new BigDecimal("42.75"))
+                .build();
+
+        Promo promoDois = new Promo()
+                .productId("FR1")
+                .productDueDate(LocalDate.now().plusDays(5))
+                .originalValue(new BigDecimal("45"))
+                .percentDiscount(0.20)
+                .finalValue(new BigDecimal("42.75"))
+                .build();
+
+        when(mockPromoRepository.findAll())
+                .thenReturn(Arrays.asList(promo, promoDois));
+
+        List<PromoResponseDTO> promoResponseDTOS = promoService.listByDiscount();
+        assertEquals(2, promoResponseDTOS.size());
+        assertEquals(0.20, promoResponseDTOS.get(0).getPercentDiscount());
+    }
+
+    @Test
+    void listPromoByDiscountExceptionTest() {
+        when(mockPromoRepository.findAll())
+                .thenReturn(Collections.emptyList());
+
+        PromoException promoException = assertThrows
+                (PromoException.class, promoService::listByDiscount);
+
+        String menssagemEsperada = "Nenhuma promocao de vencimento cadastrada!!!";
         assertTrue(menssagemEsperada.contains(Objects.requireNonNull(promoException.getMessage())));
     }
 
