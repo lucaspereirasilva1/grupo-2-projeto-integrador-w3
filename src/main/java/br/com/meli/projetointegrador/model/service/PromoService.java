@@ -83,13 +83,15 @@ public class PromoService {
      * @throws PromoException caso o produto nao seja apto a promocao de vencimento
      */
     private Double percentDiscount(LocalDate dueDate) {
-        if (dueDate.equals(LocalDate.now().plusWeeks(1))) {
+        if ((dueDate.isBefore(LocalDate.now().plusDays(8))) &&
+                (dueDate.isAfter(LocalDate.now().plusDays(5)))) {
             return 0.05;
         } else {
-            if (dueDate.equals(LocalDate.now().plusDays(5))) {
+            if ((dueDate.isBefore(LocalDate.now().plusDays(6))) &&
+                    (dueDate.isAfter(LocalDate.now().plusDays(3)))) {
                 return 0.15;
             } else {
-                if (dueDate.equals(LocalDate.now().plusDays(3))) {
+                if ((dueDate.isBefore(LocalDate.now().plusDays(4)))) {
                     return 0.25;
                 } else {
                     throw new PromoException("Produto nao apto a promocao de vencimento!!!");

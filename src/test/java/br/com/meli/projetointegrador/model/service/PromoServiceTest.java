@@ -40,7 +40,7 @@ class PromoServiceTest {
                 .productName("carne")
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .productPrice(new BigDecimal("45.0"))
-                .dueDate(LocalDate.now().plusWeeks(1))
+                .dueDate(LocalDate.now().plusDays(6))
                 .build();
 
         when(mockProductService.find(anyString()))
@@ -65,7 +65,7 @@ class PromoServiceTest {
                 .productName("carne")
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .productPrice(new BigDecimal("45.0"))
-                .dueDate(LocalDate.now().plusDays(5))
+                .dueDate(LocalDate.now().plusDays(4))
                 .build();
 
         when(mockProductService.find(anyString()))
