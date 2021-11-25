@@ -3,13 +3,13 @@ package br.com.meli.projetointegrador.model.service;
 import br.com.meli.projetointegrador.exception.PromoException;
 import br.com.meli.projetointegrador.model.dto.PromoRequestDTO;
 import br.com.meli.projetointegrador.model.dto.PromoResponseDTO;
-import br.com.meli.projetointegrador.model.entity.BatchStock;
-import br.com.meli.projetointegrador.model.entity.Product;
-import br.com.meli.projetointegrador.model.entity.Promo;
-import br.com.meli.projetointegrador.model.entity.SectionCategory;
+import br.com.meli.projetointegrador.model.entity.*;
+import br.com.meli.projetointegrador.model.enums.ERole;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.PromoRepository;
+import br.com.meli.projetointegrador.model.repository.UserRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.Executable;
 import org.springframework.dao.DataAccessException;
 
 import java.math.BigDecimal;
@@ -23,7 +23,8 @@ class PromoServiceTest {
 
     private final ProductService mockProductService = mock(ProductService.class);
     private final PromoRepository mockPromoRepository = mock(PromoRepository.class);
-    private final PromoService promoService = new PromoService(mockProductService, mockPromoRepository);
+    private final UserRepository mockUserRepository = mock(UserRepository.class);
+    private final PromoService promoService = new PromoService(mockProductService, mockPromoRepository, mockUserRepository);
 
     @Test
     void apllyPromoFivePercentTest() {
@@ -371,6 +372,150 @@ class PromoServiceTest {
 
         String menssagemEsperada = "Nenhuma promocao de vencimento cadastrada!!!";
         assertTrue(menssagemEsperada.contains(Objects.requireNonNull(promoException.getMessage())));
+    }
+
+    @Test
+    void apllyPromoFullTest() {
+        Product product = new Product()
+                .productId("CA1")
+                .productName("carne")
+                .category(new SectionCategory().name(ESectionCategory.FF))
+                .productPrice(new BigDecimal("45.0"))
+                .dueDate(LocalDate.now().plusWeeks(1))
+                .build();
+
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName(ERole.ROLE_ADMIN);
+        roles.add(role);
+        User user = new User();
+        user.setUsername("lucas");
+        user.setRoles(roles);
+        user.setEmail("teste@gmail.com");
+        user.setPassword("123");
+        user.setCpf("11122233344");
+
+        when(mockProductService.find(anyString()))
+                .thenReturn(product);
+        doNothing().when(mockProductService).save(any(Product.class));
+        when(mockPromoRepository.save(any(Promo.class)))
+                .thenReturn(new Promo()
+                        .productId(product.getProductId())
+                        .productDueDate(product.getDueDate())
+                        .originalValue(product.getProductPrice())
+                        .percentDiscount(0.05)
+                        .finalValue(new BigDecimal("22.50"))
+                        .build());
+        when(mockUserRepository.findByCpf(anyString()))
+                .thenReturn(Optional.of(user));
+
+        BigDecimal pricePromo = promoService.apllyPromoFull("CA1", 0.50, "11122233344");
+        assertEquals(new BigDecimal("22.50"), pricePromo);
+    }
+
+    @Test
+    void apllyPromoFullNoCpfTest() {
+        Product product = new Product()
+                .productId("CA1")
+                .productName("carne")
+                .category(new SectionCategory().name(ESectionCategory.FF))
+                .productPrice(new BigDecimal("45.0"))
+                .dueDate(LocalDate.now().plusWeeks(1))
+                .build();
+
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName(ERole.ROLE_ADMIN);
+        roles.add(role);
+        User user = new User();
+        user.setUsername("lucas");
+        user.setRoles(roles);
+        user.setEmail("teste@gmail.com");
+        user.setPassword("123");
+        user.setCpf("11122233344");
+
+        when(mockProductService.find(anyString()))
+                .thenReturn(product);
+        when(mockUserRepository.findByCpf(anyString()))
+                .thenReturn(Optional.empty());
+
+        PromoException promoException = assertThrows(PromoException.class, () ->
+                promoService.apllyPromoFull("CA1", 0.50, "11122233344"));
+
+        String menssagemEsperada = "Cpf nao encontrado!!!";
+        assertTrue(menssagemEsperada.contains(Objects.requireNonNull(promoException.getMessage())));
+    }
+
+    @Test
+    void apllyPromoFullUserNotPermittedTest() {
+        Product product = new Product()
+                .productId("CA1")
+                .productName("carne")
+                .category(new SectionCategory().name(ESectionCategory.FF))
+                .productPrice(new BigDecimal("45.0"))
+                .dueDate(LocalDate.now().plusWeeks(1))
+                .build();
+
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName(ERole.ROLE_USER);
+        roles.add(role);
+        User user = new User();
+        user.setUsername("lucas");
+        user.setRoles(roles);
+        user.setEmail("teste@gmail.com");
+        user.setPassword("123");
+        user.setCpf("11122233344");
+
+        when(mockProductService.find(anyString()))
+                .thenReturn(product);
+        when(mockUserRepository.findByCpf(anyString()))
+                .thenReturn(Optional.of(user));
+
+        PromoException promoException = assertThrows(PromoException.class, () ->
+                promoService.apllyPromoFull("CA1", 0.50, "11122233344"));
+
+        String menssagemEsperada = "Usuario sem permissao de administrador!!!";
+        assertTrue(menssagemEsperada.contains(Objects.requireNonNull(promoException.getMessage())));
+    }
+
+    @Test
+    void apllyPromoFullUserExceptionTest() {
+        Product product = new Product()
+                .productId("CA1")
+                .productName("carne")
+                .category(new SectionCategory().name(ESectionCategory.FF))
+                .productPrice(new BigDecimal("45.0"))
+                .dueDate(LocalDate.now().plusWeeks(1))
+                .build();
+
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName(ERole.ROLE_ADMIN);
+        roles.add(role);
+        User user = new User();
+        user.setUsername("lucas");
+        user.setRoles(roles);
+        user.setEmail("teste@gmail.com");
+        user.setPassword("123");
+        user.setCpf("11122233344");
+
+        when(mockProductService.find(anyString()))
+                .thenReturn(product);
+        when(mockUserRepository.findByCpf(anyString()))
+                .thenReturn(Optional.of(user));
+
+        when(mockPromoRepository.save(any(Promo.class)))
+                .thenThrow(new DataAccessException("") {
+                });
+
+        DataAccessException dataAccessException = assertThrows
+                (DataAccessException.class,() ->
+                        promoService.apllyPromoFull("CA1", 0.50, "11122233344"));
+
+        String menssagemEsperada = "Erro durante a persistencia no banco!!!";
+
+        assertTrue(menssagemEsperada.contains(Objects.requireNonNull(dataAccessException.getMessage())));
     }
 
 }

@@ -1,5 +1,6 @@
 package br.com.meli.projetointegrador.model.service;
 
+import br.com.meli.projetointegrador.exception.PersistenceException;
 import br.com.meli.projetointegrador.exception.ProductException;
 import br.com.meli.projetointegrador.exception.ProductExceptionNotFound;
 import br.com.meli.projetointegrador.model.dto.ProductDTO;
@@ -7,6 +8,10 @@ import br.com.meli.projetointegrador.model.entity.Product;
 import br.com.meli.projetointegrador.model.entity.SectionCategory;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
+import br.com.meli.projetointegrador.utils.ConstantsUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,6 +30,7 @@ public class ProductService {
 
     private final ProductRepository productRepository;
     private final SectionCategoryService sectionCategoryService;
+    private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
 
     public ProductService(ProductRepository productRepository,
                           SectionCategoryService sectionCategoryService) {
@@ -83,7 +89,12 @@ public class ProductService {
     }
 
     public void save(Product product) {
-        productRepository.save(product);
+        try {
+            productRepository.save(product);
+        }catch (DataAccessException e) {
+            logger.error(ConstantsUtil.PERSISTENCE_ERROR, e);
+            throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
+        }
     }
 
 }

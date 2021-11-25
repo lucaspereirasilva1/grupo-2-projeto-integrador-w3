@@ -152,6 +152,8 @@ class PromoServiceIntegrationTest {
         assertEquals(0.20, promoResponseDTOS.get(0).getPercentDiscount());
     }
 
+
+
     private void clearBase() {
         productRepository.deleteAll();
         promoRepository.deleteAll();
