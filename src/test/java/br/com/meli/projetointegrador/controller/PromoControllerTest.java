@@ -27,6 +27,13 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
+/**
+ * @author Lucas Pereira
+ * @version 1.5.0
+ * @since 25/11/2021
+ * Camada de testes integrados do controller responsavel pelas promocoes
+ */
+
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureDataMongo

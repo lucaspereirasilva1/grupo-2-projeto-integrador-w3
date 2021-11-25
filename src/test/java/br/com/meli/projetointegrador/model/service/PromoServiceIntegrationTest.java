@@ -22,6 +22,13 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * @author Lucas Pereira
+ * @version 1.5.0
+ * @since 25/11/2021
+ * Camada de testes integrados do service responsavel pelas promocoes
+ */
+
 @SpringBootTest
 class PromoServiceIntegrationTest {
 

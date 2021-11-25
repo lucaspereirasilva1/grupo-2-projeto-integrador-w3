@@ -1,10 +1,16 @@
 package br.com.meli.projetointegrador.model.dto;
 
-import br.com.meli.projetointegrador.model.entity.Promo;
 import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
+/**
+ * @author Lucas Pereira
+ * @version 1.5.0
+ * @since 25/11/2021
+ * DTO de response referente a feature atualizar promocoes
+ */
 
 @Data
 public class PromoResponseDTO {

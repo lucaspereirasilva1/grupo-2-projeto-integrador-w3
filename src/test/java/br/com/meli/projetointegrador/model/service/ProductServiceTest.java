@@ -7,9 +7,11 @@ import br.com.meli.projetointegrador.model.entity.SectionCategory;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.ProductRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.dao.DataAccessException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -123,6 +125,38 @@ class ProductServiceTest {
                 .thenReturn(productList);
 
         assertFalse(productService.findAllProducts().isEmpty());
+    }
+
+    @Test
+    void saveTest() {
+        Product product = new Product()
+                .productId("LE")
+                .productName("leite")
+                .category(new SectionCategory().name(ESectionCategory.FF))
+                .build();
+        when(mockProductRepository.save(any(Product.class)))
+                .thenReturn(product);
+        productService.save(product);
+        verify(mockProductRepository, times(1)).save(any(Product.class));
+    }
+
+    @Test
+    void saveExceptionTest() {
+        Product product = new Product()
+                .productId("LE")
+                .productName("leite")
+                .category(new SectionCategory().name(ESectionCategory.FF))
+                .build();
+        when(mockProductRepository.save(any(Product.class)))
+                .thenThrow(new DataAccessException("") {
+                });
+
+        DataAccessException dataAccessException = assertThrows
+                (DataAccessException.class,() ->
+                        productService.save(product));
+
+        String menssagemEsperada = "Erro durante a persistencia no banco!!!";
+        assertTrue(menssagemEsperada.contains(Objects.requireNonNull(dataAccessException.getMessage())));
     }
 
 }

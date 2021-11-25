@@ -12,6 +12,13 @@ import org.springframework.data.mongodb.core.mapping.MongoId;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+/**
+ * @author Lucas Pereira
+ * @version 1.5.0
+ * @since 25/11/2021
+ * Collection de promocoes
+ */
+
 @Data
 @Document(collection = "promo")
 @CompoundIndexes({

@@ -2,6 +2,13 @@ package br.com.meli.projetointegrador.model.dto;
 
 import lombok.Data;
 
+/**
+ * @author Lucas Pereira
+ * @version 1.5.0
+ * @since 25/11/2021
+ * DTO de response referente a feature atualizar promocoes full
+ */
+
 @Data
 public class PromoFullRequestDTO {
 

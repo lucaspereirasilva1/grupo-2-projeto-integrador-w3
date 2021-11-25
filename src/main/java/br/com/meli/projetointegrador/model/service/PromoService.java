@@ -28,6 +28,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * @author Lucas Pereira
+ * @version 1.5.0
+ * @since 25/11/2021
+ * Service responsavel pelas regras de negocio referente a feature de promocoes
+ */
+
 @Service
 public class PromoService {
 
@@ -43,6 +50,11 @@ public class PromoService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * @param productId, id do produto
+     * @return valor final do produto com o desconto aplicado
+     * @throws PersistenceException se ja existir no banco um objeto com mesmo id/index
+     */
     public BigDecimal apllyPromo(String productId) {
         final Product product = productService.find(productId);
         final Double discount = percentDiscount(product.getDueDate());
@@ -65,6 +77,11 @@ public class PromoService {
         return finalValue;
     }
 
+    /**
+     * @param dueDate, date de vencimento do produto
+     * @return porcentagem de desconto a ser aplicada
+     * @throws PromoException caso o produto nao seja apto a promocao de vencimento
+     */
     private Double percentDiscount(LocalDate dueDate) {
         if (dueDate.equals(LocalDate.now().plusWeeks(1))) {
             return 0.05;
@@ -81,6 +98,12 @@ public class PromoService {
         }
     }
 
+    /**
+     * @param promoRequestDTO, atualiza uma promocao existente
+     * @return as informacoes da promocao atualizada
+     * @throws PromoException se o valor de desconto for invalido
+     * @throws PersistenceException se ja existir no banco um objeto com mesmo id/index
+     */
     public PromoResponseDTO updatePromo(PromoRequestDTO promoRequestDTO) {
         if (promoRequestDTO.getPercentDiscount() != 0.05 &&
                 promoRequestDTO.getPercentDiscount() != 0.15 &&
@@ -110,10 +133,20 @@ public class PromoService {
                 .build();
     }
 
+    /**
+     * @param finalValue valor final do produto
+     * @param percentDiscount porcentagem de disconto
+     * @return valor calculado baseado na porcetagem
+     */
     private BigDecimal updatePercentDiscount(BigDecimal finalValue, Double percentDiscount) {
         return finalValue.subtract(finalValue.multiply(BigDecimal.valueOf(percentDiscount))).setScale(2, RoundingMode.HALF_EVEN);
     }
 
+    /**
+     * @param productId valor final do produto
+     * @return uma promocao cadastrada
+     * @throws PromoException se o codigo do produto for invalido
+     */
     public Promo find(String productId) {
         final Optional<Promo> promo = promoRepository.findByProductId(productId);
         if (promo.isEmpty()) {
@@ -122,6 +155,10 @@ public class PromoService {
         return promo.get();
     }
 
+    /**
+     * @return lista de promocoes cadastradas
+    * @throws PromoException caso nao exista nenhuma promocao cadastrada
+     */
     public List<PromoResponseDTO> listByDiscount() {
         final List<Promo> promoList = promoRepository.findAll();
         if (promoList.isEmpty()) {
@@ -131,6 +168,11 @@ public class PromoService {
         return conveterListaDTO(promoList, PromoResponseDTO.class);
     }
 
+    /**
+     * @param entrada lista de entrada
+     * @param saida lista de saida
+     * @return uma lista convertida para um DTO
+     */
     private <S, T> List<T> conveterListaDTO(List<S> entrada, Class<T> saida) {
         return entrada
                 .stream()
@@ -138,6 +180,11 @@ public class PromoService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @param promoFullRequestDTO request com id do produto, porcentagem de desconto e cpf
+     * @return o valor do desconto aplicado no produto
+     * @throws PersistenceException caso o objeto ja exista no banco com o mesmo id/index
+     */
     public BigDecimal apllyPromoFull(PromoFullRequestDTO promoFullRequestDTO) {
         final BigDecimal finalValue;
         final Product product = productService.find(promoFullRequestDTO.getProductId());
@@ -166,6 +213,10 @@ public class PromoService {
         return finalValue;
     }
 
+    /**
+     * @param cpf cpf referente ao usuario logado
+     * @throws PromoException caso o cpf nao seja encontrado
+     */
     private void findUser(String cpf) {
         final Optional<User> user = userRepository.findByCpf(cpf);
         if (user.isEmpty()) {
@@ -180,6 +231,10 @@ public class PromoService {
         }
     }
 
+    /**
+     * @param productId id do produto
+     * @return a promocao referente ao id informado caso exista
+     */
     private Promo findPromoIfExist(String productId) {
         final Optional<Promo> promo = promoRepository.findByProductId(productId);
         return promo.orElse(new Promo());

@@ -19,6 +19,13 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * @author Lucas Pereira
+ * @version 1.5.0
+ * @since 25/11/2021
+ * Camada de testes unitarios do service responsavel pelas promocoes
+ */
+
 class PromoServiceTest {
 
     private final ProductService mockProductService = mock(ProductService.class);
