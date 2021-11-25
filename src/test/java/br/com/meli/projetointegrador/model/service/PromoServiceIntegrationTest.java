@@ -1,15 +1,13 @@
 package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.PromoException;
+import br.com.meli.projetointegrador.model.dto.PromoFullRequestDTO;
 import br.com.meli.projetointegrador.model.dto.PromoRequestDTO;
 import br.com.meli.projetointegrador.model.dto.PromoResponseDTO;
-import br.com.meli.projetointegrador.model.entity.Product;
-import br.com.meli.projetointegrador.model.entity.Promo;
-import br.com.meli.projetointegrador.model.entity.SectionCategory;
+import br.com.meli.projetointegrador.model.entity.*;
+import br.com.meli.projetointegrador.model.enums.ERole;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
-import br.com.meli.projetointegrador.model.repository.ProductRepository;
-import br.com.meli.projetointegrador.model.repository.PromoRepository;
-import br.com.meli.projetointegrador.model.repository.SectionCategoryRepository;
+import br.com.meli.projetointegrador.model.repository.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,15 +16,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class PromoServiceIntegrationTest {
@@ -42,6 +36,12 @@ class PromoServiceIntegrationTest {
 
     @Autowired
     private SectionCategoryRepository sectionCategoryRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @BeforeEach
     void setUp() {
@@ -104,6 +104,20 @@ class PromoServiceIntegrationTest {
                 .finalValue(new BigDecimal("42.75"))
                 .build();
         promoRepository.save(promoDois);
+
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName(ERole.ROLE_ADMIN);
+        roleRepository.save(role);
+        roles.add(role);
+
+        User user = new User();
+        user.setUsername("lucas");
+        user.setRoles(roles);
+        user.setEmail("teste@gmail.com");
+        user.setPassword("123");
+        user.setCpf("11122233344");
+        userRepository.save(user);
     }
 
     @AfterEach
@@ -152,12 +166,35 @@ class PromoServiceIntegrationTest {
         assertEquals(0.20, promoResponseDTOS.get(0).getPercentDiscount());
     }
 
+    @Test
+    void apllyPromoFullTest() {
+        PromoFullRequestDTO promoFullRequestDTO = new PromoFullRequestDTO()
+                .productId("CA1")
+                .cpf("11122233344")
+                .percent(0.50)
+                .build();
 
+        Set<Role> roles = new HashSet<>();
+        Role role = new Role();
+        role.setName(ERole.ROLE_ADMIN);
+        roles.add(role);
+        User user = new User();
+        user.setUsername("lucas");
+        user.setRoles(roles);
+        user.setEmail("teste@gmail.com");
+        user.setPassword("123");
+        user.setCpf("11122233344");
+
+        BigDecimal pricePromo = promoService.apllyPromoFull(promoFullRequestDTO);
+        assertEquals(new BigDecimal("22.50"), pricePromo);
+    }
 
     private void clearBase() {
         productRepository.deleteAll();
         promoRepository.deleteAll();
         sectionCategoryRepository.deleteAll();
+        roleRepository.deleteAll();
+        userRepository.deleteAll();
     }
 
 }

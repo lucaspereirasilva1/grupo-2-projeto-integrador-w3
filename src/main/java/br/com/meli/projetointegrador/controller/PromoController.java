@@ -1,6 +1,8 @@
 package br.com.meli.projetointegrador.controller;
 
-import br.com.meli.projetointegrador.model.dto.*;
+import br.com.meli.projetointegrador.model.dto.PromoFullRequestDTO;
+import br.com.meli.projetointegrador.model.dto.PromoRequestDTO;
+import br.com.meli.projetointegrador.model.dto.PromoResponseDTO;
 import br.com.meli.projetointegrador.model.service.PromoService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,6 +43,14 @@ public class PromoController {
     public ResponseEntity<List<PromoResponseDTO>> listByDiscount() {
         List<PromoResponseDTO> promoResponseDTOList = promoService.listByDiscount();
         return ResponseEntity.ok(promoResponseDTOList);
+    }
+
+    @PutMapping(value = "/promofull", produces = "application/json")
+    public ResponseEntity<BigDecimal> postPromoFull(@Valid @RequestBody PromoFullRequestDTO promoFullRequestDTO,
+                                           UriComponentsBuilder uriComponentsBuilder) {
+        final BigDecimal bigDecimal = promoService.apllyPromoFull(promoFullRequestDTO);
+        URI uri = uriComponentsBuilder.path("/promofull/1").buildAndExpand(1).toUri();
+        return ResponseEntity.created(uri).body(bigDecimal);
     }
 
 }

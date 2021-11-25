@@ -12,7 +12,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -128,12 +127,13 @@ class SaveDataRepositoryTest {
 
     @Test
     void productOneTest() {
+        BigDecimal bigDecimal = new BigDecimal("45");
         Product product = new Product()
-                .productId("MA2")
-                .productName("margarina vigor")
-                .category(sectionCategoryRepository.findByName(ESectionCategory.RF).orElse(new SectionCategory()))
-                .productPrice(new BigDecimal("5.0"))
-                .dueDate(LocalDate.now().plusDays(3))
+                .productId("CA1")
+                .productName("carne")
+                .category(sectionCategoryRepository.findByName(ESectionCategory.FS).orElse(new SectionCategory()))
+                .productPrice(bigDecimal)
+                .dueDate(LocalDate.now().plusWeeks(1))
                 .build();
         productRepository.save(product);
     }

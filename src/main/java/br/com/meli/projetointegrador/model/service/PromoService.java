@@ -2,6 +2,7 @@ package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.PersistenceException;
 import br.com.meli.projetointegrador.exception.PromoException;
+import br.com.meli.projetointegrador.model.dto.PromoFullRequestDTO;
 import br.com.meli.projetointegrador.model.dto.PromoRequestDTO;
 import br.com.meli.projetointegrador.model.dto.PromoResponseDTO;
 import br.com.meli.projetointegrador.model.entity.Product;
@@ -26,7 +27,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class PromoService {
@@ -90,8 +90,9 @@ public class PromoService {
         final Promo promo = find(promoRequestDTO.getProductId());
         final Product product = productService.find(promoRequestDTO.getProductId());
         BigDecimal finalValue = updatePercentDiscount(promo.getOriginalValue()
-                ,promoRequestDTO.getPercentDiscount()).setScale(2, RoundingMode.HALF_EVEN);
+                ,promoRequestDTO.getPercentDiscount());
         promo.setFinalValue(finalValue);
+        promo.setPercentDiscount(promoRequestDTO.getPercentDiscount());
         product.setProductPrice(finalValue);
         productService.save(product);
         try {
@@ -137,8 +138,35 @@ public class PromoService {
                 .collect(Collectors.toList());
     }
 
-    public BigDecimal apllyPromoFull(String productId, Double percent, String cpf) {
-        final Product product = productService.find(productId);
+    public BigDecimal apllyPromoFull(PromoFullRequestDTO promoFullRequestDTO) {
+        final BigDecimal finalValue;
+        final Product product = productService.find(promoFullRequestDTO.getProductId());
+        findUser(promoFullRequestDTO.getCpf());
+        final Promo promo = findPromoIfExist(promoFullRequestDTO.getProductId());
+        if (ObjectUtils.isEmpty(promo.getId())) {
+            promo.setOriginalValue(product.getProductPrice());
+            finalValue = updatePercentDiscount(product.getProductPrice(), promoFullRequestDTO.getPercent());
+        } else {
+            promo.id(promo.getId());
+            promo.setOriginalValue(promo.getOriginalValue());
+            finalValue = updatePercentDiscount(promo.getOriginalValue(), promoFullRequestDTO.getPercent());
+        }
+        promo.setFinalValue(finalValue);
+        promo.setProductId(promoFullRequestDTO.getProductId());
+        promo.setProductDueDate(product.getDueDate());
+        promo.setPercentDiscount(promoFullRequestDTO.getPercent());
+        product.setProductPrice(finalValue);
+        productService.save(product);
+        try {
+            promoRepository.save(promo);
+        }catch (DataAccessException e) {
+            logger.error(ConstantsUtil.PERSISTENCE_ERROR, e);
+            throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
+        }
+        return finalValue;
+    }
+
+    private void findUser(String cpf) {
         final Optional<User> user = userRepository.findByCpf(cpf);
         if (user.isEmpty()) {
             throw new PromoException("Cpf nao encontrado!!!");
@@ -150,23 +178,11 @@ public class PromoService {
                 throw new PromoException("Usuario sem permissao de administrador!!!");
             }
         }
-        BigDecimal finalValue = updatePercentDiscount(product.getProductPrice(), percent);
-        product.setProductPrice(finalValue);
-        final Promo promo = new Promo()
-                .productId(productId)
-                .productDueDate(product.getDueDate())
-                .originalValue(product.getProductPrice())
-                .percentDiscount(percent)
-                .finalValue(finalValue)
-                .build();
-        productService.save(product);
-        try {
-            promoRepository.save(promo);
-        }catch (DataAccessException e) {
-            logger.error(ConstantsUtil.PERSISTENCE_ERROR, e);
-            throw new PersistenceException(ConstantsUtil.PERSISTENCE_ERROR);
-        }
-        return finalValue;
+    }
+
+    private Promo findPromoIfExist(String productId) {
+        final Optional<Promo> promo = promoRepository.findByProductId(productId);
+        return promo.orElse(new Promo());
     }
 
 }

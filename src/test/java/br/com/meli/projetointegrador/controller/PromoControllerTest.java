@@ -1,9 +1,6 @@
 package br.com.meli.projetointegrador.controller;
 
-import br.com.meli.projetointegrador.model.dto.LoginRequest;
-import br.com.meli.projetointegrador.model.dto.PromoRequestDTO;
-import br.com.meli.projetointegrador.model.dto.SignupRequest;
-import br.com.meli.projetointegrador.model.dto.TokenTest;
+import br.com.meli.projetointegrador.model.dto.*;
 import br.com.meli.projetointegrador.model.entity.*;
 import br.com.meli.projetointegrador.model.enums.ERole;
 import br.com.meli.projetointegrador.model.enums.ESectionCategory;
@@ -27,7 +24,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 @SpringBootTest
@@ -64,9 +61,7 @@ public class PromoControllerTest {
         createData();
 
         Set<String> roles = new HashSet<>();
-        roles.add(ERole.ROLE_USER.toString());
-        roles.add(ERole.ROLE_ADMIN.toString());
-        roles.add(ERole.ROLE_MODERATOR.toString());
+        roles.add("admin");
         SignupRequest signupRequest = new SignupRequest();
         signupRequest.setUsername("lucas");
         signupRequest.setEmail("lucas@gmail.com");
@@ -133,6 +128,23 @@ public class PromoControllerTest {
         assertEquals(HttpStatus.OK.value(), response.getStatus());
     }
 
+    @Test
+    void applyPromoFullControllerTest() throws Exception {
+        PromoFullRequestDTO promoFullRequestDTO = new PromoFullRequestDTO()
+                .productId("CA1")
+                .cpf("11122233344")
+                .percent(0.50)
+                .build();
+
+        MockHttpServletResponse response = mockMvc.perform(put("http://localhost:8080/api/v1/fresh-products/promofull/")
+                .header("Authorization", "Bearer " + tokenTest.getAccessToken())
+                .contentType("application/json")
+                .content(objectMapper.writeValueAsString(promoFullRequestDTO)))
+                .andReturn().getResponse();
+
+        assertEquals(HttpStatus.CREATED.value(), response.getStatus());
+    }
+
     private void createData() {
         SectionCategory sectionCategory = new SectionCategory()
                 .name(ESectionCategory.FS)
@@ -186,11 +198,11 @@ public class PromoControllerTest {
         roleRepository.save(role);
 
         Role role2 = new Role();
-        role.setName(ERole.ROLE_MODERATOR);
+        role2.setName(ERole.ROLE_MODERATOR);
         roleRepository.save(role2);
 
         Role role3 = new Role();
-        role.setName(ERole.ROLE_ADMIN);
+        role3.setName(ERole.ROLE_ADMIN);
         roleRepository.save(role3);
     }
 

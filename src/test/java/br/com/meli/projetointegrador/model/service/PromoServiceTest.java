@@ -1,6 +1,7 @@
 package br.com.meli.projetointegrador.model.service;
 
 import br.com.meli.projetointegrador.exception.PromoException;
+import br.com.meli.projetointegrador.model.dto.PromoFullRequestDTO;
 import br.com.meli.projetointegrador.model.dto.PromoRequestDTO;
 import br.com.meli.projetointegrador.model.dto.PromoResponseDTO;
 import br.com.meli.projetointegrador.model.entity.*;
@@ -9,7 +10,6 @@ import br.com.meli.projetointegrador.model.enums.ESectionCategory;
 import br.com.meli.projetointegrador.model.repository.PromoRepository;
 import br.com.meli.projetointegrador.model.repository.UserRepository;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.function.Executable;
 import org.springframework.dao.DataAccessException;
 
 import java.math.BigDecimal;
@@ -384,6 +384,20 @@ class PromoServiceTest {
                 .dueDate(LocalDate.now().plusWeeks(1))
                 .build();
 
+        PromoFullRequestDTO promoFullRequestDTO = new PromoFullRequestDTO()
+                .productId("CA1")
+                .cpf("11122233344")
+                .percent(0.50)
+                .build();
+
+        Promo promo = new Promo()
+                .productId("CA1")
+                .productDueDate(LocalDate.now().plusWeeks(1))
+                .originalValue(new BigDecimal("45"))
+                .percentDiscount(0.05)
+                .finalValue(new BigDecimal("38.25"))
+                .build();
+
         Set<Role> roles = new HashSet<>();
         Role role = new Role();
         role.setName(ERole.ROLE_ADMIN);
@@ -406,10 +420,12 @@ class PromoServiceTest {
                         .percentDiscount(0.05)
                         .finalValue(new BigDecimal("22.50"))
                         .build());
+        when(mockPromoRepository.findByProductId(anyString()))
+                .thenReturn(Optional.of(promo));
         when(mockUserRepository.findByCpf(anyString()))
                 .thenReturn(Optional.of(user));
 
-        BigDecimal pricePromo = promoService.apllyPromoFull("CA1", 0.50, "11122233344");
+        BigDecimal pricePromo = promoService.apllyPromoFull(promoFullRequestDTO);
         assertEquals(new BigDecimal("22.50"), pricePromo);
     }
 
@@ -421,6 +437,12 @@ class PromoServiceTest {
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .productPrice(new BigDecimal("45.0"))
                 .dueDate(LocalDate.now().plusWeeks(1))
+                .build();
+
+        PromoFullRequestDTO promoFullRequestDTO = new PromoFullRequestDTO()
+                .productId("CA1")
+                .cpf("11122233344")
+                .percent(0.50)
                 .build();
 
         Set<Role> roles = new HashSet<>();
@@ -440,7 +462,7 @@ class PromoServiceTest {
                 .thenReturn(Optional.empty());
 
         PromoException promoException = assertThrows(PromoException.class, () ->
-                promoService.apllyPromoFull("CA1", 0.50, "11122233344"));
+                promoService.apllyPromoFull(promoFullRequestDTO));
 
         String menssagemEsperada = "Cpf nao encontrado!!!";
         assertTrue(menssagemEsperada.contains(Objects.requireNonNull(promoException.getMessage())));
@@ -454,6 +476,12 @@ class PromoServiceTest {
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .productPrice(new BigDecimal("45.0"))
                 .dueDate(LocalDate.now().plusWeeks(1))
+                .build();
+
+        PromoFullRequestDTO promoFullRequestDTO = new PromoFullRequestDTO()
+                .productId("CA1")
+                .cpf("11122233344")
+                .percent(0.50)
                 .build();
 
         Set<Role> roles = new HashSet<>();
@@ -473,7 +501,7 @@ class PromoServiceTest {
                 .thenReturn(Optional.of(user));
 
         PromoException promoException = assertThrows(PromoException.class, () ->
-                promoService.apllyPromoFull("CA1", 0.50, "11122233344"));
+                promoService.apllyPromoFull(promoFullRequestDTO));
 
         String menssagemEsperada = "Usuario sem permissao de administrador!!!";
         assertTrue(menssagemEsperada.contains(Objects.requireNonNull(promoException.getMessage())));
@@ -487,6 +515,20 @@ class PromoServiceTest {
                 .category(new SectionCategory().name(ESectionCategory.FF))
                 .productPrice(new BigDecimal("45.0"))
                 .dueDate(LocalDate.now().plusWeeks(1))
+                .build();
+
+        PromoFullRequestDTO promoFullRequestDTO = new PromoFullRequestDTO()
+                .productId("CA1")
+                .cpf("11122233344")
+                .percent(0.50)
+                .build();
+
+        Promo promo = new Promo()
+                .productId("CA1")
+                .productDueDate(LocalDate.now().plusWeeks(1))
+                .originalValue(new BigDecimal("45"))
+                .percentDiscount(0.05)
+                .finalValue(new BigDecimal("38.25"))
                 .build();
 
         Set<Role> roles = new HashSet<>();
@@ -504,14 +546,15 @@ class PromoServiceTest {
                 .thenReturn(product);
         when(mockUserRepository.findByCpf(anyString()))
                 .thenReturn(Optional.of(user));
-
+        when(mockPromoRepository.findByProductId(anyString()))
+                .thenReturn(Optional.of(promo));
         when(mockPromoRepository.save(any(Promo.class)))
                 .thenThrow(new DataAccessException("") {
                 });
 
         DataAccessException dataAccessException = assertThrows
                 (DataAccessException.class,() ->
-                        promoService.apllyPromoFull("CA1", 0.50, "11122233344"));
+                        promoService.apllyPromoFull(promoFullRequestDTO));
 
         String menssagemEsperada = "Erro durante a persistencia no banco!!!";
 
