@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "1f13d379-1a5d-4a53-a7a8-af966b38ea5a",
+		"_postman_id": "4b05e5d8-fc7c-4599-8c32-9f2a1d0055ec",
 		"name": "projeto-integrador",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -15,7 +15,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"username\": \"lucas\",\n  \"email\": \"lucas@meli.com\",\n  \"password\": \"12345678\",\n  \"roles\": [\"admin\"],\n  \"cpf\": \"11111111111\",\n  \"warehouseCode\": \"SP1\"\n}",
+					"raw": "{\n  \"username\": \"lucas\",\n  \"email\": \"lucas@nobremix.com\",\n  \"password\": \"12345678\",\n  \"roles\": [\"admin\"],\n  \"cpf\": \"11122233344\",\n  \"warehouseCode\": \"SP\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -102,16 +102,6 @@
 		{
 			"name": "auth-test-user",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWNhcyIsImlhdCI6MTYzNTM3NTczMywiZXhwIjoxNjM1NDYyMTMzfQ.3OwKsaVss5NdhWjIYJk0JYPd1vSdFL2yb2W8ksGCllZBgTqHtGUgv26IHbF44_GychQrZL9o9icv3kA1lDoS_Q",
-							"type": "string"
-						}
-					]
-				},
 				"method": "GET",
 				"header": [],
 				"url": {
@@ -133,16 +123,6 @@
 		{
 			"name": "auth-test-mod",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWNhcyIsImlhdCI6MTYzNTM3NTczMywiZXhwIjoxNjM1NDYyMTMzfQ.3OwKsaVss5NdhWjIYJk0JYPd1vSdFL2yb2W8ksGCllZBgTqHtGUgv26IHbF44_GychQrZL9o9icv3kA1lDoS_Q",
-							"type": "string"
-						}
-					]
-				},
 				"method": "GET",
 				"header": [],
 				"url": {
@@ -164,16 +144,6 @@
 		{
 			"name": "auth-test-admin",
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWNhcyIsImlhdCI6MTYzNTM3NTczMywiZXhwIjoxNjM1NDYyMTMzfQ.3OwKsaVss5NdhWjIYJk0JYPd1vSdFL2yb2W8ksGCllZBgTqHtGUgv26IHbF44_GychQrZL9o9icv3kA1lDoS_Q",
-							"type": "string"
-						}
-					]
-				},
 				"method": "GET",
 				"header": [],
 				"url": {
@@ -206,7 +176,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"orderNumber\" : 1,\n  \"orderDate\" : \"23/11/2021\",\n  \"section\" : {\n    \"sectionCode\" : \"CO1\",\n    \"warehouseCode\" : \"SP1\"\n  },\n  \"listBatchStock\" : [ {\n    \"batchNumber\" : 1,\n    \"productId\" : \"CA1\",\n    \"currentTemperature\" : 0,\n    \"minimumTemperature\" : -5,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 10,\n    \"manufacturingDate\" : \"23/11/2021\",\n    \"manufacturingTime\" : \"18:27\",\n    \"dueDate\" : \"01/01/2022\"\n  }, {\n    \"batchNumber\" : 2,\n    \"productId\" : \"FR1\",\n    \"currentTemperature\" : 0,\n    \"minimumTemperature\" : -5,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 10,\n    \"manufacturingDate\" : \"23/11/2021\",\n    \"manufacturingTime\" : \"18:27\",\n    \"dueDate\" : \"01/01/2022\"\n  } ]\n}",
+					"raw": "{\n  \"orderNumber\" : 2,\n  \"orderDate\" : \"23/11/2021\",\n  \"section\" : {\n    \"sectionCode\" : \"CO\",\n    \"warehouseCode\" : \"SP\"\n  },\n  \"listBatchStock\" : [ {\n    \"batchNumber\" : 3,\n    \"productId\" : \"CA\",\n    \"currentTemperature\" : 0,\n    \"minimumTemperature\" : -5,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 10,\n    \"manufacturingDate\" : \"22/11/2021\",\n    \"manufacturingTime\" : \"18:27\",\n    \"dueDate\" : \"01/01/2022\"\n  }, {\n    \"batchNumber\" : 4,\n    \"productId\" : \"FR\",\n    \"currentTemperature\" : 0,\n    \"minimumTemperature\" : -5,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 10,\n    \"manufacturingDate\" : \"22/11/2021\",\n    \"manufacturingTime\" : \"18:27\",\n    \"dueDate\" : \"01/01/2022\"\n  } ]\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -214,7 +184,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder?cpf=11111111111",
+					"raw": "http://localhost:8080/api/v1/fresh-products/inboundorder?cpf=11122233344",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -229,7 +199,7 @@
 					"query": [
 						{
 							"key": "cpf",
-							"value": "11111111111"
+							"value": "11122233344"
 						}
 					]
 				}
@@ -243,7 +213,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"orderNumber\" : 1,\n  \"orderDate\" : \"23/11/2021\",\n  \"section\" : {\n    \"sectionCode\" : \"CO\",\n    \"warehouseCode\" : \"SP\"\n  },\n  \"listBatchStock\" : [ {\n    \"batchNumber\" : 1,\n    \"productId\" : \"CA\",\n    \"currentTemperature\" : 0,\n    \"minimumTemperature\" : -5,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 10,\n    \"manufacturingDate\" : \"23/11/2021\",\n    \"manufacturingTime\" : \"18:27\",\n    \"dueDate\" : \"01/01/2022\"\n  }, {\n    \"batchNumber\" : 2,\n    \"productId\" : \"FR\",\n    \"currentTemperature\" : 0,\n    \"minimumTemperature\" : -5,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 10,\n    \"manufacturingDate\" : \"23/11/2021\",\n    \"manufacturingTime\" : \"18:27\",\n    \"dueDate\" : \"01/01/2022\"\n  } ]\n}",
+					"raw": "{\n  \"orderNumber\" : 1,\n  \"orderDate\" : \"17/11/2021\",\n  \"section\" : {\n    \"sectionCode\" : \"CO\",\n    \"warehouseCode\" : \"SP\"\n  },\n  \"listBatchStock\" : [ {\n    \"batchNumber\" : 1,\n    \"productId\" : \"CA\",\n    \"currentTemperature\" : 10,\n    \"minimumTemperature\" : 5,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 20,\n    \"manufacturingDate\" : \"2021-10-21\",\n    \"manufacturingTime\" : \"18:27:04.808669\",\n    \"dueDate\" : \"2022-01-01\"\n  }, {\n    \"batchNumber\" : 2,\n    \"productId\" : \"FR\",\n    \"currentTemperature\" : 10,\n    \"minimumTemperature\" : 5,\n    \"initialQuantity\" : 1,\n    \"currentQuantity\" : 20,\n    \"manufacturingDate\" : \"2021-10-21\",\n    \"manufacturingTime\" : \"18:27:04.808706\",\n    \"dueDate\" : \"2022-01-01\"\n  } ]\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -337,7 +307,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": " {\n    \"data\": \"22/11/2021\",\n    \"buyerId\": \"619c0641284d1262c1845031\",\n    \"orderStatus\": {\n        \"statusCode\": \"in progress\"\n    },\n    \"products\": [\n        {\n            \"productId\": \"CA1\",\n            \"quantity\": 10\n        },\n        {\n            \"productId\": \"FR1\",\n            \"quantity\": 10\n        }\n    ]\n}",
+					"raw": " {\n    \"data\": \"22/12/2021\",\n    \"buyerId\": \"619b95e37bbdf708c4d04272\",\n    \"orderStatus\": {\n        \"statusCode\": \"in progress\"\n    },\n    \"products\": [\n        {\n            \"productId\": \"CA\",\n            \"quantity\": 10\n        },\n        {\n            \"productId\": \"FR\",\n            \"quantity\": 10\n        }\n    ]\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -396,7 +366,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": " {\n    \"data\": \"21/12/2021\",\n    \"buyerId\": \"61955417a784be30da0afeda\",\n    \"orderStatus\": {\n        \"statusCode\": \"order chart\"\n    },\n    \"products\": [\n        {\n            \"productId\": \"CA1\",\n            \"quantity\": 10\n        },\n        {\n            \"productId\": \"FR1\",\n            \"quantity\": 10\n        }\n    ]\n}",
+					"raw": " {\n    \"data\": \"22/12/2021\",\n    \"buyerId\": \"619b95e37bbdf708c4d04272\",\n    \"orderStatus\": {\n        \"statusCode\": \"in progress\"\n    },\n    \"products\": [\n        {\n            \"productId\": \"CA\",\n            \"quantity\": 10\n        },\n        {\n            \"productId\": \"FR\",\n            \"quantity\": 10\n        }\n    ]\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -444,33 +414,11 @@
 		},
 		{
 			"name": "R3-E2 ->productListByIdOrdenada-get",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
 			"request": {
-				"auth": {
-					"type": "bearer",
-					"bearer": [
-						{
-							"key": "token",
-							"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqaG9ueSIsImlhdCI6MTYzNjAyOTQ2NywiZXhwIjoxNjM2MTE1ODY3fQ.wBcTL40n3LOUU0-FA6UK8OrtdrXmCMyO-DsenSKfrTXEqPLnLT3_39hIUm5SkIrzHolexhxuJhPL0FWT8c7IjA",
-							"type": "string"
-						}
-					]
-				},
 				"method": "GET",
 				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "",
-					"options": {
-						"raw": {
-							"language": "text"
-						}
-					}
-				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/fresh-products/listsorder?productId=CA1&order=L",
+					"raw": "http://localhost:8080/api/v1/fresh-products/listsorder?product=CA&order=L",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -484,8 +432,8 @@
 					],
 					"query": [
 						{
-							"key": "productId",
-							"value": "CA1"
+							"key": "product",
+							"value": "CA"
 						},
 						{
 							"key": "order",
@@ -509,7 +457,7 @@
 					"raw": ""
 				},
 				"url": {
-					"raw": "http://localhost:8080/api/v1/fresh-products/warehouse?productId=CA1",
+					"raw": "http://localhost:8080/api/v1/fresh-products/warehouse?productId=CA",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -524,7 +472,7 @@
 					"query": [
 						{
 							"key": "productId",
-							"value": "CA1"
+							"value": "CA"
 						}
 					]
 				}
@@ -622,21 +570,12 @@
 			"response": []
 		},
 		{
-			"name": "R5-EA -> listProduct-DueDate-Section",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": null
-			},
-			"response": []
-		},
-		{
 			"name": "product-list-bycategory",
 			"request": {
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "http://localhost:8080/api/v1/fresh-products/list?sectionCategory=FF",
+					"raw": "http://localhost:8080/api/v1/fresh-products/list?sectionCategory=0",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -651,8 +590,129 @@
 					"query": [
 						{
 							"key": "sectionCategory",
-							"value": "FF"
+							"value": "0"
 						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "R6-E1 -> promo-coming-due-aplly",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/fresh-products/promocomingdue?productId=DA",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"fresh-products",
+						"promocomingdue"
+					],
+					"query": [
+						{
+							"key": "productId",
+							"value": "DA"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "R6-E2 -> promo-update",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"productId\": \"CA1\",\n  \"percentDiscount\": 0.25\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/fresh-products/updatepromo",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"fresh-products",
+						"updatepromo"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "R6-E3 -> promo-list-by-discount",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/api/v1/fresh-products/listbydiscount",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"fresh-products",
+						"listbydiscount"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "R6-E4 -> promo-full",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"productId\": \"MA\",\n  \"cpf\": \"11122233344\",\n  \"percent\": 0.90\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/v1/fresh-products/promofull",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"v1",
+						"fresh-products",
+						"promofull"
 					]
 				}
 			},
@@ -664,7 +724,7 @@
 		"bearer": [
 			{
 				"key": "token",
-				"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWNhcyIsImlhdCI6MTYzNzY4MjcyNiwiZXhwIjoxNjM3NzY5MTI2fQ.J7_WHWen-36wqi1T-Go0yAu3FHCZQj80n7WSxbw-I4h9A-AYUQ3ogYGm5dbhV1BYI8no8Rh6DX-FGBJuihEzBA",
+				"value": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsdWNhcyIsImlhdCI6MTYzNzg4ODI2NCwiZXhwIjoxNjM3OTc0NjY0fQ.me-8CljDX7JFyC6lTCCsoaKJECIBvwbIzjR1Oi7Z0Ww5TovEDbkNZwQ9awab1EzN11W1NlJRo5aEkEddNakAzg",
 				"type": "string"
 			}
 		]
