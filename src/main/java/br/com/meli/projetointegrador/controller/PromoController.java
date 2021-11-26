@@ -4,6 +4,10 @@ import br.com.meli.projetointegrador.model.dto.PromoFullRequestDTO;
 import br.com.meli.projetointegrador.model.dto.PromoRequestDTO;
 import br.com.meli.projetointegrador.model.dto.PromoResponseDTO;
 import br.com.meli.projetointegrador.model.service.PromoService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -22,6 +26,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/fresh-products")
+@Api( tags = "Promocoes")
 public class PromoController {
 
     private final PromoService promoService;
@@ -36,6 +41,12 @@ public class PromoController {
      * requisito 6 - endpoint 1: Cadastrar uma promocao
      */
     @PostMapping(value = "/promocomingdue", produces = "application/json")
+    @ApiOperation(value = "Cadastrar uma promocao")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Promocao criada"),
+            @ApiResponse(code = 401, message = "Você não tem permissão para acessar este recurso"),
+            @ApiResponse(code = 400, message = "Foi gerada uma exceção"),
+    })
     public ResponseEntity<BigDecimal> post(@RequestParam String productId,
                                                     UriComponentsBuilder uriComponentsBuilder) {
         final BigDecimal bigDecimal = promoService.apllyPromo(productId);
@@ -49,6 +60,12 @@ public class PromoController {
      * requisito 6 - endpoint 2: Atualiza uma promocao
      */
     @PutMapping(value = "/updatepromo", produces = "application/json")
+    @ApiOperation(value = "Atualiza uma promocao")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Promocao atualizada"),
+            @ApiResponse(code = 401, message = "Você não tem permissão para acessar este recurso"),
+            @ApiResponse(code = 400, message = "Foi gerada uma exceção"),
+    })
     public ResponseEntity<PromoResponseDTO> put(@Valid @RequestBody PromoRequestDTO promoRequestDTO,
                                                     UriComponentsBuilder uriComponentsBuilder) {
         final PromoResponseDTO promoResponseDTO = promoService.updatePromo(promoRequestDTO);
@@ -61,6 +78,12 @@ public class PromoController {
      * requisito 6 - endpoint 3: Listar promocoes ordenadas por desconto
      */
     @GetMapping(value = "/listbydiscount")
+    @ApiOperation(value = "Listar promocoes ordenadas por desconto")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Retorna a lista de pessoa"),
+            @ApiResponse(code = 401, message = "Você não tem permissão para acessar este recurso"),
+            @ApiResponse(code = 400, message = "Foi gerada uma exceção"),
+    })
     public ResponseEntity<List<PromoResponseDTO>> listByDiscount() {
         List<PromoResponseDTO> promoResponseDTOList = promoService.listByDiscount();
         return ResponseEntity.ok(promoResponseDTOList);
@@ -69,9 +92,15 @@ public class PromoController {
     /**
      * @param promoFullRequestDTO, recebe uma request com id do produto, porcentagem de desconto e cpf
      * @return ResponseEntity.created e valor final do produto com o desconto aplicado
-     * requisito 6 - endpoint 4: Cadastra/Atualiza uma promocao
+     * requisito 6 - endpoint 4: Cadastra/Atualiza uma promocao sem limite de desconto
      */
     @PutMapping(value = "/promofull", produces = "application/json")
+    @ApiOperation(value = "Cadastra/Atualiza uma promocao sem limite de desconto")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Promocao criada/atualizada"),
+            @ApiResponse(code = 401, message = "Você não tem permissão para acessar este recurso"),
+            @ApiResponse(code = 400, message = "Foi gerada uma exceção"),
+    })
     public ResponseEntity<BigDecimal> postPromoFull(@Valid @RequestBody PromoFullRequestDTO promoFullRequestDTO,
                                            UriComponentsBuilder uriComponentsBuilder) {
         final BigDecimal bigDecimal = promoService.apllyPromoFull(promoFullRequestDTO);
